@@ -1,0 +1,3 @@
+9a3e28ccbb9ebb69f8206f8bac47e8c5227f4f1417b5d99ecefaa823a10ae192  InfiniteFrontier-v0.1.0-source.zip
+c20eb8b3f39e538feb711718692fc0719539d44a7a6af2f0039621d112f63479  InfiniteFrontier-v0.1.0-windows.zip
+7582c0651c705537038f1562a0c676d3075facd71c0ce90031de3a59a53a9150  SCREENSHOTS/main-menu.png

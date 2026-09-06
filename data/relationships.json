@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "affection_minimum": -100,
+  "affection_maximum": 100,
+  "reputation_minimum": -100,
+  "reputation_maximum": 100,
+  "trade_affection": 1,
+  "trade_reputation": 1,
+  "tiers": [
+    {"id": "hostile", "display_name": "敌对", "maximum": -30, "buy_multiplier": 1.25, "sell_multiplier": 0.75, "color": "c85858"},
+    {"id": "wary", "display_name": "戒备", "maximum": -1, "buy_multiplier": 1.10, "sell_multiplier": 0.90, "color": "d18b58"},
+    {"id": "neutral", "display_name": "中立", "maximum": 24, "buy_multiplier": 1.00, "sell_multiplier": 1.00, "color": "9fc2cf"},
+    {"id": "friendly", "display_name": "友善", "maximum": 59, "buy_multiplier": 0.90, "sell_multiplier": 1.10, "color": "79b879"},
+    {"id": "trusted", "display_name": "信赖", "maximum": 100, "buy_multiplier": 0.80, "sell_multiplier": 1.20, "color": "e8c65a"}
+  ],
+  "reputation_discount_per_25": 0.02,
+  "maximum_reputation_discount": 0.08,
+  "default_gift_value": 2,
+  "role_gifts": {
+    "elder": {"liked": ["wildflower", "ancient_core"], "disliked": ["slime_gel"]},
+    "merchant": {"liked": ["copper_ore", "iron_ore"], "disliked": ["berry"]},
+    "innkeeper": {"liked": ["wildflower", "cooked_berries"], "disliked": ["coal"]},
+    "farmer": {"liked": ["berry", "fiber"], "disliked": ["bat_wing"]},
+    "guard": {"liked": ["wolf_pelt", "iron_ore"], "disliked": ["slime_gel"]},
+    "explorer": {"liked": ["moonpetal", "dungeon_relic"], "disliked": ["stone"]}
+  },
+  "liked_gift_value": 8,
+  "disliked_gift_value": -7,
+  "gift_reputation_divisor": 2,
+  "rewards": [
+    {"id": "friendly_gift", "minimum_affection": 25, "item_id": "coin", "quantity": 8, "display_name": "友善谢礼"},
+    {"id": "trusted_gift", "minimum_affection": 60, "item_id": "ancient_core", "quantity": 1, "display_name": "信赖谢礼"}
+  ],
+  "dialogue": {
+    "hostile": ["我们之间没有什么可谈的。", "先证明你不是来惹麻烦的。"],
+    "wary": ["我还在观察你。", "边境上的信任来得很慢。"],
+    "neutral": ["慢慢来，我们会记住你的选择。"],
+    "friendly": ["见到你总让人安心。", "村里已经有人把你当朋友了。"],
+    "trusted": ["这座村庄永远为你留一盏灯。", "你已经是我们真正信赖的伙伴。"]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "interaction_radius_tiles": 3,
+  "fuels": [
+    {"item_id": "wood", "display_name": "木材", "fuel_units": 2},
+    {"item_id": "coal", "display_name": "煤块", "fuel_units": 6}
+  ],
+  "stations": [
+    {"id": "cooking_pot", "display_name": "烹饪锅"},
+    {"id": "smelter", "display_name": "冶炼炉"}
+  ],
+  "recipes": [
+    {"id": "vegetable_stew", "display_name": "烹制田园炖菜", "station": "cooking_pot", "fuel_cost": 2, "inputs": {"carrot": 1, "tomato": 1, "milk": 1}, "output": {"item_id": "vegetable_stew", "quantity": 1}},
+    {"id": "apple_pie", "display_name": "烘烤苹果派", "station": "cooking_pot", "fuel_cost": 3, "inputs": {"wheat": 2, "apple": 2, "egg": 1}, "output": {"item_id": "apple_pie", "quantity": 1}},
+    {"id": "hearty_breakfast", "display_name": "烹制丰盛早餐", "station": "cooking_pot", "fuel_cost": 2, "inputs": {"egg": 2, "milk": 1, "tomato": 1}, "output": {"item_id": "hearty_breakfast", "quantity": 1}},
+    {"id": "antidote_potion", "display_name": "调制解毒药水", "station": "cooking_pot", "fuel_cost": 2, "inputs": {"wildflower": 2, "slime_gel": 1, "milk": 1}, "output": {"item_id": "antidote_potion", "quantity": 1}},
+    {"id": "warming_tonic", "display_name": "调制暖身药剂", "station": "cooking_pot", "fuel_cost": 2, "inputs": {"moonpetal": 2, "berry": 2, "milk": 1}, "output": {"item_id": "warming_tonic", "quantity": 1}},
+    {"id": "cooling_tonic", "display_name": "调制清凉药剂", "station": "cooking_pot", "fuel_cost": 2, "inputs": {"wildflower": 2, "tomato": 1, "slime_gel": 1}, "output": {"item_id": "cooling_tonic", "quantity": 1}},
+    {"id": "copper_ingot", "display_name": "熔炼铜锭 ×2", "station": "smelter", "fuel_cost": 2, "inputs": {"copper_ore": 3}, "output": {"item_id": "copper_ingot", "quantity": 2}},
+    {"id": "iron_ingot", "display_name": "熔炼铁锭", "station": "smelter", "fuel_cost": 3, "inputs": {"iron_ore": 3}, "output": {"item_id": "iron_ingot", "quantity": 1}},
+    {"id": "steel_ingot", "display_name": "炼制钢锭", "station": "smelter", "fuel_cost": 4, "inputs": {"iron_ingot": 2, "coal": 1}, "output": {"item_id": "steel_ingot", "quantity": 1}},
+    {"id": "tempered_plate", "display_name": "锻制淬火板材", "station": "smelter", "fuel_cost": 4, "inputs": {"iron_ingot": 2, "copper_ingot": 1}, "output": {"item_id": "tempered_plate", "quantity": 1}}
+  ]
+}

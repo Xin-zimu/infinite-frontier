@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "region_size_tiles": 192,
+  "spawn_chance": 0.46,
+  "templates": [
+    {
+      "id": "cabin", "code": 0, "display_name": "林间小屋", "weight": 28,
+      "base_color": "9a673f",
+      "rows": [
+        "WWWDWWW",
+        "WFFFFFW",
+        "WFFFFFW",
+        "WFFCFFW",
+        "WFFFFFW",
+        "WWWWWWW"
+      ]
+    },
+    {
+      "id": "camp", "code": 1, "display_name": "旅行营地", "weight": 25,
+      "base_color": "c08a4e",
+      "rows": [
+        "........",
+        ".WFFF...",
+        ".WFFF.E.",
+        ".WWWW...",
+        "....R...",
+        "........"
+      ]
+    },
+    {
+      "id": "ruins", "code": 2, "display_name": "荒野废墟", "weight": 20,
+      "base_color": "77766f",
+      "rows": [
+        "WWW...WWW",
+        "WFF...FFW",
+        "WFF.E.FFW",
+        ".F.....F.",
+        ".F..C..F.",
+        "WFF...FFW",
+        "WWW...WWW"
+      ]
+    },
+    {
+      "id": "temple", "code": 3, "display_name": "古代神殿", "weight": 15,
+      "base_color": "a99a70",
+      "rows": [
+        "WWWWWDWWWWW",
+        "WFFFFFFFFFW",
+        "WFFEFFFEFFW",
+        "WFFFFFFFFFW",
+        "WFFFFAFFFFW",
+        "WFFFFFFFFFW",
+        "WFFFFCFFFFW",
+        "WFFFFFFFFFW",
+        "WWWWWWWWWWW"
+      ]
+    },
+    {
+      "id": "dungeon_entrance", "code": 4, "display_name": "地牢入口", "weight": 12,
+      "base_color": "5d5862",
+      "rows": [
+        "..WWW..",
+        ".WFFFW.",
+        "WFFFFFW",
+        "WFFXFFW",
+        "WFFEFFW",
+        ".WFDFF.",
+        "..WWW.."
+      ]
+    }
+  ]
+}

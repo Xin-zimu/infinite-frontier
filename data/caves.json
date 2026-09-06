@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "generation": {
+    "initial_wall_chance": 0.47,
+    "smoothing_steps": 5,
+    "wall_birth_limit": 5,
+    "wall_survival_limit": 4,
+    "minimum_floor_ratio": 0.34,
+    "entrance_region_chunks": 4
+  },
+  "features": {
+    "torch_spacing_tiles": 12,
+    "chest_chunk_chance": 0.28,
+    "maximum_veins_per_chunk": 28
+  },
+  "veins": [
+    {"resource_id": "coal_vein", "weight": 0.58, "cluster_chance": 0.20},
+    {"resource_id": "copper_vein", "weight": 0.27, "cluster_chance": 0.13},
+    {"resource_id": "iron_vein", "weight": 0.15, "cluster_chance": 0.08}
+  ],
+  "chest_loot": [
+    {"item_id": "torch", "minimum": 2, "maximum": 5, "weight": 0.42},
+    {"item_id": "coal", "minimum": 3, "maximum": 7, "weight": 0.28},
+    {"item_id": "copper_ore", "minimum": 2, "maximum": 5, "weight": 0.18},
+    {"item_id": "iron_ore", "minimum": 1, "maximum": 3, "weight": 0.12}
+  ]
+}

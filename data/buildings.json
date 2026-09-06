@@ -1,0 +1,201 @@
+{
+  "schema_version": 1,
+  "max_placements": 4096,
+  "placement_range_tiles": 6,
+  "station_radius_tiles": 3,
+  "heat_radius_tiles": 6,
+  "chest_slot_count": 8,
+  "refund_ratio": 0.5,
+  "pieces": [
+    {
+      "id": "wood_floor",
+      "display_name": "木地板",
+      "category": "floor",
+      "placement_slot": "ground",
+      "color": "8f6038",
+      "collision": false,
+      "requires_floor": false,
+      "costs": {"wood": 2}
+    },
+    {
+      "id": "wood_wall",
+      "display_name": "木墙",
+      "category": "wall",
+      "placement_slot": "structure",
+      "color": "b97845",
+      "collision": true,
+      "requires_floor": true,
+      "costs": {"wood": 3}
+    },
+    {
+      "id": "wood_door",
+      "display_name": "木门",
+      "category": "door",
+      "placement_slot": "structure",
+      "color": "c58a52",
+      "collision": true,
+      "requires_floor": true,
+      "interactive": "door",
+      "costs": {"wood": 2, "stone": 1}
+    },
+    {
+      "id": "basic_roof",
+      "display_name": "基础屋顶",
+      "category": "roof",
+      "placement_slot": "roof",
+      "color": "6f4b3a",
+      "collision": false,
+      "requires_floor": true,
+      "costs": {"wood": 2, "fiber": 1}
+    },
+    {
+      "id": "wood_table",
+      "display_name": "木桌",
+      "category": "furniture",
+      "placement_slot": "structure",
+      "color": "a86d3f",
+      "collision": true,
+      "requires_floor": true,
+      "costs": {"wood": 4}
+    },
+    {
+      "id": "storage_chest",
+      "display_name": "储物箱",
+      "category": "chest",
+      "placement_slot": "structure",
+      "color": "d7a13b",
+      "collision": true,
+      "requires_floor": true,
+      "interactive": "storage",
+      "costs": {"wood": 5, "fiber": 2}
+    },
+    {
+      "id": "placed_torch",
+      "display_name": "落地火把",
+      "category": "light",
+      "placement_slot": "structure",
+      "color": "f0b84d",
+      "collision": false,
+      "requires_floor": false,
+      "heat_source": true,
+      "costs": {"torch": 1}
+    },
+    {
+      "id": "workbench",
+      "display_name": "工作台",
+      "category": "station",
+      "placement_slot": "structure",
+      "color": "8d5a32",
+      "collision": true,
+      "requires_floor": true,
+      "station_kind": "workbench",
+      "costs": {"workbench": 1}
+    },
+    {
+      "id": "campfire",
+      "display_name": "火堆",
+      "category": "station",
+      "placement_slot": "structure",
+      "color": "dd6b38",
+      "collision": false,
+      "requires_floor": false,
+      "station_kind": "campfire",
+      "heat_source": true,
+      "costs": {"campfire": 1}
+    },
+    {
+      "id": "animal_fence",
+      "display_name": "畜牧围栏",
+      "category": "fence",
+      "placement_slot": "structure",
+      "color": "9b7245",
+      "collision": true,
+      "requires_floor": false,
+      "costs": {"wood": 2, "fiber": 1}
+    },
+    {
+      "id": "cooking_pot",
+      "display_name": "烹饪锅",
+      "category": "station",
+      "placement_slot": "structure",
+      "color": "9f7a58",
+      "collision": true,
+      "requires_floor": true,
+      "station_kind": "cooking_pot",
+      "processor": true,
+      "fuel_capacity": 24,
+      "heat_source": true,
+      "costs": {"cooking_pot": 1}
+    },
+    {
+      "id": "smelter",
+      "display_name": "冶炼炉",
+      "category": "station",
+      "placement_slot": "structure",
+      "color": "6f7478",
+      "collision": true,
+      "requires_floor": true,
+      "station_kind": "smelter",
+      "processor": true,
+      "fuel_capacity": 24,
+      "heat_source": true,
+      "costs": {"smelter": 1}
+    },
+    {
+      "id": "conveyor_belt",
+      "display_name": "传送带",
+      "category": "automation",
+      "placement_slot": "structure",
+      "color": "5f8794",
+      "collision": false,
+      "requires_floor": true,
+      "automation_kind": "transport",
+      "costs": {"conveyor_belt": 1}
+    },
+    {
+      "id": "automatic_smelter",
+      "display_name": "自动熔炉",
+      "category": "automation",
+      "placement_slot": "structure",
+      "color": "9b6251",
+      "collision": true,
+      "requires_floor": true,
+      "heat_source": true,
+      "automation_kind": "smelter",
+      "automation_fuel_capacity": 24,
+      "costs": {"automatic_smelter": 1}
+    },
+    {
+      "id": "storage_link",
+      "display_name": "储物连接器",
+      "category": "automation",
+      "placement_slot": "structure",
+      "color": "6b9b7a",
+      "collision": false,
+      "requires_floor": true,
+      "automation_kind": "storage_link",
+      "costs": {"storage_link": 1}
+    },
+    {
+      "id": "item_sorter",
+      "display_name": "物品分拣器",
+      "category": "automation",
+      "placement_slot": "structure",
+      "color": "9b78b2",
+      "collision": false,
+      "requires_floor": true,
+      "automation_kind": "sorter",
+      "costs": {"item_sorter": 1}
+    },
+    {
+      "id": "homestead_beacon",
+      "display_name": "家园信标",
+      "category": "homestead",
+      "placement_slot": "structure",
+      "color": "e2c66f",
+      "collision": false,
+      "requires_floor": false,
+      "costs": {"wood": 8, "stone": 8, "iron_ingot": 2}
+    }
+  ]
+}

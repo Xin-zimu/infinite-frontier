@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "region_size_tiles": 384,
+  "spawn_chance": 0.72,
+  "house_count_min": 4,
+  "house_count_max": 7,
+  "house_radius_min": 10,
+  "house_radius_max": 17,
+  "road_colors": {
+    "road": "9b815f",
+    "plaza": "b29a72",
+    "bridge": "825b37",
+    "house": "8f633f",
+    "shop": "b4773e",
+    "well": "6f8790",
+    "campfire": "dc6b32"
+  }
+}

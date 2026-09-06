@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "generation": {
+    "room_count_minimum": 6,
+    "room_count_maximum": 6,
+    "room_size_minimum": 5,
+    "room_size_maximum": 8,
+    "corridor_width": 1
+  },
+  "features": {
+    "locked_doors": 2,
+    "keys": 2,
+    "traps": 4,
+    "chests": 2,
+    "elite_enemies": 2,
+    "trap_damage": 18.0
+  },
+  "reset_rules": {
+    "incomplete_resets_on_exit": true,
+    "completed_state_persists": true
+  },
+  "chest_loot": [
+    {"item_id": "torch", "minimum": 2, "maximum": 4, "weight": 0.28},
+    {"item_id": "coal", "minimum": 3, "maximum": 6, "weight": 0.22},
+    {"item_id": "copper_ore", "minimum": 2, "maximum": 4, "weight": 0.20},
+    {"item_id": "iron_ore", "minimum": 1, "maximum": 3, "weight": 0.16},
+    {"item_id": "cooked_berries", "minimum": 1, "maximum": 2, "weight": 0.14}
+  ]
+}

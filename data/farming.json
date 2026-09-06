@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "max_plots": 4096,
+  "interaction_range_tiles": 6,
+  "dry_growth_multiplier": 0.35,
+  "rain_growth_multiplier": 1.25,
+  "snow_growth_multiplier": 0.50,
+  "sandstorm_growth_multiplier": 0.70,
+  "fertilizers": [
+    {
+      "id": "basic_fertilizer",
+      "display_name": "基础肥料",
+      "quality_bonus": 25,
+      "growth_bonus": 0.15
+    }
+  ],
+  "crops": [
+    {
+      "id": "wheat",
+      "display_name": "小麦",
+      "seed_item_id": "wheat_seed",
+      "days_to_mature": 4,
+      "stage_count": 4,
+      "yield_min": 2,
+      "yield_max": 4,
+      "regrow_days": 0,
+      "fruit_tree": false,
+      "color": "d8bd65",
+      "quality_outputs": {"normal": "wheat", "silver": "silver_wheat", "gold": "gold_wheat"}
+    },
+    {
+      "id": "carrot",
+      "display_name": "胡萝卜",
+      "seed_item_id": "carrot_seed",
+      "days_to_mature": 3,
+      "stage_count": 4,
+      "yield_min": 2,
+      "yield_max": 3,
+      "regrow_days": 0,
+      "fruit_tree": false,
+      "color": "e8893f",
+      "quality_outputs": {"normal": "carrot", "silver": "silver_carrot", "gold": "gold_carrot"}
+    },
+    {
+      "id": "tomato",
+      "display_name": "番茄",
+      "seed_item_id": "tomato_seed",
+      "days_to_mature": 5,
+      "stage_count": 5,
+      "yield_min": 3,
+      "yield_max": 5,
+      "regrow_days": 2,
+      "fruit_tree": false,
+      "color": "d6534f",
+      "quality_outputs": {"normal": "tomato", "silver": "silver_tomato", "gold": "gold_tomato"}
+    },
+    {
+      "id": "apple_tree",
+      "display_name": "苹果树",
+      "seed_item_id": "apple_sapling",
+      "days_to_mature": 8,
+      "stage_count": 5,
+      "yield_min": 2,
+      "yield_max": 4,
+      "regrow_days": 4,
+      "fruit_tree": true,
+      "color": "77a65d",
+      "quality_outputs": {"normal": "apple", "silver": "silver_apple", "gold": "gold_apple"}
+    }
+  ]
+}

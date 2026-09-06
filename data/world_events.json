@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "day_seconds": 1200.0,
+  "first_event_seconds": 90.0,
+  "event_interval_seconds": 300.0,
+  "timetable_horizon": 6,
+  "maximum_active": 1,
+  "history_limit": 48,
+  "events": [
+    {
+      "id": "caravan_passage",
+      "display_name": "商队经过",
+      "description": "行商公会的车队在当前区域短暂停留，交易可协助护送。",
+      "category": "civilian",
+      "duration_seconds": 180.0,
+      "objective": {"type": "trade", "target_id": "*", "quantity": 2, "display_name": "完成交易"},
+      "effects": {"enemy_population_multiplier": 0.90, "resource_yield_multiplier": 1.00, "weather_override": ""}
+    },
+    {
+      "id": "village_raid",
+      "display_name": "敌袭村庄",
+      "description": "灰烬掠团正在袭击附近村庄，敌人活动明显增加。",
+      "category": "combat",
+      "duration_seconds": 240.0,
+      "objective": {"type": "defeat", "target_id": "bandit_scout", "quantity": 3, "display_name": "击败灰烬斥候"},
+      "effects": {"enemy_population_multiplier": 1.50, "resource_yield_multiplier": 1.00, "weather_override": ""}
+    },
+    {
+      "id": "meteor_fall",
+      "display_name": "流星坠落",
+      "description": "流星碎片落入边境，附近矿石产出暂时提升。",
+      "category": "exploration",
+      "duration_seconds": 180.0,
+      "objective": {"type": "harvest", "target_id": "*", "quantity": 2, "display_name": "采集受影响资源"},
+      "effects": {"enemy_population_multiplier": 1.05, "resource_yield_multiplier": 1.35, "weather_override": ""}
+    },
+    {
+      "id": "resource_surge",
+      "display_name": "资源爆发",
+      "description": "地脉短暂活跃，所有自然资源的掉落量显著增加。",
+      "category": "resource",
+      "duration_seconds": 210.0,
+      "objective": {"type": "harvest", "target_id": "*", "quantity": 3, "display_name": "完成资源采集"},
+      "effects": {"enemy_population_multiplier": 1.00, "resource_yield_multiplier": 1.75, "weather_override": ""}
+    },
+    {
+      "id": "blizzard",
+      "display_name": "暴风雪",
+      "description": "寒潮席卷地表；视野、采集和敌人活动都受到影响。",
+      "category": "weather",
+      "duration_seconds": 240.0,
+      "objective": {"type": "survive", "target_id": "*", "quantity": 1, "display_name": "坚持至暴风雪结束"},
+      "effects": {"enemy_population_multiplier": 1.25, "resource_yield_multiplier": 0.75, "weather_override": "SNOW"}
+    },
+    {
+      "id": "ruin_opening",
+      "display_name": "遗迹开启",
+      "description": "古老封印暂时松动，遗迹探索窗口已经打开。",
+      "category": "exploration",
+      "duration_seconds": 210.0,
+      "objective": {"type": "explore", "target_id": "ruins", "quantity": 1, "display_name": "发现或进入遗迹"},
+      "effects": {"enemy_population_multiplier": 1.15, "resource_yield_multiplier": 1.10, "weather_override": ""}
+    },
+    {
+      "id": "temporary_boss",
+      "display_name": "临时首领",
+      "description": "强大敌人受异常能量吸引，在当前区域短暂现身。",
+      "category": "boss",
+      "duration_seconds": 240.0,
+      "objective": {"type": "defeat_boss", "target_id": "*", "quantity": 1, "display_name": "击败区域首领"},
+      "effects": {"enemy_population_multiplier": 1.50, "resource_yield_multiplier": 1.00, "weather_override": ""}
+    },
+    {
+      "id": "rescue_operation",
+      "display_name": "救援事件",
+      "description": "一名边境居民失去联络，与守卫交谈可确认救援路线。",
+      "category": "civilian",
+      "duration_seconds": 180.0,
+      "objective": {"type": "talk", "target_id": "guard", "quantity": 1, "display_name": "与守卫会合"},
+      "effects": {"enemy_population_multiplier": 1.20, "resource_yield_multiplier": 1.00, "weather_override": ""}
+    }
+  ]
+}

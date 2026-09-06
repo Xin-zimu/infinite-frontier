@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "region_size_chunks": 6,
+  "maximum_sources": 4096,
+  "danger_tiers": [
+    {
+      "level": 1,
+      "display_name": "安定边境",
+      "enemy_level_min": 1,
+      "enemy_level_max": 3,
+      "recommended_gear_score": 0,
+      "elite_chance": 0.02,
+      "reward_required_elites": 0,
+      "reward_progress_requirement": 0,
+      "rewards": [{"item_id": "coin", "quantity": 6}, {"item_id": "berry", "quantity": 2}]
+    },
+    {
+      "level": 2,
+      "display_name": "警戒边境",
+      "enemy_level_min": 3,
+      "enemy_level_max": 6,
+      "recommended_gear_score": 12,
+      "elite_chance": 0.06,
+      "reward_required_elites": 1,
+      "reward_progress_requirement": 6,
+      "rewards": [{"item_id": "coin", "quantity": 12}, {"item_id": "copper_ore", "quantity": 3}]
+    },
+    {
+      "level": 3,
+      "display_name": "凶险边境",
+      "enemy_level_min": 6,
+      "enemy_level_max": 10,
+      "recommended_gear_score": 24,
+      "elite_chance": 0.10,
+      "reward_required_elites": 1,
+      "reward_progress_requirement": 18,
+      "rewards": [{"item_id": "coin", "quantity": 20}, {"item_id": "iron_ore", "quantity": 3}]
+    },
+    {
+      "level": 4,
+      "display_name": "致命边境",
+      "enemy_level_min": 10,
+      "enemy_level_max": 15,
+      "recommended_gear_score": 34,
+      "elite_chance": 0.15,
+      "reward_required_elites": 2,
+      "reward_progress_requirement": 36,
+      "rewards": [{"item_id": "coin", "quantity": 32}, {"item_id": "dungeon_relic", "quantity": 1}]
+    },
+    {
+      "level": 5,
+      "display_name": "极境",
+      "enemy_level_min": 15,
+      "enemy_level_max": 21,
+      "recommended_gear_score": 44,
+      "elite_chance": 0.20,
+      "reward_required_elites": 2,
+      "reward_progress_requirement": 60,
+      "rewards": [{"item_id": "coin", "quantity": 50}, {"item_id": "ancient_core", "quantity": 1}]
+    }
+  ],
+  "scaling": {
+    "health_per_level": 0.055,
+    "attack_per_level": 0.035,
+    "defense_per_level": 0.025,
+    "elite_health_multiplier": 1.65,
+    "elite_attack_multiplier": 1.30,
+    "elite_defense_multiplier": 1.25,
+    "elite_drop_multiplier": 2
+  },
+  "gear_scores": [
+    {"item_id": "wood_sword", "slot": "weapon", "score": 8},
+    {"item_id": "stone_sword", "slot": "weapon", "score": 16},
+    {"item_id": "wood_axe", "slot": "axe", "score": 4},
+    {"item_id": "stone_axe", "slot": "axe", "score": 8},
+    {"item_id": "wood_pickaxe", "slot": "pickaxe", "score": 4},
+    {"item_id": "stone_pickaxe", "slot": "pickaxe", "score": 8},
+    {"item_id": "grove_sigil", "slot": "sigil_grove", "score": 4},
+    {"item_id": "dune_sigil", "slot": "sigil_dune", "score": 4},
+    {"item_id": "frost_sigil", "slot": "sigil_frost", "score": 4}
+  ],
+  "progress_sources": [
+    {"id": "region_discovered", "display_name": "发现区域", "points": 2},
+    {"id": "elite_defeated", "display_name": "击败精英", "points": 2},
+    {"id": "quest_claimed", "display_name": "完成任务", "points": 4},
+    {"id": "world_choice", "display_name": "关键世界选择", "points": 6},
+    {"id": "world_event_completed", "display_name": "完成世界事件", "points": 5},
+    {"id": "dungeon_completed", "display_name": "完成地牢", "points": 8},
+    {"id": "regional_boss_defeated", "display_name": "击败区域 Boss", "points": 15}
+  ],
+  "world_levels": [
+    {"level": 1, "display_name": "初抵边境", "minimum_points": 0},
+    {"level": 2, "display_name": "荒野行者", "minimum_points": 12},
+    {"level": 3, "display_name": "边境守望", "minimum_points": 30},
+    {"level": 4, "display_name": "世界开拓者", "minimum_points": 60},
+    {"level": 5, "display_name": "无尽远征", "minimum_points": 100}
+  ],
+  "boss_unlocks": [
+    {"boss_id": "grove_titan", "display_name": "林冠巨像", "required_points": 0},
+    {"boss_id": "dune_behemoth", "display_name": "沙海巨兽", "required_points": 24},
+    {"boss_id": "frost_wyrm", "display_name": "霜穹翼龙", "required_points": 60}
+  ]
+}

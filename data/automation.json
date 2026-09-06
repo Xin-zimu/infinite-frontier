@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "tick_seconds": 5.0,
+  "connection_span_tiles": 12,
+  "max_machines": 128,
+  "max_operations_per_advance": 64,
+  "max_offline_ticks": 720,
+  "machine_definitions": [
+    {"piece_id": "conveyor_belt", "kind": "transport", "display_name": "传送带", "throughput": 1},
+    {"piece_id": "automatic_smelter", "kind": "smelter", "display_name": "自动熔炉", "throughput": 1},
+    {"piece_id": "storage_link", "kind": "storage_link", "display_name": "储物连接器", "throughput": 4},
+    {"piece_id": "item_sorter", "kind": "sorter", "display_name": "物品分拣器", "throughput": 2}
+  ],
+  "automatic_recipe_ids": ["copper_ingot", "iron_ingot", "steel_ingot", "tempered_plate"],
+  "sortable_item_ids": ["coal", "copper_ore", "iron_ore", "copper_ingot", "iron_ingot", "steel_ingot", "tempered_plate", "stone"]
+}

@@ -1,0 +1,196 @@
+; Engine configuration file.
+; Infinite Frontier - Godot 4.7
+
+config_version=5
+
+[application]
+
+config/name="Infinite Frontier"
+config/description="A deterministic, offline, procedurally generated survival exploration RPG."
+run/main_scene="res://scenes/main/main.tscn"
+config/features=PackedStringArray("4.7", "GL Compatibility")
+boot_splash/bg_color=Color(0.027, 0.047, 0.071, 1)
+config/icon="res://assets/branding/icon.svg"
+
+[autoload]
+
+EventBus="*res://scripts/core/event_bus.gd"
+LogManager="*res://scripts/core/log_manager.gd"
+SettingsManager="*res://scripts/core/settings_manager.gd"
+SaveManager="*res://scripts/save/save_manager.gd"
+GameManager="*res://scripts/core/game_manager.gd"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/size/window_width_override=1280
+window/size/window_height_override=720
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+window/stretch/scale_mode="fractional"
+window/handheld/orientation=1
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/default_filters/use_nearest_mipmap_filter=false
+textures/canvas_textures/default_texture_filter=0
+2d/snap/snap_2d_transforms_to_pixel=true
+2d/snap/snap_2d_vertices_to_pixel=true
+environment/defaults/default_clear_color=Color(0.027, 0.047, 0.071, 1)
+
+[input]
+
+move_up={
+"deadzone": 0.25,
+"events": [Object(InputEventKey,"physical_keycode":87), Object(InputEventKey,"physical_keycode":4194320)]
+}
+move_down={
+"deadzone": 0.25,
+"events": [Object(InputEventKey,"physical_keycode":83), Object(InputEventKey,"physical_keycode":4194322)]
+}
+move_left={
+"deadzone": 0.25,
+"events": [Object(InputEventKey,"physical_keycode":65), Object(InputEventKey,"physical_keycode":4194319)]
+}
+move_right={
+"deadzone": 0.25,
+"events": [Object(InputEventKey,"physical_keycode":68), Object(InputEventKey,"physical_keycode":4194321)]
+}
+run={
+"deadzone": 0.25,
+"events": [Object(InputEventKey,"physical_keycode":4194325)]
+}
+roll={
+"deadzone": 0.25,
+"events": [Object(InputEventKey,"physical_keycode":32)]
+}
+pause={
+"deadzone": 0.25,
+"events": [Object(InputEventKey,"physical_keycode":4194305)]
+}
+toggle_noise_view={
+"deadzone": 0.25,
+"events": [Object(InputEventKey,"physical_keycode":78)]
+}
+toggle_chunk_borders={
+"deadzone": 0.25,
+"events": [Object(InputEventKey,"physical_keycode":66)]
+}
+interact={
+"deadzone": 0.25,
+"events": [Object(InputEventKey,"physical_keycode":69)]
+}
+cycle_tool={
+"deadzone": 0.25,
+"events": [Object(InputEventKey,"physical_keycode":81)]
+}
+manual_save={
+"deadzone": 0.25,
+"events": [Object(InputEventKey,"ctrl_pressed":true,"physical_keycode":83)]
+}
+toggle_inventory={
+"deadzone": 0.25,
+"events": [Object(InputEventKey,"physical_keycode":73), Object(InputEventKey,"physical_keycode":4194308)]
+}
+inventory_sort={
+"deadzone": 0.25,
+"events": [Object(InputEventKey,"physical_keycode":82)]
+}
+toggle_crafting={
+"deadzone": 0.25,
+"events": [Object(InputEventKey,"physical_keycode":67)]
+}
+toggle_processing={
+"deadzone": 0.25,
+"events": [Object(InputEventKey,"physical_keycode":84)]
+}
+toggle_equipment={
+"deadzone": 0.25,
+"events": [Object(InputEventKey,"physical_keycode":79)]
+}
+toggle_automation={
+"deadzone": 0.25,
+"events": [Object(InputEventKey,"physical_keycode":89)]
+}
+toggle_homestead={
+"deadzone": 0.25,
+"events": [Object(InputEventKey,"physical_keycode":88)]
+}
+toggle_map={
+"deadzone": 0.25,
+"events": [Object(InputEventKey,"physical_keycode":77)]
+}
+toggle_quests={
+"deadzone": 0.25,
+"events": [Object(InputEventKey,"physical_keycode":76)]
+}
+toggle_factions={
+"deadzone": 0.25,
+"events": [Object(InputEventKey,"physical_keycode":70)]
+}
+toggle_events={
+"deadzone": 0.25,
+"events": [Object(InputEventKey,"physical_keycode":86)]
+}
+toggle_progression={
+"deadzone": 0.25,
+"events": [Object(InputEventKey,"physical_keycode":80)]
+}
+use_food={
+"deadzone": 0.25,
+"events": [Object(InputEventKey,"physical_keycode":71)]
+}
+toggle_building={
+"deadzone": 0.25,
+"events": [Object(InputEventKey,"physical_keycode":75)]
+}
+rotate_building={
+"deadzone": 0.25,
+"events": [Object(InputEventKey,"physical_keycode":82)]
+}
+place_building={
+"deadzone": 0.25,
+"events": [Object(InputEventMouseButton,"button_index":1)]
+}
+demolish_building={
+"deadzone": 0.25,
+"events": [Object(InputEventMouseButton,"button_index":2)]
+}
+toggle_farming={
+"deadzone": 0.25,
+"events": [Object(InputEventKey,"physical_keycode":72)]
+}
+farm_action={
+"deadzone": 0.25,
+"events": [Object(InputEventMouseButton,"button_index":1)]
+}
+farm_secondary={
+"deadzone": 0.25,
+"events": [Object(InputEventMouseButton,"button_index":2)]
+}
+toggle_husbandry={
+"deadzone": 0.25,
+"events": [Object(InputEventKey,"physical_keycode":85)]
+}
+husbandry_action={
+"deadzone": 0.25,
+"events": [Object(InputEventMouseButton,"button_index":1)]
+}
+husbandry_secondary={
+"deadzone": 0.25,
+"events": [Object(InputEventMouseButton,"button_index":2)]
+}
+attack={
+"deadzone": 0.25,
+"events": [Object(InputEventKey,"physical_keycode":74), Object(InputEventMouseButton,"button_index":1)]
+}
+
+[layer_names]
+
+2d_physics/layer_1="World"
+2d_physics/layer_2="Player"
+2d_physics/layer_3="Interactable"
+2d_physics/layer_4="Enemy"

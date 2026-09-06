@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "discovery_radius_chunks": 2,
+  "bosses": [
+    {
+      "id": "grove_titan",
+      "enemy_id": "grove_titan",
+      "display_name": "林冠巨像",
+      "preferred_biomes": ["forest", "meadow"],
+      "minimum_ring_chunks": 7,
+      "maximum_ring_chunks": 11,
+      "marker_color": "67b779"
+    },
+    {
+      "id": "dune_behemoth",
+      "enemy_id": "dune_behemoth",
+      "display_name": "沙海巨兽",
+      "preferred_biomes": ["desert", "savanna"],
+      "minimum_ring_chunks": 12,
+      "maximum_ring_chunks": 17,
+      "marker_color": "d8a85a"
+    },
+    {
+      "id": "frost_wyrm",
+      "enemy_id": "frost_wyrm",
+      "display_name": "霜穹翼龙",
+      "preferred_biomes": ["snowfield", "taiga"],
+      "minimum_ring_chunks": 18,
+      "maximum_ring_chunks": 24,
+      "marker_color": "9bc8e8"
+    }
+  ]
+}

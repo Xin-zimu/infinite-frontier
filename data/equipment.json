@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "slots": [
+    {"id": "weapon", "display_name": "武器"},
+    {"id": "helmet", "display_name": "头盔"},
+    {"id": "chest", "display_name": "胸甲"},
+    {"id": "boots", "display_name": "战靴"},
+    {"id": "accessory_1", "display_name": "饰品一"},
+    {"id": "accessory_2", "display_name": "饰品二"}
+  ],
+  "qualities": [
+    {"id": "worn", "display_name": "粗糙", "multiplier": 0.90, "weight": 15},
+    {"id": "standard", "display_name": "标准", "multiplier": 1.00, "weight": 50},
+    {"id": "fine", "display_name": "精良", "multiplier": 1.12, "weight": 25},
+    {"id": "masterwork", "display_name": "大师", "multiplier": 1.28, "weight": 10}
+  ],
+  "rarities": [
+    {"id": "common", "display_name": "普通", "multiplier": 1.00, "affix_count": 0, "weight": 50, "color": "d5d8d2"},
+    {"id": "uncommon", "display_name": "优秀", "multiplier": 1.05, "affix_count": 1, "weight": 30, "color": "78c878"},
+    {"id": "rare", "display_name": "稀有", "multiplier": 1.12, "affix_count": 2, "weight": 15, "color": "68a9e8"},
+    {"id": "epic", "display_name": "史诗", "multiplier": 1.22, "affix_count": 3, "weight": 5, "color": "bd7be8"}
+  ],
+  "affixes": [
+    {"id": "keen", "display_name": "锋锐", "stat": "attack", "value": 2.0},
+    {"id": "guarded", "display_name": "守御", "stat": "defense", "value": 1.5},
+    {"id": "vital", "display_name": "活力", "stat": "health", "value": 8.0},
+    {"id": "swift", "display_name": "轻捷", "stat": "stamina", "value": 6.0},
+    {"id": "sturdy", "display_name": "坚固", "stat": "durability", "value": 12.0}
+  ],
+  "enhancement": {
+    "maximum_level": 5,
+    "material_item_id": "tempered_plate",
+    "costs": [1, 1, 2, 3, 4],
+    "stat_per_level": 0.08
+  },
+  "repair": {
+    "material_item_id": "iron_ingot",
+    "durability_per_item": 25
+  },
+  "sets": [
+    {
+      "id": "copper_guard",
+      "display_name": "铜卫套装",
+      "bonuses": [
+        {"pieces": 2, "stat": "defense", "value": 2.0},
+        {"pieces": 3, "stat": "attack", "value": 3.0},
+        {"pieces": 3, "stat": "health", "value": 10.0}
+      ]
+    }
+  ],
+  "items": [
+    {"item_id": "wood_sword", "slot_kind": "weapon", "base_attack": 1.0, "base_defense": 0.0, "base_health": 0.0, "base_stamina": 0.0, "set_id": ""},
+    {"item_id": "stone_sword", "slot_kind": "weapon", "base_attack": 2.0, "base_defense": 0.0, "base_health": 0.0, "base_stamina": 0.0, "set_id": ""},
+    {"item_id": "copper_sword", "slot_kind": "weapon", "base_attack": 4.0, "base_defense": 0.0, "base_health": 0.0, "base_stamina": 0.0, "set_id": ""},
+    {"item_id": "iron_sword", "slot_kind": "weapon", "base_attack": 7.0, "base_defense": 0.0, "base_health": 0.0, "base_stamina": 0.0, "set_id": ""},
+    {"item_id": "copper_helmet", "slot_kind": "helmet", "base_attack": 0.0, "base_defense": 2.0, "base_health": 3.0, "base_stamina": 0.0, "set_id": "copper_guard"},
+    {"item_id": "copper_chestplate", "slot_kind": "chest", "base_attack": 0.0, "base_defense": 4.0, "base_health": 8.0, "base_stamina": 0.0, "set_id": "copper_guard"},
+    {"item_id": "copper_boots", "slot_kind": "boots", "base_attack": 0.0, "base_defense": 2.0, "base_health": 0.0, "base_stamina": 6.0, "set_id": "copper_guard"},
+    {"item_id": "explorer_charm", "slot_kind": "accessory", "base_attack": 1.0, "base_defense": 1.0, "base_health": 4.0, "base_stamina": 8.0, "set_id": ""},
+    {"item_id": "frost_ring", "slot_kind": "accessory", "base_attack": 2.0, "base_defense": 1.0, "base_health": 6.0, "base_stamina": 4.0, "set_id": ""}
+  ]
+}

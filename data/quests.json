@@ -1,0 +1,380 @@
+{
+  "schema_version": 2,
+  "maximum_active": 8,
+  "quests": [
+    {
+      "id": "main_frontier_supplies",
+      "category": "main",
+      "display_name": "边境第一批补给",
+      "description": "收集木材，为村庄修补外围栅栏。",
+      "giver_role": "elder",
+      "prerequisite_ids": [],
+      "objectives": [{"id": "wood", "type": "collect", "target_id": "wood", "quantity": 10, "display_name": "持有木材"}],
+      "rewards": [{"item_id": "coin", "quantity": 6}],
+      "can_abandon": false,
+      "retryable": false
+    },
+    {
+      "id": "main_village_roads",
+      "category": "main",
+      "display_name": "找到有人烟的路",
+      "description": "发现一座村庄并记录它的位置。",
+      "giver_role": "elder",
+      "prerequisite_ids": ["main_frontier_supplies"],
+      "objectives": [{"id": "village", "type": "explore", "target_id": "village", "quantity": 1, "display_name": "发现村庄"}],
+      "rewards": [{"item_id": "torch", "quantity": 2}],
+      "can_abandon": false,
+      "retryable": false
+    },
+    {
+      "id": "main_wild_threat",
+      "category": "main",
+      "display_name": "荒野的利齿",
+      "description": "击退在村庄道路附近出没的野狼。",
+      "giver_role": "guard",
+      "prerequisite_ids": ["main_village_roads"],
+      "objectives": [{"id": "wolves", "type": "defeat", "target_id": "wolf", "quantity": 3, "display_name": "击败野狼"}],
+      "rewards": [{"item_id": "coin", "quantity": 10}],
+      "can_abandon": false,
+      "retryable": false
+    },
+    {
+      "id": "main_dungeon_echo",
+      "category": "main",
+      "display_name": "石门后的回声",
+      "description": "在地图上发现一处地牢入口。",
+      "giver_role": "explorer",
+      "prerequisite_ids": ["main_wild_threat"],
+      "objectives": [{"id": "dungeon", "type": "explore", "target_id": "dungeon", "quantity": 1, "display_name": "发现地牢"}],
+      "rewards": [{"item_id": "cooked_berries", "quantity": 3}],
+      "can_abandon": false,
+      "retryable": false
+    },
+    {
+      "id": "main_warden_fall",
+      "category": "main",
+      "display_name": "守卫者陨落",
+      "description": "深入地牢并击败最终守卫。",
+      "giver_role": "guard",
+      "prerequisite_ids": ["main_dungeon_echo"],
+      "objectives": [{"id": "warden", "type": "defeat", "target_id": "dungeon_warden", "quantity": 1, "display_name": "击败地牢守卫"}],
+      "rewards": [{"item_id": "ancient_core", "quantity": 1}, {"item_id": "coin", "quantity": 20}],
+      "can_abandon": false,
+      "retryable": false
+    },
+    {
+      "id": "main_frontier_alliance",
+      "category": "main",
+      "display_name": "边境同盟",
+      "description": "陪同探险家返回村庄并与村长确认远征成果。",
+      "giver_role": "elder",
+      "prerequisite_ids": ["main_warden_fall"],
+      "objectives": [
+        {"id": "escort", "type": "escort", "target_id": "explorer", "quantity": 1, "display_name": "护送探险家到达村庄"},
+        {"id": "report", "type": "escort", "target_id": "elder", "quantity": 1, "display_name": "向村长报告"}
+      ],
+      "rewards": [{"item_id": "coin", "quantity": 30}],
+      "can_abandon": false,
+      "retryable": false
+    },
+    {
+      "id": "main_three_banners",
+      "category": "main",
+      "display_name": "三面旗帜",
+      "description": "召集村盟、行商公会和远路探盟的代表参加边境议会。",
+      "giver_role": "elder",
+      "prerequisite_ids": ["main_frontier_alliance"],
+      "objectives": [
+        {"id": "elder", "type": "escort", "target_id": "elder", "quantity": 1, "display_name": "与村长确认议程"},
+        {"id": "merchant", "type": "escort", "target_id": "merchant", "quantity": 1, "display_name": "邀请行商代表"},
+        {"id": "explorer", "type": "escort", "target_id": "explorer", "quantity": 1, "display_name": "邀请探盟代表"}
+      ],
+      "rewards": [{"item_id": "coin", "quantity": 25}],
+      "can_abandon": false,
+      "retryable": false
+    },
+    {
+      "id": "main_ash_warning",
+      "category": "main",
+      "display_name": "灰烬的警告",
+      "description": "击退窥探议会道路的灰烬斥候。",
+      "giver_role": "guard",
+      "prerequisite_ids": ["main_three_banners"],
+      "objectives": [{"id": "scouts", "type": "defeat", "target_id": "bandit_scout", "quantity": 4, "display_name": "击败灰烬斥候"}],
+      "rewards": [{"item_id": "stone_sword", "quantity": 1}, {"item_id": "coin", "quantity": 18}],
+      "can_abandon": false,
+      "retryable": false
+    },
+    {
+      "id": "main_outer_horizon",
+      "category": "main",
+      "display_name": "地平线之外",
+      "description": "记录一处区域首领地标，为共同远征标定方向。",
+      "giver_role": "explorer",
+      "prerequisite_ids": ["main_ash_warning"],
+      "objectives": [{"id": "boss", "type": "explore", "target_id": "boss", "quantity": 1, "display_name": "发现区域首领地标"}],
+      "rewards": [{"item_id": "torch", "quantity": 5}, {"item_id": "coin", "quantity": 22}],
+      "can_abandon": false,
+      "retryable": false
+    },
+    {
+      "id": "main_frontier_accord",
+      "category": "main",
+      "display_name": "边境协定",
+      "description": "带回远征记录并与村长敲定边境的第一份共同协定。",
+      "giver_role": "elder",
+      "prerequisite_ids": ["main_outer_horizon"],
+      "objectives": [
+        {"id": "explorer", "type": "escort", "target_id": "explorer", "quantity": 1, "display_name": "交付远征记录"},
+        {"id": "elder", "type": "escort", "target_id": "elder", "quantity": 1, "display_name": "签署边境协定"}
+      ],
+      "rewards": [{"item_id": "ancient_core", "quantity": 1}, {"item_id": "coin", "quantity": 40}],
+      "can_abandon": false,
+      "retryable": false
+    },
+    {
+      "id": "side_meadow_colors",
+      "category": "side",
+      "display_name": "花甸的颜色",
+      "description": "为旅店收集三朵野花。",
+      "giver_role": "innkeeper",
+      "prerequisite_ids": [],
+      "objectives": [{"id": "flowers", "type": "collect", "target_id": "wildflower", "quantity": 3, "display_name": "持有野花"}],
+      "rewards": [{"item_id": "coin", "quantity": 5}],
+      "can_abandon": true,
+      "retryable": true
+    },
+    {
+      "id": "side_slime_hunt",
+      "category": "side",
+      "display_name": "清理凝胶踪迹",
+      "description": "清除四只史莱姆。",
+      "giver_role": "guard",
+      "prerequisite_ids": [],
+      "objectives": [{"id": "slimes", "type": "defeat", "target_id": "slime", "quantity": 4, "display_name": "击败史莱姆"}],
+      "rewards": [{"item_id": "coin", "quantity": 7}],
+      "can_abandon": true,
+      "retryable": true
+    },
+    {
+      "id": "side_cave_scout",
+      "category": "side",
+      "display_name": "洞口的冷风",
+      "description": "发现一处洞穴入口。",
+      "giver_role": "explorer",
+      "prerequisite_ids": [],
+      "objectives": [{"id": "cave", "type": "explore", "target_id": "cave", "quantity": 1, "display_name": "发现洞穴"}],
+      "rewards": [{"item_id": "torch", "quantity": 3}],
+      "can_abandon": true,
+      "retryable": true
+    },
+    {
+      "id": "side_trade_route",
+      "category": "side",
+      "display_name": "商路上的照应",
+      "description": "找到杂货商并完成一次安全会合。",
+      "giver_role": "merchant",
+      "prerequisite_ids": [],
+      "objectives": [{"id": "merchant", "type": "escort", "target_id": "merchant", "quantity": 1, "display_name": "与杂货商会合"}],
+      "rewards": [{"item_id": "coin", "quantity": 4}],
+      "can_abandon": true,
+      "retryable": true
+    },
+    {
+      "id": "side_berry_basket",
+      "category": "side",
+      "display_name": "清晨的浆果篮",
+      "description": "替旅店准备一篮新鲜浆果。",
+      "giver_role": "innkeeper",
+      "prerequisite_ids": [],
+      "objectives": [{"id": "berries", "type": "collect", "target_id": "berry", "quantity": 6, "display_name": "持有浆果"}],
+      "rewards": [{"item_id": "coin", "quantity": 6}],
+      "can_abandon": true,
+      "retryable": true
+    },
+    {
+      "id": "side_moonlight_medicine",
+      "category": "side",
+      "display_name": "月光药引",
+      "description": "收集夜间盛开的月光花瓣。",
+      "giver_role": "innkeeper",
+      "prerequisite_ids": [],
+      "objectives": [{"id": "petals", "type": "collect", "target_id": "moonpetal", "quantity": 2, "display_name": "持有月光花瓣"}],
+      "rewards": [{"item_id": "cooked_berries", "quantity": 2}, {"item_id": "coin", "quantity": 8}],
+      "can_abandon": true,
+      "retryable": true
+    },
+    {
+      "id": "side_coal_order",
+      "category": "side",
+      "display_name": "炉边的煤袋",
+      "description": "为村庄火堆补充一批煤。",
+      "giver_role": "merchant",
+      "prerequisite_ids": [],
+      "objectives": [{"id": "coal", "type": "collect", "target_id": "coal", "quantity": 5, "display_name": "持有煤"}],
+      "rewards": [{"item_id": "coin", "quantity": 9}],
+      "can_abandon": true,
+      "retryable": true
+    },
+    {
+      "id": "side_copper_request",
+      "category": "side",
+      "display_name": "铜色信号",
+      "description": "收集铜矿，为探险者制作新的地图标钉。",
+      "giver_role": "explorer",
+      "prerequisite_ids": [],
+      "objectives": [{"id": "copper", "type": "collect", "target_id": "copper_ore", "quantity": 4, "display_name": "持有铜矿"}],
+      "rewards": [{"item_id": "torch", "quantity": 2}, {"item_id": "coin", "quantity": 8}],
+      "can_abandon": true,
+      "retryable": true
+    },
+    {
+      "id": "side_bat_watch",
+      "category": "side",
+      "display_name": "洞顶巡夜",
+      "description": "清理洞穴通道附近成群的蝙蝠。",
+      "giver_role": "guard",
+      "prerequisite_ids": [],
+      "objectives": [{"id": "bats", "type": "defeat", "target_id": "cave_bat", "quantity": 4, "display_name": "击败洞穴蝙蝠"}],
+      "rewards": [{"item_id": "coin", "quantity": 10}],
+      "can_abandon": true,
+      "retryable": true
+    },
+    {
+      "id": "side_boar_control",
+      "category": "side",
+      "display_name": "翻倒的篱笆",
+      "description": "驱赶破坏村庄外围篱笆的野猪。",
+      "giver_role": "farmer",
+      "prerequisite_ids": [],
+      "objectives": [{"id": "boars", "type": "defeat", "target_id": "wild_boar", "quantity": 3, "display_name": "击败野猪"}],
+      "rewards": [{"item_id": "cooked_berries", "quantity": 2}, {"item_id": "coin", "quantity": 7}],
+      "can_abandon": true,
+      "retryable": true
+    },
+    {
+      "id": "side_frost_signal",
+      "category": "side",
+      "display_name": "霜光异动",
+      "description": "调查雪原边缘躁动的霜灵。",
+      "giver_role": "explorer",
+      "prerequisite_ids": [],
+      "objectives": [{"id": "sprites", "type": "defeat", "target_id": "frost_sprite", "quantity": 3, "display_name": "击败霜灵"}],
+      "rewards": [{"item_id": "coin", "quantity": 12}],
+      "can_abandon": true,
+      "retryable": true
+    },
+    {
+      "id": "side_ruin_notes",
+      "category": "side",
+      "display_name": "遗迹拓印",
+      "description": "发现一处地表遗迹并带回位置记录。",
+      "giver_role": "explorer",
+      "prerequisite_ids": [],
+      "objectives": [{"id": "ruin", "type": "explore", "target_id": "ruin", "quantity": 1, "display_name": "发现遗迹"}],
+      "rewards": [{"item_id": "torch", "quantity": 2}, {"item_id": "coin", "quantity": 9}],
+      "can_abandon": true,
+      "retryable": true
+    },
+    {
+      "id": "side_guard_round",
+      "category": "side",
+      "display_name": "换岗口令",
+      "description": "找到当值守卫并确认巡逻口令。",
+      "giver_role": "elder",
+      "prerequisite_ids": [],
+      "objectives": [{"id": "guard", "type": "escort", "target_id": "guard", "quantity": 1, "display_name": "与守卫会合"}],
+      "rewards": [{"item_id": "coin", "quantity": 5}],
+      "can_abandon": true,
+      "retryable": true
+    },
+    {
+      "id": "side_farm_help",
+      "category": "side",
+      "display_name": "田埂上的帮手",
+      "description": "在白天找到农夫，确认村外田地的情况。",
+      "giver_role": "innkeeper",
+      "prerequisite_ids": [],
+      "objectives": [{"id": "farmer", "type": "escort", "target_id": "farmer", "quantity": 1, "display_name": "与农夫会合"}],
+      "rewards": [{"item_id": "berry", "quantity": 3}, {"item_id": "coin", "quantity": 4}],
+      "can_abandon": true,
+      "retryable": true
+    }
+  ],
+  "random_board": {
+    "offers_per_board": 3,
+    "maximum_generated_quests": 96,
+    "rules": [
+      {
+        "id": "gather_supplies", "display_name": "物资征集", "objective_type": "collect",
+        "giver_roles": ["farmer", "merchant"], "quantity_min": 3, "quantity_max": 10,
+        "coin_min": 4, "coin_max": 11,
+        "targets": [
+          {"id": "wood", "display_name": "木材"}, {"id": "stone", "display_name": "石头"},
+          {"id": "fiber", "display_name": "纤维"}, {"id": "wildflower", "display_name": "野花"},
+          {"id": "berry", "display_name": "浆果"}, {"id": "coal", "display_name": "煤"},
+          {"id": "copper_ore", "display_name": "铜矿"}
+        ]
+      },
+      {
+        "id": "frontier_hunt", "display_name": "边境悬赏", "objective_type": "defeat",
+        "giver_roles": ["guard"], "quantity_min": 2, "quantity_max": 5,
+        "coin_min": 7, "coin_max": 15,
+        "targets": [
+          {"id": "slime", "display_name": "史莱姆"}, {"id": "wolf", "display_name": "野狼"},
+          {"id": "cave_bat", "display_name": "洞穴蝙蝠"}, {"id": "wild_boar", "display_name": "野猪"},
+          {"id": "frost_sprite", "display_name": "霜灵"}, {"id": "bandit_scout", "display_name": "灰烬斥候"}
+        ]
+      },
+      {
+        "id": "survey_landmark", "display_name": "地标勘察", "objective_type": "explore",
+        "giver_roles": ["explorer"], "quantity_min": 1, "quantity_max": 1,
+        "coin_min": 8, "coin_max": 16,
+        "targets": [
+          {"id": "village", "display_name": "村庄"}, {"id": "ruin", "display_name": "遗迹"},
+          {"id": "cave", "display_name": "洞穴"}, {"id": "dungeon", "display_name": "地牢"},
+          {"id": "boss", "display_name": "区域首领地标"}
+        ]
+      },
+      {
+        "id": "local_message", "display_name": "口信委托", "objective_type": "escort",
+        "giver_roles": ["elder", "merchant", "innkeeper"], "quantity_min": 1, "quantity_max": 1,
+        "coin_min": 4, "coin_max": 9,
+        "targets": [
+          {"id": "elder", "display_name": "村长"}, {"id": "merchant", "display_name": "杂货商"},
+          {"id": "innkeeper", "display_name": "旅店老板"}, {"id": "farmer", "display_name": "农夫"},
+          {"id": "guard", "display_name": "守卫"}, {"id": "explorer", "display_name": "探险家"}
+        ]
+      }
+    ]
+  },
+  "world_choices": [
+    {
+      "id": "core_destination", "display_name": "远古核心的归处",
+      "description": "决定首枚远古核心由谁保管。", "prerequisite_quest_id": "main_warden_fall",
+      "options": [
+        {"id": "village_vault", "display_name": "交给村盟", "description": "用于加固村庄道路。", "world_progress": 6, "faction_changes": [{"faction_id": "frontier_union", "delta": 8}, {"faction_id": "merchant_guild", "delta": -2}]},
+        {"id": "guild_exchange", "display_name": "交给行商", "description": "换取稳定的补给网络。", "world_progress": 6, "faction_changes": [{"faction_id": "merchant_guild", "delta": 8}, {"faction_id": "pathfinders", "delta": -2}]},
+        {"id": "pathfinder_archive", "display_name": "交给探盟", "description": "封存并研究核心的来历。", "world_progress": 6, "faction_changes": [{"faction_id": "pathfinders", "delta": 8}, {"faction_id": "frontier_union", "delta": -2}]}
+      ]
+    },
+    {
+      "id": "border_priority", "display_name": "议会的第一项决议",
+      "description": "决定三方最先投入资源的方向。", "prerequisite_quest_id": "main_three_banners",
+      "options": [
+        {"id": "protect_roads", "display_name": "守护道路", "description": "优先保护村庄和旅人。", "world_progress": 6, "faction_changes": [{"faction_id": "frontier_union", "delta": 10}, {"faction_id": "merchant_guild", "delta": 2}]},
+        {"id": "secure_trade", "display_name": "保障商路", "description": "优先恢复边境物资流通。", "world_progress": 6, "faction_changes": [{"faction_id": "merchant_guild", "delta": 10}, {"faction_id": "frontier_union", "delta": 2}]},
+        {"id": "map_unknown", "display_name": "勘察未知", "description": "优先绘制危险区域地图。", "world_progress": 6, "faction_changes": [{"faction_id": "pathfinders", "delta": 10}, {"faction_id": "frontier_union", "delta": 2}]}
+      ]
+    },
+    {
+      "id": "frontier_future", "display_name": "边境的未来",
+      "description": "为第一份边境协定定下长期方向。", "prerequisite_quest_id": "main_frontier_accord",
+      "options": [
+        {"id": "three_way_alliance", "display_name": "三方同盟", "description": "让三方共同承担风险和收益。", "world_progress": 6, "faction_changes": [{"faction_id": "frontier_union", "delta": 6}, {"faction_id": "merchant_guild", "delta": 6}, {"faction_id": "pathfinders", "delta": 6}]},
+        {"id": "village_autonomy", "display_name": "村庄自治", "description": "让本地居民掌握最终决定权。", "world_progress": 6, "faction_changes": [{"faction_id": "frontier_union", "delta": 12}, {"faction_id": "merchant_guild", "delta": -3}, {"faction_id": "pathfinders", "delta": -3}]},
+        {"id": "open_horizon", "display_name": "开放远境", "description": "以探索和公开地图为长期目标。", "world_progress": 6, "faction_changes": [{"faction_id": "pathfinders", "delta": 12}, {"faction_id": "merchant_guild", "delta": 3}, {"faction_id": "frontier_union", "delta": -3}]}
+      ]
+    }
+  ]
+}

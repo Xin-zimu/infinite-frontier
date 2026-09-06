@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "active_radius_tiles": 128,
+  "interaction_radius_pixels": 82,
+  "movement_speed_pixels": 54,
+  "roles": [
+    {
+      "id": "elder",
+      "display_name": "村长",
+      "color": "d9bc76",
+      "names": ["岚伯", "青禾", "松岳", "砚秋"],
+      "services": ["dialogue"],
+      "dialogues": {
+        "DAWN": ["晨雾散开前，沿石路走最安全。", "新的一天，边境也会给你新的答案。"],
+        "DAY": ["村庄欢迎守信的旅人。", "地图上的路，都是前人一步步走出来的。"],
+        "DUSK": ["天色将暗，别忘了点亮火把。"],
+        "NIGHT": ["夜里野兽更活跃，旅店还能留一张床。"]
+      },
+      "schedule": [
+        {"from": 0.00, "to": 0.18, "activity": "sleep", "activity_display": "休息", "location": "home"},
+        {"from": 0.18, "to": 0.40, "activity": "greet", "activity_display": "巡视广场", "location": "center"},
+        {"from": 0.40, "to": 0.72, "activity": "work", "activity_display": "处理村务", "location": "well"},
+        {"from": 0.72, "to": 0.86, "activity": "social", "activity_display": "围炉交谈", "location": "campfire"},
+        {"from": 0.86, "to": 1.00, "activity": "sleep", "activity_display": "休息", "location": "home"}
+      ]
+    },
+    {
+      "id": "merchant",
+      "display_name": "杂货商",
+      "color": "d78a4c",
+      "names": ["阿栗", "陶金", "云雀", "榛果"],
+      "services": ["dialogue", "shop"],
+      "dialogues": {
+        "DAWN": ["早市刚开，货物都还齐全。"],
+        "DAY": ["想买补给，还是把材料换成边境币？", "公平交易，才能让路走得更远。"],
+        "DUSK": ["收摊前再看看，火把总不会嫌多。"],
+        "NIGHT": ["商店打烊了，明早再来吧。"]
+      },
+      "offers": [
+        {"item_id": "torch", "quantity": 2, "price": 6},
+        {"item_id": "cooked_berries", "quantity": 1, "price": 5},
+        {"item_id": "wood_axe", "quantity": 1, "price": 14}
+      ],
+      "buys": [
+        {"item_id": "wood", "quantity": 5, "price": 3},
+        {"item_id": "stone", "quantity": 5, "price": 3},
+        {"item_id": "wildflower", "quantity": 2, "price": 4},
+        {"item_id": "wolf_pelt", "quantity": 1, "price": 5}
+      ],
+      "schedule": [
+        {"from": 0.00, "to": 0.18, "activity": "sleep", "activity_display": "休息", "location": "home"},
+        {"from": 0.18, "to": 0.76, "activity": "trade", "activity_display": "经营商店", "location": "shop"},
+        {"from": 0.76, "to": 0.88, "activity": "social", "activity_display": "围炉休息", "location": "campfire"},
+        {"from": 0.88, "to": 1.00, "activity": "sleep", "activity_display": "休息", "location": "home"}
+      ]
+    },
+    {
+      "id": "innkeeper",
+      "display_name": "旅店老板",
+      "color": "b88b67",
+      "names": ["暖枝", "兰婶", "闻溪", "小满"],
+      "services": ["dialogue", "sleep"],
+      "dialogues": {
+        "DAWN": ["睡得好吗？清晨的路最安静。"],
+        "DAY": ["房间一直收拾得很干净。", "累了就休息，醒来会是次日清晨。"],
+        "DUSK": ["夜色快到了，要住下吗？"],
+        "NIGHT": ["还有空床，安心休息吧。"]
+      },
+      "schedule": [
+        {"from": 0.00, "to": 0.14, "activity": "sleep", "activity_display": "休息", "location": "home"},
+        {"from": 0.14, "to": 0.84, "activity": "host", "activity_display": "照看旅店", "location": "home"},
+        {"from": 0.84, "to": 1.00, "activity": "host", "activity_display": "值守夜班", "location": "home"}
+      ]
+    },
+    {
+      "id": "farmer",
+      "display_name": "农夫",
+      "color": "79a85b",
+      "names": ["谷生", "麦穗", "禾青", "春芽"],
+      "services": ["dialogue"],
+      "dialogues": {
+        "DAWN": ["露水正好，庄稼也该醒了。"],
+        "DAY": ["土地会记得每一次耐心照料。"],
+        "DUSK": ["今天的活干完了，该回村了。"],
+        "NIGHT": ["明早还得早起呢。"]
+      },
+      "schedule": [
+        {"from": 0.00, "to": 0.16, "activity": "sleep", "activity_display": "休息", "location": "home"},
+        {"from": 0.16, "to": 0.68, "activity": "work", "activity_display": "照料田地", "location": "outskirts"},
+        {"from": 0.68, "to": 0.86, "activity": "social", "activity_display": "返回村中", "location": "center"},
+        {"from": 0.86, "to": 1.00, "activity": "sleep", "activity_display": "休息", "location": "home"}
+      ]
+    },
+    {
+      "id": "guard",
+      "display_name": "守卫",
+      "color": "708ca8",
+      "names": ["石盾", "远川", "凛风", "赤杉"],
+      "services": ["dialogue"],
+      "dialogues": {
+        "DAWN": ["晨班开始，一切正常。"],
+        "DAY": ["离开道路前，先检查武器和补给。"],
+        "DUSK": ["黄昏最容易放松警惕。"],
+        "NIGHT": ["我守夜，你只管留意更远处的动静。"]
+      },
+      "schedule": [
+        {"from": 0.00, "to": 0.12, "activity": "sleep", "activity_display": "轮班休息", "location": "home"},
+        {"from": 0.12, "to": 0.54, "activity": "patrol", "activity_display": "巡逻", "location": "outskirts"},
+        {"from": 0.54, "to": 0.76, "activity": "watch", "activity_display": "驻守广场", "location": "center"},
+        {"from": 0.76, "to": 1.00, "activity": "patrol", "activity_display": "夜间巡逻", "location": "well"}
+      ]
+    },
+    {
+      "id": "explorer",
+      "display_name": "探险家",
+      "color": "9d79bd",
+      "names": ["逐星", "寻岫", "白帆", "听雷"],
+      "services": ["dialogue"],
+      "dialogues": {
+        "DAWN": ["清晨的地形轮廓最清楚。"],
+        "DAY": ["我在地图上标过不少奇怪的遗迹。"],
+        "DUSK": ["方向感比火把更重要，不过两样都带最好。"],
+        "NIGHT": ["星空能指路，也会把危险照出来。"]
+      },
+      "schedule": [
+        {"from": 0.00, "to": 0.16, "activity": "sleep", "activity_display": "休息", "location": "home"},
+        {"from": 0.16, "to": 0.62, "activity": "survey", "activity_display": "勘察周边", "location": "outskirts"},
+        {"from": 0.62, "to": 0.86, "activity": "map", "activity_display": "整理地图", "location": "center"},
+        {"from": 0.86, "to": 1.00, "activity": "sleep", "activity_display": "休息", "location": "home"}
+      ]
+    }
+  ]
+}

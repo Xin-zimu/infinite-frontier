@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "stations": [
+    {"id": "hands", "display_name": "徒手制作"},
+    {"id": "workbench", "display_name": "工作台", "required_item_id": "workbench"},
+    {"id": "campfire", "display_name": "火堆", "required_item_id": "campfire"}
+  ],
+  "recipes": [
+    {"id": "wood_axe", "display_name": "制作木斧", "station": "hands", "inputs": {"branch": 3, "fiber": 2}, "output": {"item_id": "wood_axe", "quantity": 1}, "unlock_items": ["branch", "fiber"]},
+    {"id": "wood_pickaxe", "display_name": "制作木镐", "station": "hands", "inputs": {"branch": 4, "fiber": 2}, "output": {"item_id": "wood_pickaxe", "quantity": 1}, "unlock_items": ["branch", "fiber"]},
+    {"id": "wood_sword", "display_name": "制作木剑", "station": "hands", "inputs": {"branch": 3, "fiber": 3}, "output": {"item_id": "wood_sword", "quantity": 1}, "unlock_items": ["branch", "fiber"]},
+    {"id": "workbench", "display_name": "制作工作台", "station": "hands", "inputs": {"wood": 8, "fiber": 4}, "output": {"item_id": "workbench", "quantity": 1}, "unlock_items": ["wood", "fiber"]},
+    {"id": "campfire", "display_name": "制作火堆", "station": "hands", "inputs": {"stone": 6, "wood": 3}, "output": {"item_id": "campfire", "quantity": 1}, "unlock_items": ["stone", "wood"]},
+    {"id": "torch", "display_name": "制作火把 ×2", "station": "hands", "inputs": {"wood": 1, "fiber": 1}, "output": {"item_id": "torch", "quantity": 2}, "unlock_items": ["wood", "fiber"]},
+    {"id": "stone_axe", "display_name": "制作石斧", "station": "workbench", "inputs": {"branch": 2, "stone": 4, "fiber": 2}, "output": {"item_id": "stone_axe", "quantity": 1}, "unlock_items": ["stone"]},
+    {"id": "stone_pickaxe", "display_name": "制作石镐", "station": "workbench", "inputs": {"branch": 3, "stone": 4, "fiber": 2}, "output": {"item_id": "stone_pickaxe", "quantity": 1}, "unlock_items": ["stone"]},
+    {"id": "stone_sword", "display_name": "制作石剑", "station": "workbench", "inputs": {"branch": 2, "stone": 5, "fiber": 2}, "output": {"item_id": "stone_sword", "quantity": 1}, "unlock_items": ["stone"]},
+    {"id": "cooked_berries", "display_name": "烤制熟浆果", "station": "campfire", "inputs": {"berry": 3}, "output": {"item_id": "cooked_berries", "quantity": 1}, "unlock_items": ["berry"]},
+    {"id": "wheat_seed", "display_name": "筛选麦种 ×2", "station": "hands", "inputs": {"fiber": 1}, "output": {"item_id": "wheat_seed", "quantity": 2}, "unlock_items": ["fiber"]},
+    {"id": "carrot_seed", "display_name": "筛选胡萝卜种 ×2", "station": "hands", "inputs": {"wildflower": 1}, "output": {"item_id": "carrot_seed", "quantity": 2}, "unlock_items": ["wildflower"]},
+    {"id": "tomato_seed", "display_name": "筛选番茄种", "station": "hands", "inputs": {"berry": 2}, "output": {"item_id": "tomato_seed", "quantity": 1}, "unlock_items": ["berry"]},
+    {"id": "apple_sapling", "display_name": "培育苹果树苗", "station": "workbench", "inputs": {"wood": 3, "berry": 2}, "output": {"item_id": "apple_sapling", "quantity": 1}, "unlock_items": ["wood", "berry"]},
+    {"id": "basic_fertilizer", "display_name": "混合基础肥料 ×2", "station": "hands", "inputs": {"fiber": 2, "slime_gel": 1}, "output": {"item_id": "basic_fertilizer", "quantity": 2}, "unlock_items": ["fiber", "slime_gel"]},
+    {"id": "smelter", "display_name": "砌筑冶炼炉", "station": "workbench", "inputs": {"stone": 10, "iron_ore": 4}, "output": {"item_id": "smelter", "quantity": 1}, "unlock_items": ["stone", "iron_ore"]},
+    {"id": "cooking_pot", "display_name": "打造烹饪锅", "station": "workbench", "inputs": {"stone": 6, "copper_ingot": 2}, "output": {"item_id": "cooking_pot", "quantity": 1}, "unlock_items": ["stone", "copper_ingot"]},
+    {"id": "copper_sword", "display_name": "锻造铜剑", "station": "workbench", "inputs": {"copper_ingot": 5, "wood": 2}, "output": {"item_id": "copper_sword", "quantity": 1}, "unlock_items": ["copper_ingot"]},
+    {"id": "iron_sword", "display_name": "锻造铁剑", "station": "workbench", "inputs": {"iron_ingot": 6, "tempered_plate": 1}, "output": {"item_id": "iron_sword", "quantity": 1}, "unlock_items": ["iron_ingot", "tempered_plate"]},
+    {"id": "copper_helmet", "display_name": "锻造铜盔", "station": "workbench", "inputs": {"copper_ingot": 4, "wool": 1}, "output": {"item_id": "copper_helmet", "quantity": 1}, "unlock_items": ["copper_ingot", "wool"]},
+    {"id": "copper_chestplate", "display_name": "锻造铜胸甲", "station": "workbench", "inputs": {"copper_ingot": 8, "tempered_plate": 1}, "output": {"item_id": "copper_chestplate", "quantity": 1}, "unlock_items": ["copper_ingot", "tempered_plate"]},
+    {"id": "copper_boots", "display_name": "锻造铜战靴", "station": "workbench", "inputs": {"copper_ingot": 5, "wolf_pelt": 1}, "output": {"item_id": "copper_boots", "quantity": 1}, "unlock_items": ["copper_ingot", "wolf_pelt"]},
+    {"id": "explorer_charm", "display_name": "编制远行护符", "station": "workbench", "inputs": {"fiber": 4, "grove_sigil": 1}, "output": {"item_id": "explorer_charm", "quantity": 1}, "unlock_items": ["fiber", "grove_sigil"]},
+    {"id": "frost_ring", "display_name": "铸造霜纹戒指", "station": "workbench", "inputs": {"steel_ingot": 2, "frost_sigil": 1}, "output": {"item_id": "frost_ring", "quantity": 1}, "unlock_items": ["steel_ingot", "frost_sigil"]},
+    {"id": "conveyor_belt", "display_name": "组装传送带", "station": "workbench", "inputs": {"steel_ingot": 1, "copper_ingot": 1, "wood": 2}, "output": {"item_id": "conveyor_belt", "quantity": 1}, "unlock_items": ["steel_ingot", "copper_ingot"]},
+    {"id": "automatic_smelter", "display_name": "组装自动熔炉", "station": "workbench", "inputs": {"smelter": 1, "tempered_plate": 2, "steel_ingot": 4}, "output": {"item_id": "automatic_smelter", "quantity": 1}, "unlock_items": ["smelter", "tempered_plate", "steel_ingot"]},
+    {"id": "storage_link", "display_name": "组装储物连接器", "station": "workbench", "inputs": {"copper_ingot": 2, "wood": 2}, "output": {"item_id": "storage_link", "quantity": 1}, "unlock_items": ["copper_ingot", "wood"]},
+    {"id": "item_sorter", "display_name": "组装物品分拣器", "station": "workbench", "inputs": {"tempered_plate": 1, "copper_ingot": 2}, "output": {"item_id": "item_sorter", "quantity": 1}, "unlock_items": ["tempered_plate", "copper_ingot"]}
+  ]
+}

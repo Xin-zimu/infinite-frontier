@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "max_interacted_animals": 256,
+  "interaction_range_tiles": 6,
+  "breeding_range_tiles": 4,
+  "fence_radius_tiles": 4,
+  "feed_reserve_days": 2,
+  "max_ready_products": 8,
+  "wild_cell_size": 16,
+  "wild_spawn_percent": 75,
+  "sleep_phases": ["NIGHT"],
+  "animals": [
+    {
+      "id": "chicken",
+      "display_name": "鸡",
+      "feed_item_id": "wheat_seed",
+      "tame_feed_count": 2,
+      "breed_friendship": 3,
+      "adult_days": 2,
+      "breeding_cooldown_days": 3,
+      "product_item_id": "egg",
+      "product_quantity": 1,
+      "product_interval_days": 1,
+      "color": "e8d19b",
+      "biomes": ["plains", "forest", "meadow", "savanna"]
+    },
+    {
+      "id": "cow",
+      "display_name": "牛",
+      "feed_item_id": "carrot",
+      "tame_feed_count": 3,
+      "breed_friendship": 4,
+      "adult_days": 4,
+      "breeding_cooldown_days": 5,
+      "product_item_id": "milk",
+      "product_quantity": 1,
+      "product_interval_days": 2,
+      "color": "b8a58f",
+      "biomes": ["plains", "meadow", "savanna"]
+    },
+    {
+      "id": "sheep",
+      "display_name": "羊",
+      "feed_item_id": "wheat",
+      "tame_feed_count": 2,
+      "breed_friendship": 3,
+      "adult_days": 3,
+      "breeding_cooldown_days": 4,
+      "product_item_id": "wool",
+      "product_quantity": 1,
+      "product_interval_days": 2,
+      "color": "d8ded8",
+      "biomes": ["plains", "meadow", "taiga", "snowfield"]
+    }
+  ]
+}
