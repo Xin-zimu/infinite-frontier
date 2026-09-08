@@ -40,6 +40,42 @@
 
 另外：第 7 轮测试结果已过时（启动早于最新修复），忽略；`D:\CodexProjects\IF-baseline` 是对照基线用的 git worktree，事后需清理。
 
+## 2026-09-08 续作（华为云 CodeArts 沙箱）
+
+在 Linux/aarch64 沙箱内安装 Godot 4.7.2 headless + ripgrep，跑通完整测试门，定位并修复了真正的剩余缺陷。
+
+### 实际状态复核
+
+四个卡点中三个在上一轮已修复但文档未同步，仅卡点 3 是真缺陷：
+
+- **卡点 1（村庄道路）**：`_add_village_layout` 两阶段布局 + `_detour_path` BFS 绕行已生效，测试门全绿确认连通。
+- **卡点 2（水域结构）**：`plan_water_region` 8 候选锚点 + 逐格水域校验已生效，`water_structures >= 1` 断言通过。
+- **卡点 4（运行时夹具）**：`_test_ocean_runtime` 的 ±6 格扫描在当前种子下能找到水，测试通过。
+- **卡点 3（溺水效果过期）**：**真缺陷，本轮修复**。详见下节。
+
+### 卡点 3 根因与修复
+
+**根因**：溺水效果 `duration_seconds = 4.0`，而测试 `update(30.0, ...)` 单步 30 秒。`_tick_effects` 在同一次 update 内把刚应用的溺水效果 tick 到 `remaining_seconds = 4 - 30 < 0` 并 erase，导致 `has_effect("drowning")` 在 update 返回前已变 false。饥饿效果同理，但 starvation duration=5s 而测试只 update(4.1s) 故侥幸通过。
+
+**修复**（`scripts/survival/survival_state.gd`）：溺水与饥饿是**条件持续型效果**——只要触发条件仍成立（在深水且氧气为 0 / 饥饿值为 0），即便单次长 update 把效果 tick 到过期，也必须在 `_tick_effects` 之后立即重新应用。新增两行收尾检查：
+
+```gdscript
+if in_deep_water and oxygen <= _catalog.range_value(&"oxygen_min") + 0.001 and not _effects.has("drowning"):
+    apply_effect(&"drowning")
+    new_effects.append("drowning")
+if hunger <= _catalog.range_value(&"hunger_min") + 0.001 and not _effects.has("starvation"):
+    apply_effect(&"starvation")
+    new_effects.append("starvation")
+```
+
+这同时让"玩家持续泡在深水里"的真实运行时（每帧 delta 远小于 duration）和测试里的大步进 update 都能稳定保持溺水状态。
+
+### 测试门结果
+
+`tools/run_tests.sh` 四阶段全绿：import / tests / smoke / game-smoke。
+- **6475 项 PASS，0 项 FAIL**
+- 无 SCRIPT ERROR、无崩溃、无节点泄漏
+
 ## 下一步
 
-跑探针定位村庄入口围死原因并修复 → 确认水域结构生成 → 修两个测试夹具 → 重跑测试门至全绿 → 提交 V4.1.0 → 进入 V4.2.0（季节系统）。
+V4.1.0 测试门已全绿，提交后进入 **V4.2.0（季节系统）**。

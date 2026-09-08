@@ -112,6 +112,14 @@ func update(delta: float, environment: Dictionary, enabled := true) -> Dictionar
 		elif float((_effects["starvation"] as Dictionary).get("remaining_seconds", 0.0)) <= 1.0:
 			apply_effect(&"starvation")
 	var effect_result := _tick_effects(elapsed)
+	# 溺水与饥饿是条件持续型效果：只要触发条件仍然成立，即便单次长 update
+	# 把效果 tick 到过期，也必须立即重新应用，避免"在水里却没溺水"的不一致。
+	if in_deep_water and oxygen <= _catalog.range_value(&"oxygen_min") + 0.001 and not _effects.has("drowning"):
+		apply_effect(&"drowning")
+		new_effects.append("drowning")
+	if hunger <= _catalog.range_value(&"hunger_min") + 0.001 and not _effects.has("starvation"):
+		apply_effect(&"starvation")
+		new_effects.append("starvation")
 	return {
 		"changed": before != persistence_snapshot(),
 		"damage": float(effect_result["damage"]),

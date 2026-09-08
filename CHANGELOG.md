@@ -23,6 +23,10 @@ All notable changes are recorded here. Version numbers follow the staged project
 - The interact chain handles boats on the surface layer before buildings, NPCs, ruins, graves and resource harvest.
 - The survival HUD exposes a third oxygen bar row.
 
+### Fixed
+
+- Drowning and starvation are now condition-persistent effects: when the trigger condition still holds (in deep water with zero oxygen, or zero hunger), a single long `update` call no longer lets `_tick_effects` expire and erase the effect within the same frame. This keeps `has_effect("drowning")` stable across both real per-frame deltas and large test step deltas.
+
 ## [4.0.0] - 2026-08-11
 
 ### Added
