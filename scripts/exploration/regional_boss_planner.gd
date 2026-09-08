@@ -71,6 +71,7 @@ func _find_candidate(definition: Dictionary, require_preferred: bool) -> Diction
 	var minimum := int(definition["minimum_ring_chunks"])
 	var maximum := int(definition["maximum_ring_chunks"])
 	var preferred := definition["preferred_biomes"] as Array
+	var aquatic := bool(definition.get("aquatic", false))
 	for ring in range(minimum, maximum + 1):
 		for offset_y in range(-ring, ring + 1):
 			for offset_x in range(-ring, ring + 1):
@@ -80,7 +81,12 @@ func _find_candidate(definition: Dictionary, require_preferred: bool) -> Diction
 				var stable := WorldSeed.from_text("%d|regional-boss|%s|%d|%d|generation:%d" % [_world_seed, definition["id"], chunk.x, chunk.y, GameVersion.GENERATION_VERSION])
 				var local := Vector2i(5 + posmod(int(stable >> 8), 22), 5 + posmod(int(stable >> 32), 22))
 				var world_tile := WorldCoordinates.chunk_local_to_tile(chunk, local)
-				if _terrain.terrain_at(world_tile) != ChunkData.Terrain.LAND or _terrain.water_feature_at(world_tile) != HydrologyGenerator.Feature.NONE:
+				var terrain := _terrain.terrain_at(world_tile)
+				if aquatic:
+					# 水生 Boss 只锚定在开阔水域地块上。
+					if terrain != ChunkData.Terrain.SHALLOW_WATER and terrain != ChunkData.Terrain.DEEP_WATER:
+						continue
+				elif terrain != ChunkData.Terrain.LAND or _terrain.water_feature_at(world_tile) != HydrologyGenerator.Feature.NONE:
 					continue
 				var biome_id := _biomes.id_for_code(_terrain.biome_at(world_tile))
 				if require_preferred and not preferred.has(String(biome_id)):

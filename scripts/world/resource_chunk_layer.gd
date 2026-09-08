@@ -145,6 +145,24 @@ static func _paint_resource(image: Image, code: int, hit: bool, base_color: Colo
 			_fill_rect(image, origin + Vector2i(10, 10), Vector2i(13, 13), base_color.lightened(0.08))
 			for berry in [Vector2i(11, 15), Vector2i(20, 14), Vector2i(15, 20), Vector2i(23, 21)]:
 				_fill_rect(image, origin + berry, Vector2i(3, 3), Color("c94f69") if not hit else Color("ffd6df"))
+		8:
+			_draw_line(image, origin + Vector2i(14, 30), origin + Vector2i(11, 8), base_color)
+			_draw_line(image, origin + Vector2i(19, 30), origin + Vector2i(21, 12), base_color.darkened(0.10))
+			_fill_rect(image, origin + Vector2i(11, 8), Vector2i(4, 4), base_color.lightened(0.15))
+		9:
+			_fill_rect(image, origin + Vector2i(9, 20), Vector2i(14, 8), base_color.darkened(0.15))
+			_fill_rect(image, origin + Vector2i(12, 15), Vector2i(8, 8), base_color)
+			_fill_rect(image, origin + Vector2i(15, 17), Vector2i(2, 4), base_color.darkened(0.25))
+			_fill_rect(image, origin + Vector2i(21, 24), Vector2i(6, 4), base_color.lightened(0.10))
+		10:
+			_draw_line(image, origin + Vector2i(15, 29), origin + Vector2i(15, 12), base_color.darkened(0.15))
+			_draw_line(image, origin + Vector2i(15, 18), origin + Vector2i(8, 10), base_color)
+			_draw_line(image, origin + Vector2i(15, 15), origin + Vector2i(22, 9), base_color)
+			_fill_rect(image, origin + Vector2i(13, 8), Vector2i(5, 5), base_color.lightened(0.2))
+		11:
+			_fill_rect(image, origin + Vector2i(6, 16), Vector2i(20, 7), base_color)
+			_fill_rect(image, origin + Vector2i(6, 16), Vector2i(20, 2), base_color.lightened(0.18))
+			_fill_rect(image, origin + Vector2i(24, 15), Vector2i(4, 9), base_color.darkened(0.2))
 		_:
 			_fill_rect(image, origin + Vector2i(6, 8), Vector2i(20, 18), Color("353942"))
 			_fill_rect(image, origin + Vector2i(9, 11), Vector2i(14, 12), base_color.darkened(0.08))

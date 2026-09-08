@@ -2,6 +2,27 @@
 
 All notable changes are recorded here. Version numbers follow the staged project plan.
 
+## [4.1.0] - 2026-09-06
+
+### Added
+
+- A validated ocean catalog with bounded shallow/deep swimming multipliers, swim stamina drain and the rowboat speed, deployment cap and range.
+- Full swimming on base-terrain water: shallow and deep water apply data-driven movement multipliers and extra stamina drain, deep water drains a new oxygen attribute, zero oxygen applies the data-driven drowning effect, and surfacing clears it while oxygen recovers.
+- Survival-state schema 2 with the oxygen attribute, drowning effect and oxygen HUD bar; older survival documents migrate with neutral full oxygen.
+- A craftable rowboat: deployment consumes the item onto the facing water tile, a second interaction boards it, sailing uses the boat speed without oxygen drain, reaching dry land moors the boat at its last water tile automatically and facing-land interactions disembark deliberately.
+- Boat persistence as tile-qualified `surface:<x>:<y>` records inside their owning surface chunk difference (save format 26), with a 16-boat global cap, no duplication and no fabricated boats in migrations.
+- The data-driven palm island biome classified from a dedicated island-mask noise plus genuine low-elevation islets, keeping terrain bytes, checksums semantics and building legality unchanged.
+- Four ocean resources (kelp, clam cluster, coral, driftwood log) generated on a dedicated stable water-channel hash that never changes land resource results.
+- Two aquatic enemies (reef fin, abyss maw) that spawn only on allowed water tiles and never overlap ocean resources; land candidates reject aquatic enemies.
+- Shipwreck and sea ruin water structures with chest and enemy-spawn markers, validated cell-by-cell to rest entirely on water.
+- The fourth regional boss Tide Sovereign anchored only in open water, unlocked at 90 world progress, with the tide sigil extending the equipment score to 48.
+
+### Changed
+
+- Game version advances to 4.1.0, save format to 26 and generation format to 6 with explicit migrations for formats 25 and earlier.
+- The interact chain handles boats on the surface layer before buildings, NPCs, ruins, graves and resource harvest.
+- The survival HUD exposes a third oxygen bar row.
+
 ## [4.0.0] - 2026-08-11
 
 ### Added

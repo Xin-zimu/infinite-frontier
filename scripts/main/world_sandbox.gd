@@ -41,6 +41,9 @@ var _day_night_overlay: DayNightOverlay
 var _weather_system: WeatherSystem
 var _weather_overlay: WeatherOverlay
 var _terrain_generator: TerrainGenerator
+var _ocean_catalog := OceanCatalog.new()
+var _player_in_deep_water := false
+var _player_in_terrain_water := false
 
 
 func _ready() -> void:
@@ -64,6 +67,8 @@ func _process(delta: float) -> void:
 			HydrologyGenerator.Feature.NONE if _stream_manager != null and _stream_manager.world_layer() != &"surface" \
 			else _terrain_generator.water_feature_at(WorldCoordinates.world_pixel_to_tile(_player.global_position))
 		)
+		if _stream_manager != null:
+			_apply_ocean_state(WorldCoordinates.world_pixel_to_tile(_player.global_position))
 	if _day_night_cycle != null:
 		var time_state := _day_night_cycle.advance(delta)
 		_latest_time_state = time_state
@@ -682,6 +687,30 @@ func _update_husbandry_target() -> void:
 	)
 
 
+func _apply_ocean_state(player_tile: Vector2i) -> void:
+	if _stream_manager.world_layer() != &"surface":
+		_player_in_deep_water = false
+		_player_in_terrain_water = false
+		_player.set_ocean_state(1.0, false, 0.0)
+		return
+	var terrain := _terrain_generator.terrain_at(player_tile)
+	var deep := terrain == ChunkData.Terrain.DEEP_WATER
+	var shallow := terrain == ChunkData.Terrain.SHALLOW_WATER
+	_player_in_terrain_water = deep or shallow
+	if not _stream_manager.boarded_boat_id().is_empty():
+		# 登船期间由船只承载：船速航行，且深水不消耗氧气。
+		_player_in_deep_water = false
+		_player.set_ocean_state(_stream_manager.boarded_boat_speed(), false, 0.0)
+		return
+	_player_in_deep_water = deep
+	if deep:
+		_player.set_ocean_state(_ocean_catalog.deep_water_multiplier(), true, _ocean_catalog.swim_stamina_drain())
+	elif shallow:
+		_player.set_ocean_state(_ocean_catalog.shallow_water_multiplier(), true, _ocean_catalog.swim_stamina_drain())
+	else:
+		_player.set_ocean_state(1.0, false, 0.0)
+
+
 func _update_survival(delta: float) -> void:
 	if _survival_state == null or _player == null or _stream_manager == null:
 		return
@@ -691,7 +720,8 @@ func _update_survival(delta: float) -> void:
 		"biome_id": String(_stream_manager.current_biome_id()),
 		"weather_id": String(_latest_weather_state.get("weather_id", "CLEAR")),
 		"phase": String(_latest_time_state.get("phase", "DAY")),
-		"in_water": HydrologyGenerator.is_water(_player.surface_feature),
+		"in_water": HydrologyGenerator.is_water(_player.surface_feature) or _player_in_terrain_water,
+		"in_deep_water": _player_in_deep_water,
 		"near_heat": _stream_manager.selected_item_id() == &"torch" \
 				or _stream_manager.is_near_cave_torch() \
 				or _stream_manager.is_near_player_heat_source(),

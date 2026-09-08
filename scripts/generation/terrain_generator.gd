@@ -10,6 +10,7 @@ var _erosion_noise := FastNoiseLite.new()
 var _temperature_noise := FastNoiseLite.new()
 var _moisture_noise := FastNoiseLite.new()
 var _detail_noise := FastNoiseLite.new()
+var _island_noise := FastNoiseLite.new()
 var _hydrology: HydrologyGenerator
 
 
@@ -24,6 +25,7 @@ func _init(world_seed: int, biome_config_path := BiomeCatalog.DEFAULT_CONFIG_PAT
 	_configure_noise(_temperature_noise, &"temperature", 0.0032, 3)
 	_configure_noise(_moisture_noise, &"moisture", 0.0042, 3)
 	_configure_noise(_detail_noise, &"detail", 0.0550, 2)
+	_configure_noise(_island_noise, &"island_mask", 0.0080, 3)
 
 
 func generate_chunk(chunk_position: Vector2i, world_layer: StringName = &"surface") -> ChunkData:
@@ -93,6 +95,10 @@ func continental_at(world_tile: Vector2i) -> float:
 
 func erosion_at(world_tile: Vector2i) -> float:
 	return _normalized_noise(_erosion_noise, world_tile)
+
+
+func island_mask_at(world_tile: Vector2i) -> float:
+	return _normalized_noise(_island_noise, world_tile)
 
 
 func elevation_at(world_tile: Vector2i) -> float:
@@ -184,25 +190,41 @@ func _terrain_with_cleanup(world_tile: Vector2i, elevation: float) -> ChunkData.
 func _biome_with_cleanup(world_tile: Vector2i, terrain: ChunkData.Terrain, temperature: float, moisture: float, elevation: float, erosion: float) -> int:
 	if terrain != ChunkData.Terrain.LAND:
 		return _catalog.code_for_surface(_surface_for_terrain(terrain))
-	var center_biome := _catalog.classify_land(temperature, moisture, elevation, erosion)
-	var counts := PackedInt32Array()
-	counts.resize(_catalog.biome_count())
-	counts[center_biome] += 1
+	var neighbor_tiles: Array[Vector2i] = []
+	var neighbor_elevations: Array[float] = []
+	var land_neighbors := 0
 	for offset_y in range(-1, 2):
 		for offset_x in range(-1, 2):
 			if offset_x == 0 and offset_y == 0:
 				continue
 			var neighbor_tile := world_tile + Vector2i(offset_x, offset_y)
 			var neighbor_elevation := elevation_at(neighbor_tile)
-			if _classify_terrain(neighbor_elevation) != ChunkData.Terrain.LAND:
-				continue
-			var neighbor_biome := _catalog.classify_land(
-				temperature_at(neighbor_tile, neighbor_elevation),
-				moisture_at(neighbor_tile, continental_at(neighbor_tile)),
-				neighbor_elevation,
-				erosion_at(neighbor_tile)
-			)
-			counts[neighbor_biome] += 1
+			neighbor_tiles.append(neighbor_tile)
+			neighbor_elevations.append(neighbor_elevation)
+			if _classify_terrain(neighbor_elevation) == ChunkData.Terrain.LAND:
+				land_neighbors += 1
+	# 岛屿信号 = 群系掩码噪声；真实的低海拔小岛（陆邻不超过 2）始终按岛屿群系处理。
+	var coast := _catalog.threshold("coast")
+	var center_signal := island_mask_at(world_tile)
+	if elevation >= coast and elevation <= coast + 0.14 and land_neighbors <= 2:
+		center_signal = maxf(center_signal, 1.0)
+	var counts := PackedInt32Array()
+	counts.resize(_catalog.biome_count())
+	var center_biome := _catalog.classify_land(temperature, moisture, elevation, erosion, center_signal)
+	counts[center_biome] += 1
+	for index in neighbor_tiles.size():
+		var neighbor_elevation := neighbor_elevations[index]
+		if _classify_terrain(neighbor_elevation) != ChunkData.Terrain.LAND:
+			continue
+		var neighbor_tile := neighbor_tiles[index]
+		var neighbor_biome := _catalog.classify_land(
+			temperature_at(neighbor_tile, neighbor_elevation),
+			moisture_at(neighbor_tile, continental_at(neighbor_tile)),
+			neighbor_elevation,
+			erosion_at(neighbor_tile),
+			island_mask_at(neighbor_tile)
+		)
+		counts[neighbor_biome] += 1
 	var majority_biome := center_biome
 	var majority_count := counts[center_biome]
 	for biome_code in counts.size():

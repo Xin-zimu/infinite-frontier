@@ -41,6 +41,17 @@ func generate_for_chunk(chunk_position: Vector2i, terrain: TerrainGenerator) -> 
 
 
 func plan_region(region: Vector2i, terrain: TerrainGenerator) -> Dictionary:
+	var result := plan_land_region(region, terrain)
+	var water_plan := plan_water_region(region, terrain)
+	if not water_plan.is_empty():
+		if result.is_empty():
+			result = water_plan
+		else:
+			(result["cells"] as Array).append_array(water_plan["cells"] as Array)
+	return result
+
+
+func plan_land_region(region: Vector2i, terrain: TerrainGenerator) -> Dictionary:
 	var seed := WorldSeed.for_chunk(_world_seed, &"surface", region, &"structure_region")
 	var chance_roll := float(posmod(seed, 10000)) / 10000.0
 	if chance_roll >= _catalog.spawn_chance():
@@ -62,6 +73,46 @@ func plan_region(region: Vector2i, terrain: TerrainGenerator) -> Dictionary:
 		if terrain.terrain_at(probe) != ChunkData.Terrain.LAND or terrain.water_feature_at(probe) != HydrologyGenerator.Feature.NONE:
 			return {}
 	return preview
+
+
+func plan_water_region(region: Vector2i, terrain: TerrainGenerator) -> Dictionary:
+	var seed := WorldSeed.for_chunk(_world_seed, &"surface", region, &"structure_region_water")
+	var chance_roll := float(posmod(seed, 10000)) / 10000.0
+	if chance_roll >= _catalog.water_spawn_chance():
+		return {}
+	var definition := _catalog.choose_water(int(seed >> 16))
+	if definition.is_empty():
+		return {}
+	var region_size := _catalog.region_size_tiles()
+	var region_origin := region * region_size
+	var rotation := posmod(int(seed >> 8), 4)
+	var mirrored := (seed & 1) == 1
+	# 水域只占区域的一部分：从区域种子派生多个候选锚点，取第一个完全落水的实例，
+	# 使含足够水域的区域总能稳定产出沉船或海上遗迹。
+	for candidate_index in 8:
+		var anchor_salt := 24 + candidate_index * 13
+		var anchor := region_origin + Vector2i(
+			16 + posmod(int(seed >> anchor_salt), region_size - 48),
+			16 + posmod(int(seed >> (anchor_salt + 7)), region_size - 48)
+		)
+		var preview := preview_instance(definition, anchor, (rotation + candidate_index) % 4, mirrored != (candidate_index % 2 == 1), region)
+		var bounds := preview["bounds"] as Rect2i
+		var fits := true
+		for probe in [bounds.position, bounds.end - Vector2i.ONE, bounds.get_center()]:
+			var probe_terrain := terrain.terrain_at(probe)
+			if probe_terrain != ChunkData.Terrain.SHALLOW_WATER and probe_terrain != ChunkData.Terrain.DEEP_WATER:
+				fits = false
+				break
+		if fits:
+			# 沉船与海上遗迹逐格校验，避免结构一半沉在水里一半悬在陆地上。
+			for cell in preview["cells"] as Array:
+				var cell_terrain := terrain.terrain_at(cell["world_tile"] as Vector2i)
+				if cell_terrain != ChunkData.Terrain.SHALLOW_WATER and cell_terrain != ChunkData.Terrain.DEEP_WATER:
+					fits = false
+					break
+		if fits:
+			return preview
+	return {}
 
 
 func preview_instance(definition: Dictionary, anchor: Vector2i, rotation: int, mirrored: bool, region := Vector2i.ZERO) -> Dictionary:

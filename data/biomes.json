@@ -178,6 +178,21 @@
         "moisture_max": 0.525,
         "elevation_max": 0.620
       }
+    },
+    {
+      "id": "island",
+      "code": 12,
+      "display_name": "棕榈岛",
+      "surface": "land",
+      "color": "d8c56f",
+      "debug_color": "ecd88a",
+      "priority": 85,
+      "transition_to": "coast",
+      "transition_band": 0.030,
+      "conditions": {
+        "elevation_max": 0.540,
+        "island_mask_min": 0.600
+      }
     }
   ]
 }

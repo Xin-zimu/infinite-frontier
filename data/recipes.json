@@ -33,6 +33,8 @@
     {"id": "conveyor_belt", "display_name": "组装传送带", "station": "workbench", "inputs": {"steel_ingot": 1, "copper_ingot": 1, "wood": 2}, "output": {"item_id": "conveyor_belt", "quantity": 1}, "unlock_items": ["steel_ingot", "copper_ingot"]},
     {"id": "automatic_smelter", "display_name": "组装自动熔炉", "station": "workbench", "inputs": {"smelter": 1, "tempered_plate": 2, "steel_ingot": 4}, "output": {"item_id": "automatic_smelter", "quantity": 1}, "unlock_items": ["smelter", "tempered_plate", "steel_ingot"]},
     {"id": "storage_link", "display_name": "组装储物连接器", "station": "workbench", "inputs": {"copper_ingot": 2, "wood": 2}, "output": {"item_id": "storage_link", "quantity": 1}, "unlock_items": ["copper_ingot", "wood"]},
-    {"id": "item_sorter", "display_name": "组装物品分拣器", "station": "workbench", "inputs": {"tempered_plate": 1, "copper_ingot": 2}, "output": {"item_id": "item_sorter", "quantity": 1}, "unlock_items": ["tempered_plate", "copper_ingot"]}
+    {"id": "item_sorter", "display_name": "组装物品分拣器", "station": "workbench", "inputs": {"tempered_plate": 1, "copper_ingot": 2}, "output": {"item_id": "item_sorter", "quantity": 1}, "unlock_items": ["tempered_plate", "copper_ingot"]},
+    {"id": "cooked_fish", "display_name": "烤鱼", "station": "campfire", "inputs": {"raw_fish": 1, "wood": 1}, "output": {"item_id": "cooked_fish", "quantity": 1}, "unlock_items": ["raw_fish"]},
+    {"id": "rowboat", "display_name": "拼装小木船", "station": "workbench", "inputs": {"wood": 12, "fiber": 8, "driftwood": 2}, "output": {"item_id": "rowboat", "quantity": 1}, "unlock_items": ["driftwood"]}
   ]
 }

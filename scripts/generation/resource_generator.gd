@@ -75,8 +75,9 @@ func _candidate_at_cell(cell: Vector2i, terrain_generator: TerrainGenerator) -> 
 	)
 	var terrain := terrain_generator.terrain_at(world_tile)
 	if terrain == ChunkData.Terrain.DEEP_WATER or terrain == ChunkData.Terrain.SHALLOW_WATER:
-		_candidate_cache[cell] = {}
-		return {}
+		var water_candidate := _water_candidate_at_cell(cell, world_tile, terrain, terrain_generator)
+		_candidate_cache[cell] = water_candidate
+		return water_candidate
 	var biome_code := terrain_generator.biome_at(world_tile)
 	var biome_id := _biome_catalog.id_for_code(biome_code)
 	var roll := float((stable_hash >> 32) & 0xffffff) / 16777216.0
@@ -93,6 +94,28 @@ func _candidate_at_cell(cell: Vector2i, terrain_generator: TerrainGenerator) -> 
 	}
 	_candidate_cache[cell] = candidate
 	return candidate
+
+
+# 海洋资源走独立的稳定哈希通道，不改变任何陆地资源的既有选择结果。
+func _water_candidate_at_cell(cell: Vector2i, world_tile: Vector2i, terrain: ChunkData.Terrain, terrain_generator: TerrainGenerator) -> Dictionary:
+	var stable_hash := WorldSeed.from_text("%d|resource-water-cell|%d|%d|generation:%d" % [
+		_world_seed,
+		cell.x,
+		cell.y,
+		GameVersion.GENERATION_VERSION,
+	])
+	var roll := float((stable_hash >> 32) & 0xffffff) / 16777216.0
+	var biome_id := _biome_catalog.id_for_code(terrain_generator.biome_at(world_tile))
+	var resource_code := _catalog.water_candidate_code(terrain, roll, biome_id)
+	if resource_code < 0:
+		return {}
+	return {
+		"world_tile": world_tile,
+		"code": resource_code,
+		"variant": int((stable_hash >> 56) & 0x03),
+		"rank": stable_hash,
+		"minimum_distance": _catalog.minimum_distance_for_code(resource_code),
+	}
 
 
 func _candidate_is_accepted(cell: Vector2i, candidate: Dictionary, terrain_generator: TerrainGenerator) -> bool:

@@ -71,8 +71,10 @@ func _load_config(path: String) -> void:
 		var minimum := int(definition.get("minimum_ring_chunks", 0))
 		var maximum := int(definition.get("maximum_ring_chunks", 0))
 		var biomes := definition.get("preferred_biomes", []) as Array
+		var aquatic := bool(definition.get("aquatic", false))
 		if boss_id.is_empty() or _by_id.has(boss_id) or enemy == null or enemy.role != &"boss" \
-				or not enemy.world_layers.has(&"surface") or minimum < 3 or maximum < minimum or biomes.is_empty():
+				or not enemy.world_layers.has(&"surface") or minimum < 3 or maximum < minimum or biomes.is_empty() \
+				or (aquatic and not enemy.aquatic):
 			_fail("区域 Boss 定义无效：%s" % boss_id)
 			return
 		for biome_value in biomes:
@@ -81,8 +83,8 @@ func _load_config(path: String) -> void:
 				return
 		_bosses.append(definition)
 		_by_id[boss_id] = definition
-	if _bosses.size() != 3:
-		_fail("V2.0 必须配置三个区域 Boss")
+	if _bosses.size() != 4:
+		_fail("V4.1 必须配置四个区域 Boss")
 		return
 	_valid = true
 

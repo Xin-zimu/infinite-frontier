@@ -36,6 +36,8 @@ func _ready() -> void:
 	_test_equipment_models()
 	_test_automation_models()
 	_test_homestead_models()
+	_test_ocean_models()
+	_test_ocean_generation_scan()
 	_test_hydrology_models()
 	_test_structure_models()
 	_test_village_models()
@@ -62,6 +64,7 @@ func _ready() -> void:
 	await _test_equipment_runtime()
 	await _test_automation_runtime()
 	await _test_homestead_runtime()
+	await _test_ocean_runtime()
 	await _test_farming_runtime()
 	await _test_husbandry_runtime()
 	await _test_cave_runtime()
@@ -99,11 +102,11 @@ func _test_project_resources() -> void:
 	_assert_true(ResourceLoader.exists("res://scenes/player/player.tscn"), "player scene exists")
 	_assert_true(ResourceLoader.exists("res://assets/branding/icon.svg"), "application icon exists")
 	var project_font := load("res://assets/fonts/NotoSansCJKsc-ProjectSubset.otf") as Font
-	var required_v2_glyphs := "世界探索地图已发现区块地点标记传送区域首领自定义针叶林稀树草原花甸野猪冰霜精灵冠巨像沙海兽穹翼龙安全营地村长杂货商旅店老板农夫守卫探险家对话交易出售收购边境币休息次日清晨任务日志主线支线接取追踪放弃重试领取奖励失败护送会合阵营档案声望关系敌视中立尊敬同盟死敌灰烬斥候掠团村盟行商公会远路探盟控制点影响力夺取动摇动态事件商队经过袭击流星坠落资源爆发暴风雪遗迹开启临时救援时间表持久化预告失效危险等级装备评分精英解锁进度极境安定警戒凶险致命固定随机委托关键选择结果保存旗帜协定地平线未来生存属性饥饿体温湿润中毒燃烧冻伤伤害食物恢复环境影响状态关闭暂停寒冷炎热舒适正常食用快捷栏玩家建造木地板墙门基础屋顶桌储物箱落地火把工作站放置拆除返还旋转蓝图合法占用承载存入取回农业农园耕地开垦麦种小麦胡萝卜番茄苹果树苗肥料播种浇水成熟品质优质金质果树施肥天气减慢生长养殖牧场驯服动物喂食繁殖产出围栏睡眠休眠模拟鸡牛羊蛋奶毛亲密幼崽饲料烹饪炼制锅多材料配方药水恢复冶炉矿石锭装备燃料田园炖菜派丰盛早餐解毒暖身药剂清凉铜铁钢淬火板砌筑打造熔锻投入仓容量加工设备就绪附近使用自动化传送带连接器分拣工作限流筛选流向启动累计卸载补算家园基地信标范围管理返回冷却循环完成待建覆盖拓荒河谷前哨远境"
+	var required_v2_glyphs := "世界探索地图已发现区块地点标记传送区域首领自定义针叶林稀树草原花甸野猪冰霜精灵冠巨像沙海兽穹翼龙安全营地村长杂货商旅店老板农夫守卫探险家对话交易出售收购边境币休息次日清晨任务日志主线支线接取追踪放弃重试领取奖励失败护送会合阵营档案声望关系敌视中立尊敬同盟死敌灰烬斥候掠团村盟行商公会远路探盟控制点影响力夺取动摇动态事件商队经过袭击流星坠落资源爆发暴风雪遗迹开启临时救援时间表持久化预告失效危险等级装备评分精英解锁进度极境安定警戒凶险致命固定随机委托关键选择结果保存旗帜协定地平线未来生存属性饥饿体温湿润中毒燃烧冻伤伤害食物恢复环境影响状态关闭暂停寒冷炎热舒适正常食用快捷栏玩家建造木地板墙门基础屋顶桌储物箱落地火把工作站放置拆除返还旋转蓝图合法占用承载存入取回农业农园耕地开垦麦种小麦胡萝卜番茄苹果树苗肥料播种浇水成熟品质优质金质果树施肥天气减慢生长养殖牧场驯服动物喂食繁殖产出围栏睡眠休眠模拟鸡牛羊蛋奶毛亲密幼崽饲料烹饪炼制锅多材料配方药水恢复冶炉矿石锭装备燃料田园炖菜派丰盛早餐解毒暖身药剂清凉铜铁钢淬火板砌筑打造熔锻投入仓容量加工设备就绪附近使用自动化传送带连接器分拣工作限流筛选流向启动累计卸载补算家园基地信标范围管理返回冷却循环完成待建覆盖拓荒河谷前哨远境船屿氧溺帆礁藻珊瑚沉蛤潮汐君主泳骸鳍渊鳃烤鱼贝簇浮木生登部署靠近停泊靠岸深浅水域掠鱼巨口皇印"
 	var font_complete := project_font != null
 	for index in required_v2_glyphs.length():
 		font_complete = font_complete and project_font.has_char(required_v2_glyphs.unicode_at(index))
-	_assert_true(font_complete, "project font covers every V4.0 survival-building and homestead UI glyph")
+	_assert_true(font_complete, "project font covers every V4.1 ocean, survival-building and homestead UI glyph")
 	_assert_true(ResourceLoader.exists("res://data/weapons.json"), "weapon catalog exists")
 	_assert_true(ResourceLoader.exists("res://data/enemies.json"), "enemy catalog exists")
 	_assert_true(ResourceLoader.exists("res://data/milestones.json"), "milestone catalog exists")
@@ -130,18 +133,18 @@ func _test_project_resources() -> void:
 
 
 func _test_version_contract() -> void:
-	_assert_equal(GameVersion.VERSION, "4.0.0", "version constant")
-	_assert_equal(GameVersion.SAVE_VERSION, 25, "V4.0 homestead state advances save format 25")
-	_assert_equal(GameVersion.GENERATION_VERSION, 5, "V2.0 biome expansion advances generation version 5")
+	_assert_equal(GameVersion.VERSION, "4.1.0", "version constant")
+	_assert_equal(GameVersion.SAVE_VERSION, 26, "V4.1 deployed boats and oxygen advance save format 26")
+	_assert_equal(GameVersion.GENERATION_VERSION, 6, "V4.1 island biomes and water resources advance generation version 6")
 
 
 func _test_survival_models() -> void:
 	var catalog := SurvivalCatalog.new()
 	_assert_true(catalog.is_valid(), "external survival configuration loads and validates")
 	var effect_ids := catalog.effect_ids()
-	_assert_true(effect_ids.size() == 4 and effect_ids.has(&"poison") and effect_ids.has(&"burning") and effect_ids.has(&"frostbite") and effect_ids.has(&"starvation"), "poison, burning, frostbite and starvation effects are data-driven")
+	_assert_true(effect_ids.size() == 5 and effect_ids.has(&"poison") and effect_ids.has(&"burning") and effect_ids.has(&"frostbite") and effect_ids.has(&"starvation") and effect_ids.has(&"drowning"), "poison, burning, frostbite, starvation and drowning effects are data-driven")
 	var food_ids := catalog.food_ids()
-	_assert_true(food_ids.size() == 8 and food_ids.has(&"berry") and food_ids.has(&"cooked_berries") and food_ids.has(&"vegetable_stew") and food_ids.has(&"apple_pie") and food_ids.has(&"hearty_breakfast") and food_ids.has(&"antidote_potion") and food_ids.has(&"warming_tonic") and food_ids.has(&"cooling_tonic"), "raw food, cooked meals and three recovery potions expose explicit survival effects")
+	_assert_true(food_ids.size() == 11 and food_ids.has(&"berry") and food_ids.has(&"cooked_berries") and food_ids.has(&"vegetable_stew") and food_ids.has(&"apple_pie") and food_ids.has(&"hearty_breakfast") and food_ids.has(&"antidote_potion") and food_ids.has(&"warming_tonic") and food_ids.has(&"cooling_tonic") and food_ids.has(&"kelp") and food_ids.has(&"clam") and food_ids.has(&"cooked_fish"), "raw food, cooked meals, recovery potions and ocean foods expose explicit survival effects")
 	var mild_environment := {"world_layer": "surface", "biome_id": "plains", "weather_id": "CLEAR", "phase": "DAY", "in_water": false, "near_heat": false, "activity": &"IDLE"}
 	var cold_environment := {"world_layer": "surface", "biome_id": "snowfield", "weather_id": "SNOW", "phase": "NIGHT", "in_water": false, "near_heat": false, "activity": &"IDLE"}
 	var hot_environment := {"world_layer": "surface", "biome_id": "desert", "weather_id": "SANDSTORM", "phase": "DAY", "in_water": false, "near_heat": false, "activity": &"RUN"}
@@ -165,21 +168,21 @@ func _test_survival_models() -> void:
 	_assert_true(wet_state.wetness > 20.0, "rain and standing water compose deterministic wetness gain")
 	var cold_state := SurvivalState.new(catalog)
 	_assert_true(cold_state.restore_snapshot({
-		"schema_version": 1, "hunger": 80.0, "body_temperature": 34.0, "wetness": 10.0, "effects": [],
+		"schema_version": 2, "hunger": 80.0, "body_temperature": 34.0, "wetness": 10.0, "oxygen": 100.0, "effects": [],
 		"exposures": {"poison": 0.0, "burning": 0.0, "frostbite": 17.5},
 	}), "cold survival fixture restores")
 	cold_state.update(1.0, cold_environment)
 	_assert_true(cold_state.has_effect(&"frostbite") and cold_state.movement_multiplier() < 1.0, "sustained cold applies frostbite and an explicit movement penalty")
 	var hot_state := SurvivalState.new(catalog)
 	hot_state.restore_snapshot({
-		"schema_version": 1, "hunger": 80.0, "body_temperature": 41.5, "wetness": 0.0, "effects": [],
+		"schema_version": 2, "hunger": 80.0, "body_temperature": 41.5, "wetness": 0.0, "oxygen": 100.0, "effects": [],
 		"exposures": {"poison": 0.0, "burning": 14.5, "frostbite": 0.0},
 	})
 	hot_state.update(1.0, hot_environment)
 	_assert_true(hot_state.has_effect(&"burning"), "sustained extreme heat applies burning")
 	var poison_state := SurvivalState.new(catalog)
 	poison_state.restore_snapshot({
-		"schema_version": 1, "hunger": 80.0, "body_temperature": 37.0, "wetness": 80.0, "effects": [],
+		"schema_version": 2, "hunger": 80.0, "body_temperature": 37.0, "wetness": 80.0, "oxygen": 100.0, "effects": [],
 		"exposures": {"poison": 24.5, "burning": 0.0, "frostbite": 0.0},
 	})
 	var swamp_environment := mild_environment.duplicate(true)
@@ -188,7 +191,7 @@ func _test_survival_models() -> void:
 	_assert_true(poison_state.has_effect(&"poison"), "wet swamp exposure applies poison without random rerolls")
 	var starving_state := SurvivalState.new(catalog)
 	starving_state.restore_snapshot({
-		"schema_version": 1, "hunger": 0.0, "body_temperature": 37.0, "wetness": 0.0, "effects": [],
+		"schema_version": 2, "hunger": 0.0, "body_temperature": 37.0, "wetness": 0.0, "oxygen": 100.0, "effects": [],
 		"exposures": {"poison": 0.0, "burning": 0.0, "frostbite": 0.0},
 	})
 	var starvation_result := starving_state.update(4.1, mild_environment)
@@ -678,6 +681,119 @@ func _test_homestead_models() -> void:
 	_assert_true(not BuildingState.new().restore_snapshot(invalid_spacing), "building persistence rejects overlapping base-marker ranges below minimum spacing")
 
 
+func _test_ocean_models() -> void:
+	var ocean_catalog := OceanCatalog.new()
+	_assert_true(ocean_catalog.is_valid(), "external ocean configuration loads and validates")
+	_assert_true(ocean_catalog.shallow_water_multiplier() < 1.0 and ocean_catalog.deep_water_multiplier() < ocean_catalog.shallow_water_multiplier(), "ocean swimming slows shallow and deep water at bounded data rates")
+	var boat_definition := ocean_catalog.boat_for_item(&"rowboat")
+	_assert_true(not boat_definition.is_empty() and is_equal_approx(float(boat_definition["speed_multiplier"]), 1.65) and int(boat_definition["maximum_count"]) == 16 and int(boat_definition["deploy_range_tiles"]) == 2, "rowboat exposes explicit speed, deployment cap and range")
+	_assert_true(ocean_catalog.boat_for_item(&"wood").is_empty(), "non-boat items resolve no ocean boat definition")
+	var biome_catalog := BiomeCatalog.new()
+	_assert_true(biome_catalog.has_biome(&"island") and biome_catalog.biome_count() == 13, "island biome extends the data-driven biome catalog")
+	_assert_equal(biome_catalog.classify_land(0.50, 0.50, 0.44, 0.50, 0.90), biome_catalog.code_for_id(&"island"), "high island mask with coastal elevation classifies the island biome")
+	_assert_equal(biome_catalog.classify_land(0.50, 0.50, 0.44, 0.50, 0.30), biome_catalog.code_for_id(&"plains"), "low island mask keeps the existing land classification")
+	_assert_equal(biome_catalog.classify_land(0.50, 0.50, 0.44, 0.50), biome_catalog.code_for_id(&"plains"), "callers without an island signal keep the exact V4.0 classification")
+	_assert_equal(biome_catalog.classify_land(0.50, 0.50, 0.535, 0.50, 0.90), biome_catalog.code_for_id(&"coast"), "island biome fades into the coast across its transition band")
+	var resource_catalog := ResourceCatalog.new()
+	_assert_true(resource_catalog.is_valid(), "resource catalog validates the four ocean resources")
+	_assert_equal(resource_catalog.water_candidate_code(ChunkData.Terrain.SHALLOW_WATER, 0.0, &"ocean"), resource_catalog.code_for_id(&"kelp"), "shallow ocean cells rank kelp first on the water channel")
+	_assert_true(resource_catalog.water_candidate_code(ChunkData.Terrain.SHALLOW_WATER, 0.99, &"plains") == -1, "land biomes never rank water resources")
+	_assert_true(resource_catalog.water_candidate_code(ChunkData.Terrain.DEEP_WATER, 0.0, &"ocean") == resource_catalog.code_for_id(&"driftwood_log"), "deep ocean rejects shallow-only resources and ranks driftwood first")
+	var boat_state := BoatState.new(ocean_catalog)
+	_assert_true(not boat_state.can_deploy(&"wood"), "boat deployment rejects non-boat items")
+	var first_boat := boat_state.deploy(Vector2i(-90, 40), &"rowboat")
+	_assert_true(not first_boat.is_empty() and String(first_boat["boat_id"]) == "surface:-90:40", "deploying a boat mints a tile-qualified stable record")
+	_assert_true(boat_state.deploy(Vector2i(-90, 40), &"rowboat").is_empty(), "one water tile hosts at most one deployed boat")
+	_assert_true(not boat_state.boat_at(Vector2i(-90, 40)).is_empty() and boat_state.boat_at(Vector2i(-90, 41)).is_empty(), "boat lookups resolve only the exact tile")
+	_assert_true(bool(boat_state.relocate("surface:-90:40", Vector2i(-95, 45))) and boat_state.boat_at(Vector2i(-95, 45)).is_empty() == false and boat_state.boat_at(Vector2i(-90, 40)).is_empty(), "mooring relocates the boat identity to its final water tile")
+	var removed := boat_state.remove_at(Vector2i(-95, 45))
+	_assert_true(not removed.is_empty() and boat_state.boat_count() == 0, "retrieving a boat removes exactly one record and returns its item payload")
+	for index in 16:
+		_assert_true(not boat_state.deploy(Vector2i(-100 + index, 40), &"rowboat").is_empty(), "boat fixtures fill the deployment cap")
+	_assert_true(not boat_state.can_deploy(&"rowboat") and boat_state.deploy(Vector2i(-200, 40), &"rowboat").is_empty(), "the sixteenth boat enforces the global deployment cap")
+	var persisted := boat_state.persistence_snapshot()
+	var restored := BoatState.new(ocean_catalog)
+	_assert_true(restored.restore_snapshot(persisted) and restored.persistence_snapshot() == persisted, "boat persistence round trips exactly")
+	var tampered := persisted.duplicate(true)
+	((tampered["boats"] as Array)[0] as Dictionary)["boat_id"] = "surface:0:0"
+	_assert_true(not BoatState.new(ocean_catalog).restore_snapshot(tampered), "boat persistence rejects a record whose ID does not match its tile")
+	var survival_oxygen := SurvivalState.new()
+	survival_oxygen.update(10.0, {"world_layer": "surface", "in_deep_water": true})
+	_assert_true(survival_oxygen.oxygen < 100.0 and not survival_oxygen.has_effect(&"drowning"), "deep water drains oxygen without instant drowning")
+	survival_oxygen.update(30.0, {"world_layer": "surface", "in_deep_water": true})
+	_assert_true(is_equal_approx(survival_oxygen.oxygen, 0.0) and survival_oxygen.has_effect(&"drowning"), "empty oxygen applies the data-driven drowning effect")
+	var drowning_damage := survival_oxygen.update(2.0, {"world_layer": "surface", "in_deep_water": true})
+	_assert_true(float(drowning_damage["damage"]) > 0.0, "drowning deals periodic damage while the player stays submerged")
+	survival_oxygen.update(1.0, {"world_layer": "surface", "in_deep_water": false})
+	_assert_true(not survival_oxygen.has_effect(&"drowning") and survival_oxygen.oxygen > 0.0, "surfacing clears drowning and recovers oxygen deterministically")
+
+
+func _test_ocean_generation_scan() -> void:
+	var seed := WorldSeed.from_text("V4.1-ocean-fixture")
+	var terrain := TerrainGenerator.new(seed)
+	var resource_generator := ResourceGenerator.new(seed)
+	var water_resources := 0
+	var land_resources := 0
+	var ocean_center_chunk := Vector2i.ZERO
+	var found_ocean := false
+	for chunk_y in range(-7, 8):
+		for chunk_x in range(-7, 8):
+			var chunk_position := Vector2i(chunk_x, chunk_y)
+			var center_tile := WorldCoordinates.chunk_local_to_tile(chunk_position, Vector2i(16, 16))
+			if not found_ocean and terrain.terrain_at(center_tile) == ChunkData.Terrain.DEEP_WATER:
+				ocean_center_chunk = chunk_position
+				found_ocean = true
+			var chunk := terrain.generate_chunk(chunk_position)
+			for index in chunk.resource_count():
+				var local := chunk.resource_local_at(index)
+				var world_tile := WorldCoordinates.chunk_local_to_tile(chunk_position, local)
+				var resource_terrain := terrain.terrain_at(world_tile)
+				if resource_terrain == ChunkData.Terrain.SHALLOW_WATER or resource_terrain == ChunkData.Terrain.DEEP_WATER:
+					water_resources += 1
+					_assert_true(chunk.resource_code_at(index) >= 8, "ocean resources only occupy water tiles")
+				else:
+					land_resources += 1
+					_assert_true(chunk.resource_code_at(index) <= 7, "beach and land resources keep their stable land codes")
+	_assert_true(found_ocean, "deterministic scan finds deep ocean inside the origin region")
+	_assert_true(water_resources >= 4, "ocean resources generate across the scanned water surface")
+	_assert_true(land_resources > 0, "land resources remain part of the same deterministic scan")
+	var repeated_chunk := terrain.generate_chunk(ocean_center_chunk)
+	_assert_true(repeated_chunk.checksum == terrain.generate_chunk(ocean_center_chunk).checksum, "island-biome generation keeps chunk checksums deterministic")
+	var structure_planner := StructurePlanner.new(seed)
+	var water_structures := 0
+	# 海洋只占世界的部分区域：围绕已发现的海洋区块所在的 384 格结构区域扫描。
+	var ocean_region := Vector2i(
+		floori(float(ocean_center_chunk.x * WorldCoordinates.CHUNK_SIZE) / 384.0),
+		floori(float(ocean_center_chunk.y * WorldCoordinates.CHUNK_SIZE) / 384.0)
+	)
+	for region_y in range(ocean_region.y - 1, ocean_region.y + 2):
+		for region_x in range(ocean_region.x - 1, ocean_region.x + 2):
+			var plan := structure_planner.plan_water_region(Vector2i(region_x, region_y), terrain)
+			if plan.is_empty():
+				continue
+			water_structures += 1
+			for cell in plan["cells"] as Array:
+				var cell_terrain := terrain.terrain_at(cell["world_tile"] as Vector2i)
+				_assert_true(cell_terrain == ChunkData.Terrain.SHALLOW_WATER or cell_terrain == ChunkData.Terrain.DEEP_WATER, "water structures rest entirely on water terrain")
+	_assert_true(water_structures >= 1, "deterministic scan places at least one shipwreck or sea ruin")
+	var enemy_planner := EnemySpawnPlanner.new(seed)
+	var enemy_catalog := EnemyCatalog.new()
+	var aquatic_candidates := 0
+	var land_candidates := 0
+	for chunk_y in range(-8, 9):
+		for chunk_x in range(-8, 9):
+			for candidate in enemy_planner.candidates_for_chunk(Vector2i(chunk_x, chunk_y), &"", &"surface"):
+				var definition := enemy_catalog.enemy(StringName(candidate["enemy_id"]))
+				var candidate_terrain := terrain.terrain_at(candidate["world_tile"] as Vector2i)
+				if definition != null and definition.aquatic:
+					aquatic_candidates += 1
+					_assert_true(candidate_terrain == ChunkData.Terrain.SHALLOW_WATER or candidate_terrain == ChunkData.Terrain.DEEP_WATER, "aquatic enemies spawn only in water")
+				else:
+					land_candidates += 1
+					_assert_true(candidate_terrain == ChunkData.Terrain.LAND, "land enemies never spawn in water")
+	_assert_true(aquatic_candidates >= 1 and land_candidates >= 1, "the scanned region hosts both aquatic and land enemy populations")
+
+
 func _test_hydrology_models() -> void:
 	var seed := WorldSeed.from_text("无尽边境水系")
 	var hydrology := HydrologyGenerator.new(seed)
@@ -701,7 +817,7 @@ func _test_hydrology_models() -> void:
 func _test_structure_models() -> void:
 	var catalog := StructureCatalog.new()
 	_assert_true(catalog.is_valid(), "external structure catalog loads and validates")
-	_assert_equal(catalog.template_count(), 5, "catalog contains hut, camp, ruins, temple and dungeon entrance")
+	_assert_equal(catalog.template_count(), 7, "catalog contains hut, camp, ruins, temple, dungeon entrance, shipwreck and sea ruin")
 	for structure_id in [&"cabin", &"camp", &"ruins", &"temple", &"dungeon_entrance"]:
 		_assert_true(not catalog.template_by_id(structure_id).is_empty(), "catalog contains stable structure ID %s" % structure_id)
 	var planner := StructurePlanner.new(WorldSeed.from_text("结构测试"), catalog)
@@ -1085,9 +1201,9 @@ func _test_region_progression_models() -> void:
 	for item_id in [&"stone_sword", &"stone_axe", &"stone_pickaxe"]:
 		inventory.add_item(item_id, 1)
 	_assert_equal(catalog.gear_score(inventory.snapshot()), 32, "higher-tier items replace lower items within each equipment score slot")
-	for item_id in [&"grove_sigil", &"dune_sigil", &"frost_sigil"]:
+	for item_id in [&"grove_sigil", &"dune_sigil", &"frost_sigil", &"tide_sigil"]:
 		inventory.add_item(item_id, 1)
-	_assert_equal(catalog.gear_score(inventory.snapshot()), 44, "three unique Boss sigils extend the complete equipment score to the final recommendation")
+	_assert_equal(catalog.gear_score(inventory.snapshot()), 48, "four unique Boss sigils extend the complete equipment score to the final recommendation")
 	var state := RegionProgressionState.new()
 	var discovery := state.discover_region(safe_profile, catalog)
 	_assert_true(bool(discovery["changed"]) and int(discovery["gained"]) == 2 and state.world_progress_points() == 2, "first regional discovery grants one exact world-progress source")
@@ -1108,7 +1224,7 @@ func _test_region_progression_models() -> void:
 	unlock_state.record_source(&"regional_boss_defeated", "grove_titan", catalog)
 	unlock_state.record_source(&"dungeon_completed", "dungeon:fixture", catalog)
 	var unlock_view := unlock_state.status_snapshot(safe_profile, 16, catalog)
-	_assert_true((unlock_view["unlocked_boss_ids"] as Array).has("dune_behemoth") and not (unlock_view["unlocked_boss_ids"] as Array).has("frost_wyrm"), "world progress unlocks the second regional Boss while preserving the final gate")
+	_assert_true((unlock_view["unlocked_boss_ids"] as Array).has("dune_behemoth") and not (unlock_view["unlocked_boss_ids"] as Array).has("frost_wyrm") and not (unlock_view["unlocked_boss_ids"] as Array).has("tide_sovereign"), "world progress unlocks the second regional Boss while preserving the final gates")
 	var persisted := challenge_state.persistence_snapshot()
 	var restored := RegionProgressionState.new()
 	_assert_true(restored.restore_snapshot(persisted, catalog) and restored.persistence_snapshot() == persisted, "regional discoveries, elite sources and reward state round trip exactly")
@@ -1272,12 +1388,12 @@ func _test_dungeon_models() -> void:
 
 func _test_exploration_models() -> void:
 	var catalog := RegionalBossCatalog.new()
-	_assert_true(catalog.is_valid() and catalog.bosses().size() == 3, "V2.0 regional Boss catalog validates exactly three encounters")
+	_assert_true(catalog.is_valid() and catalog.bosses().size() == 4, "V4.1 regional Boss catalog validates exactly four encounters")
 	var seed := WorldSeed.from_text("V2.0-exploration-fixture")
 	var planner := RegionalBossPlanner.new(seed, catalog)
 	var plans := planner.plans()
 	_assert_equal(plans, RegionalBossPlanner.new(seed, catalog).plans(), "regional Boss plans are deterministic across restarts")
-	_assert_equal(plans.size(), 3, "regional planner resolves all three Boss locations")
+	_assert_equal(plans.size(), 4, "regional planner resolves all four Boss locations")
 	var planned_ids := {}
 	var planned_chunks := {}
 	var terrain := TerrainGenerator.new(seed)
@@ -1285,8 +1401,12 @@ func _test_exploration_models() -> void:
 		var plan := plan_value as Dictionary
 		planned_ids[String(plan["id"])] = true
 		planned_chunks[plan["chunk_position"]] = true
-		_assert_true(terrain.terrain_at(plan["world_tile"] as Vector2i) == ChunkData.Terrain.LAND, "%s regional Boss occupies dry land" % plan["id"])
-	_assert_true(planned_ids.size() == 3 and planned_chunks.size() == 3, "regional Boss IDs and locations are unique")
+		if String(plan["id"]) == "tide_sovereign":
+			var boss_terrain := terrain.terrain_at(plan["world_tile"] as Vector2i)
+			_assert_true(boss_terrain == ChunkData.Terrain.SHALLOW_WATER or boss_terrain == ChunkData.Terrain.DEEP_WATER, "tide sovereign anchors in open water")
+		else:
+			_assert_true(terrain.terrain_at(plan["world_tile"] as Vector2i) == ChunkData.Terrain.LAND, "%s regional Boss occupies dry land" % plan["id"])
+	_assert_true(planned_ids.size() == 4 and planned_chunks.size() == 4, "regional Boss IDs and locations are unique")
 	var state := ExplorationMapState.new()
 	var center := Vector2i(-3, 5)
 	_assert_true(state.reveal_chunk(center, 1) and state.discovered_count() == 9, "exploration fog reveals a bounded 3×3 neighborhood")
@@ -1404,7 +1524,7 @@ func _test_world_coordinate_contract() -> void:
 func _test_biome_catalog_contract() -> void:
 	var catalog := BiomeCatalog.new()
 	_assert_true(catalog.is_valid(), "external biome configuration loads and validates")
-	_assert_equal(catalog.biome_count(), 12, "catalog contains nine land biomes plus coast and two ocean depths")
+	_assert_equal(catalog.biome_count(), 13, "catalog contains eight land biomes, the island biome, coast and two ocean depths")
 	for biome_id in BiomeCatalog.REQUIRED_IDS:
 		_assert_true(catalog.has_biome(biome_id), "catalog contains stable biome ID %s" % biome_id)
 	_assert_true(catalog.threshold("deep_water") < catalog.threshold("shallow_water") and catalog.threshold("shallow_water") < catalog.threshold("coast"), "data-driven terrain thresholds are ordered")
@@ -1419,7 +1539,7 @@ func _test_biome_catalog_contract() -> void:
 func _test_resource_catalog_contract() -> void:
 	var catalog := ResourceCatalog.new()
 	_assert_true(catalog.is_valid(), "external resource configuration loads and validates")
-	_assert_equal(catalog.resource_count(), 8, "resource catalog contains five surface resources and three cave veins")
+	_assert_equal(catalog.resource_count(), 12, "resource catalog contains five surface resources, three cave veins and four ocean resources")
 	for resource_id in ResourceCatalog.REQUIRED_RESOURCE_IDS:
 		_assert_true(catalog.has_resource(resource_id), "catalog contains stable resource ID %s" % resource_id)
 	for resource_id in [&"coal_vein", &"copper_vein", &"iron_vein"]:
@@ -1429,7 +1549,7 @@ func _test_resource_catalog_contract() -> void:
 	_assert_equal(catalog.required_tool_for_code(catalog.code_for_id(&"rock")), &"pickaxe", "rocks require a pickaxe")
 	var flower_code := catalog.code_for_id(&"flower")
 	_assert_true(catalog.available_in_phase(flower_code, &"NIGHT") and not catalog.available_in_phase(flower_code, &"DAY"), "moonflowers are collectible only at night")
-	_assert_true(catalog.candidate_code_for_biome(&"deep_ocean", 0.0) < 0, "deep ocean has no resource rule")
+	_assert_true(catalog.water_candidate_code(ChunkData.Terrain.DEEP_WATER, 0.0, &"deep_ocean") >= 0, "deep ocean exposes coral and driftwood on the water resource channel")
 	_assert_true(catalog.drop_pool_capacity() == 32 and catalog.max_resources_per_chunk() == 128, "resource and drop limits come from configuration")
 
 
@@ -1439,7 +1559,7 @@ func _test_item_catalog_contract() -> void:
 	_assert_equal(catalog.slot_count(), 24, "inventory capacity is data-driven at 24 slots")
 	_assert_equal(catalog.hotbar_slot_count(), 8, "hotbar exposes the first eight inventory slots")
 	var ids := catalog.item_ids()
-	_assert_equal(ids.size(), 72, "item catalog contains 72 unique exploration, production, equipment and automation item IDs")
+	_assert_equal(ids.size(), 81, "item catalog contains 81 unique exploration, production, equipment, automation and ocean item IDs")
 	for item_id in ItemCatalog.REQUIRED_ITEM_IDS:
 		_assert_true(ids.has(StringName(item_id)), "item catalog contains stable unique ID %s" % item_id)
 	_assert_true(catalog.has_item(&"moonpetal"), "night-only moonpetal is a stable inventory item")
@@ -1506,7 +1626,7 @@ func _test_recipe_catalog_contract() -> void:
 	var catalog := RecipeCatalog.new()
 	_assert_true(catalog.is_valid(), "external recipe configuration loads and validates")
 	_assert_equal(catalog.station_ids(), [&"hands", &"workbench", &"campfire"], "hands, workbench and campfire stations are data-driven")
-	_assert_equal(catalog.recipes().size(), 28, "crafting catalog includes tools, stations, farming inputs, equipment and four automation recipes")
+	_assert_equal(catalog.recipes().size(), 30, "crafting catalog includes tools, stations, farming inputs, equipment, four automation recipes and ocean recipes")
 	_assert_true(catalog.recipe(&"wood_axe") != null and catalog.recipe(&"stone_pickaxe") != null, "wooden and stone tool recipes use stable IDs")
 	_assert_true(catalog.recipe(&"torch").output_quantity == 2, "torch recipe produces its configured output quantity")
 	_assert_true(catalog.recipe(&"wheat_seed") != null and catalog.recipe(&"apple_sapling") != null and catalog.recipe(&"basic_fertilizer") != null, "seeds, fruit-tree sapling and fertilizer have playable crafting sources")
@@ -1680,7 +1800,7 @@ func _test_player_combat_state_and_graves() -> void:
 func _test_enemy_catalog_and_state_machine() -> void:
 	var catalog := EnemyCatalog.new()
 	_assert_true(catalog.is_valid(), "external enemy configuration loads and validates")
-	_assert_equal(catalog.enemy_ids(), [&"slime", &"wolf", &"cave_bat", &"wild_boar", &"frost_sprite", &"bandit_scout", &"dungeon_sentinel", &"dungeon_warden", &"grove_titan", &"dune_behemoth", &"frost_wyrm"], "enemy IDs are unique, stable and data-driven")
+	_assert_equal(catalog.enemy_ids(), [&"slime", &"wolf", &"cave_bat", &"wild_boar", &"frost_sprite", &"bandit_scout", &"dungeon_sentinel", &"dungeon_warden", &"grove_titan", &"dune_behemoth", &"frost_wyrm", &"reef_fin", &"abyss_maw", &"tide_sovereign"], "enemy IDs are unique, stable and data-driven")
 	_assert_true(catalog.maximum_active() == 18 and catalog.maximum_per_chunk() == 3, "enemy population hard limits come from data")
 	_assert_equal(catalog.maximum_active_for_phase(&"NIGHT"), 27, "night population cap increases from data")
 	_assert_true(not catalog.enemy(&"slime").is_available_in_phase(&"NIGHT") and catalog.enemy(&"cave_bat").is_available_in_phase(&"NIGHT"), "night phase replaces daytime slime candidates while cave bats remain active underground")
@@ -1692,7 +1812,9 @@ func _test_enemy_catalog_and_state_machine() -> void:
 	_assert_true(catalog.enemy(&"wild_boar").role == &"normal" and catalog.enemy(&"frost_sprite").role == &"normal", "V2.0 adds two normal regional enemy types")
 	_assert_true(catalog.enemy(&"bandit_scout").role == &"normal" and catalog.enemy(&"bandit_scout").biomes.has(&"desert"), "V2.4 adds a surface ash-raider member")
 	_assert_true(catalog.enemy(&"grove_titan").role == &"boss" and catalog.enemy(&"dune_behemoth").role == &"boss" and catalog.enemy(&"frost_wyrm").role == &"boss", "three surface regional Boss definitions are explicit")
-	_assert_equal(catalog.enemy_id_for_biome(&"deep_ocean", 0.5), &"", "unsupported biome produces no enemy type")
+	_assert_equal(catalog.enemy_id_for_biome(&"coast", 0.5), &"", "beach coast hosts no enemy type")
+	var ocean_roll := catalog.enemy_id_for_biome(&"ocean", 0.5)
+	_assert_true(not ocean_roll.is_empty() and catalog.enemy(ocean_roll).aquatic, "open water rolls only aquatic enemy types")
 	var slime := catalog.enemy(&"slime")
 	var machine := EnemyStateMachine.new(slime)
 	machine.tick(EnemyStateMachine.IDLE_DURATION + 0.01, 999.0, 0.0)
@@ -1737,6 +1859,7 @@ func _test_enemy_spawn_planner() -> void:
 	var per_chunk_bounded := true
 	var unique_ids := true
 	var land_only := true
+	var water_aquatic_only := true
 	var biome_correct := true
 	for chunk_y in range(-10, 11):
 		for chunk_x in range(-10, 11):
@@ -1754,12 +1877,19 @@ func _test_enemy_spawn_planner() -> void:
 				seen_ids[enemy_id] = true
 				unique_ids = unique_ids and not seen_spawn_ids.has(spawn_id)
 				seen_spawn_ids[spawn_id] = true
-				land_only = land_only and terrain.terrain_at(world_tile) == ChunkData.Terrain.LAND
+				var candidate_terrain := terrain.terrain_at(world_tile)
+				var is_water := candidate_terrain == ChunkData.Terrain.SHALLOW_WATER or candidate_terrain == ChunkData.Terrain.DEEP_WATER
+				land_only = land_only and (terrain.terrain_at(world_tile) == ChunkData.Terrain.LAND or is_water)
+				if is_water:
+					water_aquatic_only = water_aquatic_only and catalog.enemy(enemy_id).aquatic
+				else:
+					water_aquatic_only = water_aquatic_only and not catalog.enemy(enemy_id).aquatic
 				biome_correct = biome_correct and catalog.enemy(enemy_id).biomes.has(biome_id)
 	_assert_true(deterministic, "enemy candidates are deterministic across planner restarts")
 	_assert_true(per_chunk_bounded, "enemy candidates obey the per-chunk cap")
 	_assert_true(unique_ids, "enemy spawn IDs stay unique across signed chunks")
-	_assert_true(land_only, "enemy candidates never appear in water")
+	_assert_true(land_only, "enemy candidates stay on land or open water terrain")
+	_assert_true(water_aquatic_only, "water candidates are aquatic and land candidates are not")
 	_assert_true(biome_correct, "enemy candidates match data-driven biome rules")
 	_assert_true(candidate_total > 0, "broad deterministic region contains enemy candidates")
 	_assert_true(seen_ids.has(&"slime") and seen_ids.has(&"wolf") and not seen_ids.has(&"cave_bat"), "surface planner excludes underground-only cave bats")
@@ -1857,7 +1987,7 @@ func _test_deterministic_generation() -> void:
 	_assert_equal(first.moisture_map.size(), 1024, "chunk contains 32×32 moisture samples")
 	_assert_equal(first.biome_map.size(), 1024, "chunk contains 32×32 biome samples")
 	_assert_equal(first.water_feature_map.size(), 1024, "chunk contains 32×32 deterministic water-feature samples")
-	_assert_equal(first.checksum, "16cf513e93ddfbe3", "generation v5 checksum fixture remains stable")
+	_assert_equal(first.checksum, "6e1e7c071053a579", "generation v6 checksum fixture remains stable")
 	var other_seed := TerrainGenerator.new(WorldSeed.from_text("另一片边境")).generate_chunk(showcase_chunk)
 	_assert_true(first.checksum != other_seed.checksum, "different seeds produce different chunks")
 	var chunk_a := Vector2i(-3, 2)
@@ -1950,6 +2080,7 @@ func _test_resource_generation() -> void:
 	represented.resize(catalog.resource_count())
 	var keys := {}
 	var water_safe := true
+	var land_codes_only := true
 	var capped := true
 	for chunk_y in range(-5, 0):
 		for chunk_x in range(-3, 2):
@@ -1959,10 +2090,13 @@ func _test_resource_generation() -> void:
 			for index in chunk.resource_count():
 				var local := chunk.resource_local_at(index)
 				var terrain := chunk.tile_at(local)
-				water_safe = water_safe and terrain != ChunkData.Terrain.DEEP_WATER and terrain != ChunkData.Terrain.SHALLOW_WATER
+				var on_water := terrain == ChunkData.Terrain.DEEP_WATER or terrain == ChunkData.Terrain.SHALLOW_WATER
+				water_safe = water_safe and (not on_water or chunk.resource_code_at(index) >= 8)
+				land_codes_only = land_codes_only and (on_water or chunk.resource_code_at(index) <= 7)
 				represented[chunk.resource_code_at(index)] += 1
 				keys[chunk.resource_key_at(index)] = true
-	_assert_true(water_safe, "resources never spawn in deep or shallow water")
+	_assert_true(water_safe, "land resources never spawn in deep or shallow water")
+	_assert_true(land_codes_only, "ocean resources never spawn on land or beach")
 	_assert_true(capped, "resource counts remain under the configured per-chunk limit")
 	for resource_id in ResourceCatalog.REQUIRED_RESOURCE_IDS:
 		var resource_code := catalog.code_for_id(resource_id)
@@ -2018,8 +2152,8 @@ func _test_save_system() -> void:
 	var root := SaveManager.current_world_root_absolute()
 	_assert_true(FileAccess.file_exists(root.path_join("world.json")) and FileAccess.file_exists(root.path_join("player.json")), "new world contains metadata and player documents")
 	var metadata := _read_json_for_test(root.path_join("world.json"))
-	_assert_equal(int(metadata.get("save_version", 0)), 25, "world metadata records save format 25")
-	_assert_equal(int(metadata.get("generation_version", 0)), 5, "world metadata records generation format 5")
+	_assert_equal(int(metadata.get("save_version", 0)), 26, "world metadata records save format 26")
+	_assert_equal(int(metadata.get("generation_version", 0)), 6, "world metadata records generation format 6")
 	_assert_equal(String(metadata.get("world_name", "")), "自动测试边境", "world metadata preserves the world name")
 	_assert_equal(String(metadata.get("seed_text", "")), "存档种子-070", "world metadata preserves the text seed")
 	var chunks_path := root.path_join("chunks/surface")
@@ -2150,6 +2284,7 @@ func _test_save_system() -> void:
 		"hunger": 62.0,
 		"body_temperature": 35.2,
 		"wetness": 78.0,
+		"oxygen": 45.0,
 		"effects": [{"effect_id": "poison", "remaining_seconds": 20.0, "tick_elapsed": 1.0}],
 		"exposures": {"poison": 5.0, "burning": 0.0, "frostbite": 1.0},
 	}), "changed survival save fixture validates")
@@ -2216,6 +2351,9 @@ func _test_save_system() -> void:
 	changed_husbandry.set_sleep_phase(&"NIGHT")
 	var changed_husbandry_snapshot := changed_husbandry.persistence_snapshot()
 	_assert_true(int(((changed_husbandry_snapshot["animals"] as Array)[0] as Dictionary)["product_ready"]) > 0 and bool(((changed_husbandry_snapshot["animals"] as Array)[0] as Dictionary)["sleeping"]), "changed husbandry save fixture preserves inactive-day product and sleep state")
+	var changed_boats := BoatState.new()
+	_assert_true(not changed_boats.deploy(Vector2i(230, 230), &"rowboat").is_empty() and not changed_boats.deploy(Vector2i(232, 231), &"rowboat").is_empty(), "changed world deploys two deterministic rowboats")
+	var changed_boat_snapshot := changed_boats.persistence_snapshot()
 	var changed_state := {
 		"collected_resources": removed_keys,
 		"inventory": changed_inventory_snapshot,
@@ -2238,6 +2376,7 @@ func _test_save_system() -> void:
 		"building_state": changed_building_snapshot,
 		"farming_state": changed_farming_snapshot,
 		"husbandry_state": changed_husbandry_snapshot,
+		"boat_state": changed_boat_snapshot,
 		"opened_cave_chests": [opened_chest_key],
 		"world_layer": "underground",
 		"active_tool": "axe",
@@ -2248,7 +2387,7 @@ func _test_save_system() -> void:
 	_assert_true(dispatch_ms < 50.0, "autosave snapshot dispatch does not block the main thread")
 	SaveManager.flush_pending_save()
 	_assert_true(SaveManager.last_save_duration_ms < 500.0, "background save completes without a visible-length stall")
-	_assert_equal(_json_file_count(chunks_path), 5, "two resource chunks plus one building, farming and husbandry chunk create exact surface differences")
+	_assert_equal(_json_file_count(chunks_path), 6, "two resource chunks plus one building, farming, husbandry and boat chunk create exact surface differences")
 	_assert_equal(_json_file_count(underground_chunks_path), 1, "underground resources and chests share one layer-specific difference file")
 	var building_difference_path := chunks_path.path_join("10_10.json")
 	var building_difference := _read_json_for_test(building_difference_path)
@@ -2265,6 +2404,10 @@ func _test_save_system() -> void:
 	var husbandry_difference := _read_json_for_test(husbandry_difference_path)
 	_assert_true(FileAccess.file_exists(husbandry_difference_path) and (husbandry_difference.get("husbandry_animals", []) as Array).size() == 1, "interacted animals persist only in their owning signed surface-chunk difference")
 	_assert_true(not _read_json_for_test(root.path_join("player.json")).has("husbandry_state"), "player document does not duplicate chunk-owned husbandry state")
+	var boat_difference_path := chunks_path.path_join("7_7.json")
+	var boat_difference := _read_json_for_test(boat_difference_path)
+	_assert_true(FileAccess.file_exists(boat_difference_path) and (boat_difference.get("deployed_boats", []) as Array).size() == 2 and String(((boat_difference.get("deployed_boats", []) as Array)[0] as Dictionary).get("boat_id", "")) == "surface:230:230", "deployed boats persist only in their owning signed surface-chunk difference")
+	_assert_true(not _read_json_for_test(root.path_join("player.json")).has("boat_state"), "player document does not duplicate chunk-owned boat state")
 	var world_id := SaveManager.current_world_id()
 	SaveManager.clear_current_world()
 	_assert_true(SaveManager.load_world(world_id), "saved world reloads after manager state is cleared")
@@ -2303,6 +2446,7 @@ func _test_save_system() -> void:
 	_assert_equal(restored_world_state["homestead_state"], changed_homestead_snapshot, "V4.0 base identity, active home and teleport time restore identically")
 	_assert_equal(restored_world_state["farming_state"], changed_farming_snapshot, "V3.3 tilled, watered, fertilized and mature farming differences restore identically")
 	_assert_equal(restored_world_state["husbandry_state"], changed_husbandry_snapshot, "V3.4 taming, feed reserve, product and sleeping differences restore identically")
+	_assert_equal(restored_world_state["boat_state"], changed_boat_snapshot, "V4.1 deployed boat identities and tiles restore identically")
 	_assert_equal(String(restored_world_state["active_tool"]), "axe", "active tool restores with player attributes")
 	var restored_harvest := ResourceHarvestState.new()
 	_assert_true(restored_harvest.restore_snapshot(restored_removed, restored_world_state["inventory"]), "restored inventory snapshot passes schema validation")
@@ -2313,26 +2457,34 @@ func _test_save_system() -> void:
 	without_buildings["homestead_state"] = HomesteadState.new().persistence_snapshot()
 	_assert_true(SaveManager.request_save(restored_player, without_buildings, 43.0, false), "demolished building snapshot dispatches a compacting save")
 	SaveManager.flush_pending_save()
-	_assert_true(not FileAccess.file_exists(building_difference_path) and _json_file_count(chunks_path) == 4, "removing the last building cleans its stale building-only chunk difference")
+	_assert_true(not FileAccess.file_exists(building_difference_path) and _json_file_count(chunks_path) == 5, "removing the last building cleans its stale building-only chunk difference")
 	_assert_true(SaveManager.request_save(restored_player, restored_world_state, 43.5, false), "building fixture can be restored after stale-difference coverage")
 	SaveManager.flush_pending_save()
-	_assert_true(FileAccess.file_exists(building_difference_path) and _json_file_count(chunks_path) == 5, "restored building state recreates exactly one owning chunk difference")
+	_assert_true(FileAccess.file_exists(building_difference_path) and _json_file_count(chunks_path) == 6, "restored building state recreates exactly one owning chunk difference")
 	var without_farming := restored_world_state.duplicate(true)
 	without_farming["farming_state"] = FarmingState.new(int(metadata["seed"])).persistence_snapshot()
 	_assert_true(SaveManager.request_save(restored_player, without_farming, 43.75, false), "cleared farming snapshot dispatches a compacting save")
 	SaveManager.flush_pending_save()
-	_assert_true(not FileAccess.file_exists(farming_difference_path) and _json_file_count(chunks_path) == 4, "removing the last farm cleans its stale farming-only chunk difference")
+	_assert_true(not FileAccess.file_exists(farming_difference_path) and _json_file_count(chunks_path) == 5, "removing the last farm cleans its stale farming-only chunk difference")
 	_assert_true(SaveManager.request_save(restored_player, restored_world_state, 43.9, false), "farming fixture can be restored after stale-difference coverage")
 	SaveManager.flush_pending_save()
-	_assert_true(FileAccess.file_exists(farming_difference_path) and _json_file_count(chunks_path) == 5, "restored farming state recreates exactly one owning chunk difference")
+	_assert_true(FileAccess.file_exists(farming_difference_path) and _json_file_count(chunks_path) == 6, "restored farming state recreates exactly one owning chunk difference")
 	var without_husbandry := restored_world_state.duplicate(true)
 	without_husbandry["husbandry_state"] = HusbandryState.new(int(metadata["seed"])).persistence_snapshot()
 	_assert_true(SaveManager.request_save(restored_player, without_husbandry, 43.95, false), "cleared husbandry snapshot dispatches a compacting save")
 	SaveManager.flush_pending_save()
-	_assert_true(not FileAccess.file_exists(husbandry_difference_path) and _json_file_count(chunks_path) == 4, "removing the last interacted animal cleans its stale husbandry-only chunk difference")
+	_assert_true(not FileAccess.file_exists(husbandry_difference_path) and _json_file_count(chunks_path) == 5, "removing the last interacted animal cleans its stale husbandry-only chunk difference")
 	_assert_true(SaveManager.request_save(restored_player, restored_world_state, 43.99, false), "husbandry fixture can be restored after stale-difference coverage")
 	SaveManager.flush_pending_save()
-	_assert_true(FileAccess.file_exists(husbandry_difference_path) and _json_file_count(chunks_path) == 5, "restored husbandry state recreates exactly one owning chunk difference")
+	_assert_true(FileAccess.file_exists(husbandry_difference_path) and _json_file_count(chunks_path) == 6, "restored husbandry state recreates exactly one owning chunk difference")
+	var without_boats := restored_world_state.duplicate(true)
+	without_boats["boat_state"] = BoatState.new().persistence_snapshot()
+	_assert_true(SaveManager.request_save(restored_player, without_boats, 44.0, false), "cleared boat snapshot dispatches a compacting save")
+	SaveManager.flush_pending_save()
+	_assert_true(not FileAccess.file_exists(boat_difference_path) and _json_file_count(chunks_path) == 5, "retrieving the final boat cleans its stale boat-only chunk difference")
+	_assert_true(SaveManager.request_save(restored_player, restored_world_state, 44.0, false), "boat fixture can be restored after stale-difference coverage")
+	SaveManager.flush_pending_save()
+	_assert_true(FileAccess.file_exists(boat_difference_path) and _json_file_count(chunks_path) == 6, "restored boat state recreates exactly one owning chunk difference")
 	_assert_true(SaveManager.request_save(restored_player, restored_world_state, 44.0, true), "manual save requests a backup")
 	SaveManager.flush_pending_save()
 	_assert_true(_directory_count(root.path_join("backups")) >= 1, "manual save creates a recoverable backup directory")
@@ -2381,8 +2533,8 @@ func _test_save_system() -> void:
 	_assert_true(SaveManager.current_player_layer() == &"surface", "legacy save migration initializes the surface world layer")
 	_assert_true(SaveManager.request_save(SaveManager.loaded_player_snapshot(), migrated_state, 45.0, false), "migrated world can be committed as current save format")
 	SaveManager.flush_pending_save()
-	_assert_equal(int(_read_json_for_test(root.path_join("world.json")).get("save_version", 0)), 25, "next save commits V0.7 world metadata as format 25")
-	_assert_equal(int(_read_json_for_test(root.path_join("player.json")).get("save_version", 0)), 25, "next save commits V0.7 player inventory as format 25")
+	_assert_equal(int(_read_json_for_test(root.path_join("world.json")).get("save_version", 0)), 26, "next save commits V0.7 world metadata as format 26")
+	_assert_equal(int(_read_json_for_test(root.path_join("player.json")).get("save_version", 0)), 26, "next save commits V0.7 player inventory as format 26")
 	var v08_metadata := _read_json_for_test(root.path_join("world.json"))
 	v08_metadata["save_version"] = 3
 	var v08_player := _read_json_for_test(root.path_join("player.json"))
@@ -2398,7 +2550,7 @@ func _test_save_system() -> void:
 			_write_json_for_test(chunks_path.path_join(filename), v08_difference)
 	SaveManager.clear_current_world()
 	_assert_true(SaveManager.load_world(world_id), "V0.8 save format 3 migrates to dungeon-capable format 9")
-	_assert_equal(int(SaveManager.loaded_player_snapshot().get("save_version", 0)), 25, "V0.8 migration normalizes player save version in memory")
+	_assert_equal(int(SaveManager.loaded_player_snapshot().get("save_version", 0)), 26, "V0.8 migration normalizes player save version in memory")
 	_assert_equal(int((SaveManager.loaded_world_state_snapshot()["inventory"] as Dictionary).get("schema_version", 0)), 2, "V0.8 inventory schema upgrades from 1 to 2")
 	_assert_true((SaveManager.loaded_world_state_snapshot()["crafting_state"] as Dictionary).has("discovered_items"), "V0.8 migration initializes crafting discovery state")
 	_assert_true((SaveManager.loaded_player_snapshot()["combat_state"] as Dictionary).has("respawn_position") and (SaveManager.loaded_world_state_snapshot()["grave_state"] as Dictionary).has("graves"), "V0.8 migration initializes combat and grave state")
@@ -2449,7 +2601,7 @@ func _test_save_system() -> void:
 	_write_json_for_test(root.path_join("player.json"), v110_player)
 	SaveManager.clear_current_world()
 	_assert_true(SaveManager.load_world(world_id), "V1.0/V1.1 save format 6 migrates to dungeon-capable format 9")
-	_assert_equal(int(SaveManager.loaded_player_snapshot().get("save_version", 0)), 25, "format-6 migration normalizes the player save version")
+	_assert_equal(int(SaveManager.loaded_player_snapshot().get("save_version", 0)), 26, "format-6 migration normalizes the player save version")
 	_assert_true((SaveManager.current_weather_state() as Dictionary).has("target_id"), "format-6 migration initializes a valid regional weather state")
 	var v120_metadata := _read_json_for_test(root.path_join("world.json"))
 	v120_metadata["save_version"] = 7
@@ -2462,7 +2614,7 @@ func _test_save_system() -> void:
 	_write_json_for_test(root.path_join("player.json"), v120_player)
 	SaveManager.clear_current_world()
 	_assert_true(SaveManager.load_world(world_id), "V1.2–V1.5 save format 7 migrates to dungeon-capable format 9")
-	_assert_true(SaveManager.current_player_layer() == &"surface" and int(SaveManager.loaded_player_snapshot()["save_version"]) == 25, "format-7 migration initializes a valid surface layer")
+	_assert_true(SaveManager.current_player_layer() == &"surface" and int(SaveManager.loaded_player_snapshot()["save_version"]) == 26, "format-7 migration initializes a valid surface layer")
 	_assert_true(SaveManager.request_save(SaveManager.loaded_player_snapshot(), SaveManager.loaded_world_state_snapshot(), 47.0, false), "migrated format-7 world can be normalized before corruption coverage")
 	SaveManager.flush_pending_save()
 	var v160_metadata := _read_json_for_test(root.path_join("world.json"))
@@ -2475,7 +2627,7 @@ func _test_save_system() -> void:
 	SaveManager.clear_current_world()
 	_assert_true(SaveManager.load_world(world_id), "V1.6 save format 8 migrates to dungeon-capable format 9")
 	var migrated_dungeon_state := SaveManager.loaded_world_state_snapshot()["dungeon_state"] as Dictionary
-	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 25 and String(migrated_dungeon_state.get("current_dungeon_id", "")).is_empty() and (migrated_dungeon_state.get("runs", []) as Array).is_empty(), "format-8 migration initializes a valid empty dungeon state")
+	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 26 and String(migrated_dungeon_state.get("current_dungeon_id", "")).is_empty() and (migrated_dungeon_state.get("runs", []) as Array).is_empty(), "format-8 migration initializes a valid empty dungeon state")
 	_assert_true(SaveManager.request_save(SaveManager.loaded_player_snapshot(), SaveManager.loaded_world_state_snapshot(), 47.5, false), "migrated format-8 world normalizes before current-format corruption coverage")
 	SaveManager.flush_pending_save()
 	var v170_metadata := _read_json_for_test(root.path_join("world.json"))
@@ -2500,7 +2652,7 @@ func _test_save_system() -> void:
 	SaveManager.clear_current_world()
 	_assert_true(SaveManager.load_world(world_id), "V1.7 save format 9 and generation 4 migrate to V2.0")
 	var migrated_v2_state := SaveManager.loaded_world_state_snapshot()
-	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 25 and int((migrated_v2_state["exploration_state"] as Dictionary)["schema_version"]) == ExplorationMapState.SCHEMA_VERSION and (migrated_v2_state["regional_boss_state"] as Dictionary)["defeated_ids"] == [] and (migrated_v2_state["npc_state"] as Dictionary)["records"] == [] and (migrated_v2_state["relationship_state"] as Dictionary)["npcs"] == [] and (migrated_v2_state["quest_state"] as Dictionary)["entries"] == [] and (migrated_v2_state["faction_state"] as Dictionary)["control_points"] == [] and (migrated_v2_state["world_event_state"] as Dictionary)["active"] == [] and (migrated_v2_state["region_progression_state"] as Dictionary)["sources"] == [] and is_equal_approx(float((migrated_v2_state["survival_state"] as Dictionary)["hunger"]), 100.0), "format-9 migration initializes valid empty exploration, civilization, events, region progress and survival")
+	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 26 and int((migrated_v2_state["exploration_state"] as Dictionary)["schema_version"]) == ExplorationMapState.SCHEMA_VERSION and (migrated_v2_state["regional_boss_state"] as Dictionary)["defeated_ids"] == [] and (migrated_v2_state["npc_state"] as Dictionary)["records"] == [] and (migrated_v2_state["relationship_state"] as Dictionary)["npcs"] == [] and (migrated_v2_state["quest_state"] as Dictionary)["entries"] == [] and (migrated_v2_state["faction_state"] as Dictionary)["control_points"] == [] and (migrated_v2_state["world_event_state"] as Dictionary)["active"] == [] and (migrated_v2_state["region_progression_state"] as Dictionary)["sources"] == [] and is_equal_approx(float((migrated_v2_state["survival_state"] as Dictionary)["hunger"]), 100.0), "format-9 migration initializes valid empty exploration, civilization, events, region progress and survival")
 	_assert_true(SaveManager.request_save(SaveManager.loaded_player_snapshot(), migrated_v2_state, 48.0, false), "migrated V1.7 world can commit current generation metadata")
 	SaveManager.flush_pending_save()
 	var v200_metadata := _read_json_for_test(root.path_join("world.json"))
@@ -2524,7 +2676,7 @@ func _test_save_system() -> void:
 	SaveManager.clear_current_world()
 	_assert_true(SaveManager.load_world(world_id), "V2.0 save format 10 migrates to V2.1")
 	var migrated_v21_state := SaveManager.loaded_world_state_snapshot()
-	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 25 and int((migrated_v21_state["npc_state"] as Dictionary)["schema_version"]) == NpcWorldState.SCHEMA_VERSION and (migrated_v21_state["npc_state"] as Dictionary)["records"] == [] and (migrated_v21_state["relationship_state"] as Dictionary)["npcs"] == [] and (migrated_v21_state["quest_state"] as Dictionary)["entries"] == [] and (migrated_v21_state["faction_state"] as Dictionary)["events"] == [] and (migrated_v21_state["world_event_state"] as Dictionary)["history"] == [] and (migrated_v21_state["region_progression_state"] as Dictionary)["regions"] == [], "format-10 migration initializes valid empty NPC, relationship, quest, faction, event and region state")
+	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 26 and int((migrated_v21_state["npc_state"] as Dictionary)["schema_version"]) == NpcWorldState.SCHEMA_VERSION and (migrated_v21_state["npc_state"] as Dictionary)["records"] == [] and (migrated_v21_state["relationship_state"] as Dictionary)["npcs"] == [] and (migrated_v21_state["quest_state"] as Dictionary)["entries"] == [] and (migrated_v21_state["faction_state"] as Dictionary)["events"] == [] and (migrated_v21_state["world_event_state"] as Dictionary)["history"] == [] and (migrated_v21_state["region_progression_state"] as Dictionary)["regions"] == [], "format-10 migration initializes valid empty NPC, relationship, quest, faction, event and region state")
 	_assert_true(SaveManager.request_save(SaveManager.loaded_player_snapshot(), migrated_v21_state, 48.5, false), "migrated V2.0 world commits save format 25")
 	SaveManager.flush_pending_save()
 	var v210_metadata := _read_json_for_test(root.path_join("world.json"))
@@ -2538,7 +2690,7 @@ func _test_save_system() -> void:
 	SaveManager.clear_current_world()
 	_assert_true(SaveManager.load_world(world_id), "V2.1 save format 11 migrates to V2.2")
 	var migrated_v22_state := SaveManager.loaded_world_state_snapshot()
-	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 25 and (migrated_v22_state["relationship_state"] as Dictionary)["npcs"] == [] and (migrated_v22_state["relationship_state"] as Dictionary)["villages"] == [] and (migrated_v22_state["quest_state"] as Dictionary)["entries"] == [] and (migrated_v22_state["faction_state"] as Dictionary)["events"] == [] and (migrated_v22_state["world_event_state"] as Dictionary)["active"] == [], "format-11 migration initializes valid empty relationship, quest, faction and world-event state")
+	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 26 and (migrated_v22_state["relationship_state"] as Dictionary)["npcs"] == [] and (migrated_v22_state["relationship_state"] as Dictionary)["villages"] == [] and (migrated_v22_state["quest_state"] as Dictionary)["entries"] == [] and (migrated_v22_state["faction_state"] as Dictionary)["events"] == [] and (migrated_v22_state["world_event_state"] as Dictionary)["active"] == [], "format-11 migration initializes valid empty relationship, quest, faction and world-event state")
 	_assert_true(SaveManager.request_save(SaveManager.loaded_player_snapshot(), migrated_v22_state, 49.0, false), "migrated V2.1 world commits save format 25")
 	SaveManager.flush_pending_save()
 	var v220_metadata := _read_json_for_test(root.path_join("world.json"))
@@ -2552,7 +2704,7 @@ func _test_save_system() -> void:
 	SaveManager.clear_current_world()
 	_assert_true(SaveManager.load_world(world_id), "V2.2 save format 12 migrates to V2.3")
 	var migrated_v23_state := SaveManager.loaded_world_state_snapshot()
-	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 25 and (migrated_v23_state["quest_state"] as Dictionary)["entries"] == [] and String((migrated_v23_state["quest_state"] as Dictionary)["tracked_id"]).is_empty() and (migrated_v23_state["faction_state"] as Dictionary)["events"] == [] and (migrated_v23_state["world_event_state"] as Dictionary)["history"] == [], "format-12 migration initializes valid empty quest, faction and world-event state")
+	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 26 and (migrated_v23_state["quest_state"] as Dictionary)["entries"] == [] and String((migrated_v23_state["quest_state"] as Dictionary)["tracked_id"]).is_empty() and (migrated_v23_state["faction_state"] as Dictionary)["events"] == [] and (migrated_v23_state["world_event_state"] as Dictionary)["history"] == [], "format-12 migration initializes valid empty quest, faction and world-event state")
 	_assert_true(SaveManager.request_save(SaveManager.loaded_player_snapshot(), migrated_v23_state, 49.5, false), "migrated V2.2 world commits save format 25")
 	SaveManager.flush_pending_save()
 	var v230_metadata := _read_json_for_test(root.path_join("world.json"))
@@ -2566,7 +2718,7 @@ func _test_save_system() -> void:
 	SaveManager.clear_current_world()
 	_assert_true(SaveManager.load_world(world_id), "V2.3 save format 13 migrates to V2.4")
 	var migrated_v24_state := SaveManager.loaded_world_state_snapshot()
-	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 25 and (migrated_v24_state["faction_state"] as Dictionary)["standings"].size() == 4 and (migrated_v24_state["faction_state"] as Dictionary)["events"] == [] and (migrated_v24_state["world_event_state"] as Dictionary)["active"] == [], "format-13 migration initializes all default factions and an empty event timetable without fabricating history")
+	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 26 and (migrated_v24_state["faction_state"] as Dictionary)["standings"].size() == 4 and (migrated_v24_state["faction_state"] as Dictionary)["events"] == [] and (migrated_v24_state["world_event_state"] as Dictionary)["active"] == [], "format-13 migration initializes all default factions and an empty event timetable without fabricating history")
 	_assert_true(SaveManager.request_save(SaveManager.loaded_player_snapshot(), migrated_v24_state, 49.75, false), "migrated V2.3 world commits save format 25")
 	SaveManager.flush_pending_save()
 	var v240_metadata := _read_json_for_test(root.path_join("world.json"))
@@ -2580,7 +2732,7 @@ func _test_save_system() -> void:
 	SaveManager.clear_current_world()
 	_assert_true(SaveManager.load_world(world_id), "V2.4 save format 14 migrates to V2.5")
 	var migrated_v25_state := SaveManager.loaded_world_state_snapshot()
-	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 25 and int((migrated_v25_state["world_event_state"] as Dictionary)["schema_version"]) == WorldEventState.SCHEMA_VERSION and (migrated_v25_state["world_event_state"] as Dictionary)["active"] == [] and (migrated_v25_state["world_event_state"] as Dictionary)["history"] == [], "format-14 migration initializes an empty deterministic timetable without fabricating outcomes")
+	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 26 and int((migrated_v25_state["world_event_state"] as Dictionary)["schema_version"]) == WorldEventState.SCHEMA_VERSION and (migrated_v25_state["world_event_state"] as Dictionary)["active"] == [] and (migrated_v25_state["world_event_state"] as Dictionary)["history"] == [], "format-14 migration initializes an empty deterministic timetable without fabricating outcomes")
 	_assert_true(SaveManager.request_save(SaveManager.loaded_player_snapshot(), migrated_v25_state, 50.0, false), "migrated V2.4 world commits save format 25")
 	SaveManager.flush_pending_save()
 	var v250_metadata := _read_json_for_test(root.path_join("world.json"))
@@ -2594,7 +2746,7 @@ func _test_save_system() -> void:
 	SaveManager.clear_current_world()
 	_assert_true(SaveManager.load_world(world_id), "V2.5 save format 15 migrates to V2.6")
 	var migrated_v26_state := SaveManager.loaded_world_state_snapshot()
-	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 25 and int((migrated_v26_state["region_progression_state"] as Dictionary)["schema_version"]) == RegionProgressionState.SCHEMA_VERSION and (migrated_v26_state["region_progression_state"] as Dictionary)["sources"] == [] and (migrated_v26_state["region_progression_state"] as Dictionary)["regions"] == [], "format-15 migration initializes empty region progress without fabricating discoveries or rewards")
+	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 26 and int((migrated_v26_state["region_progression_state"] as Dictionary)["schema_version"]) == RegionProgressionState.SCHEMA_VERSION and (migrated_v26_state["region_progression_state"] as Dictionary)["sources"] == [] and (migrated_v26_state["region_progression_state"] as Dictionary)["regions"] == [], "format-15 migration initializes empty region progress without fabricating discoveries or rewards")
 	_assert_true(SaveManager.request_save(SaveManager.loaded_player_snapshot(), migrated_v26_state, 50.25, false), "migrated V2.5 world commits save format 25")
 	SaveManager.flush_pending_save()
 	var v260_metadata := _read_json_for_test(root.path_join("world.json"))
@@ -2613,7 +2765,7 @@ func _test_save_system() -> void:
 	SaveManager.clear_current_world()
 	_assert_true(SaveManager.load_world(world_id), "V2.6 save format 16 migrates to V3.0")
 	var migrated_v30_state := SaveManager.loaded_world_state_snapshot()
-	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 25 and int((migrated_v30_state["quest_state"] as Dictionary)["schema_version"]) == QuestState.SCHEMA_VERSION and (migrated_v30_state["quest_state"] as Dictionary)["entries"] == changed_quest_snapshot["entries"] and (migrated_v30_state["world_choice_state"] as Dictionary)["records"] == [], "format-16 migration preserves fixed quest progress and initializes no fabricated world choices")
+	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 26 and int((migrated_v30_state["quest_state"] as Dictionary)["schema_version"]) == QuestState.SCHEMA_VERSION and (migrated_v30_state["quest_state"] as Dictionary)["entries"] == changed_quest_snapshot["entries"] and (migrated_v30_state["world_choice_state"] as Dictionary)["records"] == [], "format-16 migration preserves fixed quest progress and initializes no fabricated world choices")
 	_assert_true(SaveManager.request_save(SaveManager.loaded_player_snapshot(), migrated_v30_state, 50.5, false), "migrated V2.6 world commits save format 25")
 	SaveManager.flush_pending_save()
 	var v300_metadata := _read_json_for_test(root.path_join("world.json"))
@@ -2628,7 +2780,7 @@ func _test_save_system() -> void:
 	_assert_true(SaveManager.load_world(world_id), "V3.0 save format 17 migrates to V3.1")
 	var migrated_v31_state := SaveManager.loaded_world_state_snapshot()
 	var migrated_survival := migrated_v31_state["survival_state"] as Dictionary
-	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 25 and is_equal_approx(float(migrated_survival["hunger"]), 100.0) and is_equal_approx(float(migrated_survival["body_temperature"]), 37.0) and (migrated_survival["effects"] as Array).is_empty(), "format-17 migration initializes neutral survival state without fabricated effects")
+	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 26 and is_equal_approx(float(migrated_survival["hunger"]), 100.0) and is_equal_approx(float(migrated_survival["body_temperature"]), 37.0) and is_equal_approx(float(migrated_survival["oxygen"]), 100.0) and (migrated_survival["effects"] as Array).is_empty(), "format-17 migration initializes neutral survival state without fabricated effects")
 	_assert_true(SaveManager.request_save(SaveManager.loaded_player_snapshot(), migrated_v31_state, 50.75, false), "migrated V3.0 world commits save format 25")
 	SaveManager.flush_pending_save()
 	var v310_metadata := _read_json_for_test(root.path_join("world.json"))
@@ -2650,7 +2802,7 @@ func _test_save_system() -> void:
 	SaveManager.clear_current_world()
 	_assert_true(SaveManager.load_world(world_id), "V3.1 save format 18 migrates to V3.2")
 	var migrated_v32_state := SaveManager.loaded_world_state_snapshot()
-	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 25 and (migrated_v32_state["building_state"] as Dictionary)["placements"] == [], "format-18 migration initializes empty player-building differences without fabricating structures")
+	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 26 and (migrated_v32_state["building_state"] as Dictionary)["placements"] == [], "format-18 migration initializes empty player-building differences without fabricating structures")
 	_assert_true(SaveManager.request_save(SaveManager.loaded_player_snapshot(), migrated_v32_state, 51.0, false), "migrated V3.1 world commits save format 25")
 	SaveManager.flush_pending_save()
 	var v320_metadata := _read_json_for_test(root.path_join("world.json"))
@@ -2672,7 +2824,7 @@ func _test_save_system() -> void:
 	SaveManager.clear_current_world()
 	_assert_true(SaveManager.load_world(world_id), "V3.2 save format 19 migrates to V3.3")
 	var migrated_v33_state := SaveManager.loaded_world_state_snapshot()
-	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 25 and (migrated_v33_state["farming_state"] as Dictionary)["plots"] == [], "format-19 migration initializes empty farming differences without fabricating crops")
+	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 26 and (migrated_v33_state["farming_state"] as Dictionary)["plots"] == [], "format-19 migration initializes empty farming differences without fabricating crops")
 	_assert_true(SaveManager.request_save(SaveManager.loaded_player_snapshot(), migrated_v33_state, 51.25, false), "migrated V3.2 world commits save format 25")
 	SaveManager.flush_pending_save()
 	var v330_metadata := _read_json_for_test(root.path_join("world.json"))
@@ -2694,7 +2846,7 @@ func _test_save_system() -> void:
 	SaveManager.clear_current_world()
 	_assert_true(SaveManager.load_world(world_id), "V3.3 save format 20 migrates to V3.4")
 	var migrated_v34_state := SaveManager.loaded_world_state_snapshot()
-	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 25 and (migrated_v34_state["husbandry_state"] as Dictionary)["animals"] == [], "format-20 migration initializes empty husbandry differences without fabricating animals")
+	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 26 and (migrated_v34_state["husbandry_state"] as Dictionary)["animals"] == [], "format-20 migration initializes empty husbandry differences without fabricating animals")
 	_assert_true(SaveManager.request_save(SaveManager.loaded_player_snapshot(), migrated_v34_state, 51.5, false), "migrated V3.3 world commits save format 25")
 	SaveManager.flush_pending_save()
 	var v340_metadata := _read_json_for_test(root.path_join("world.json"))
@@ -2729,7 +2881,7 @@ func _test_save_system() -> void:
 		var placement := placement_value as Dictionary
 		migrated_processors_clean = migrated_processors_clean and StringName(placement.get("piece_id", "")) not in [&"cooking_pot", &"smelter"] \
 				and not placement.has("fuel_units") and not placement.has("processed_count")
-	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 25 and migrated_processors_clean, "format-21 migration preserves prior buildings without fabricating processors or fuel")
+	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 26 and migrated_processors_clean, "format-21 migration preserves prior buildings without fabricating processors or fuel")
 	_assert_true((migrated_v35_state["equipment_state"] as Dictionary)["records"] == [] and (migrated_v35_state["equipment_state"] as Dictionary)["equipped"] == {}, "format-21 migration also initializes no fabricated equipment")
 	_assert_true(SaveManager.request_save(SaveManager.loaded_player_snapshot(), migrated_v35_state, 51.75, false), "migrated V3.4 world commits save format 25")
 	SaveManager.flush_pending_save()
@@ -2752,7 +2904,7 @@ func _test_save_system() -> void:
 	SaveManager.clear_current_world()
 	_assert_true(SaveManager.load_world(world_id), "V3.5 save format 22 migrates to V3.6")
 	var migrated_v36_state := SaveManager.loaded_world_state_snapshot()
-	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 25 and (migrated_v36_state["equipment_state"] as Dictionary)["records"] == [] and (migrated_v36_state["equipment_state"] as Dictionary)["equipped"] == {}, "format-22 migration initializes no fabricated equipment instances or slots")
+	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 26 and (migrated_v36_state["equipment_state"] as Dictionary)["records"] == [] and (migrated_v36_state["equipment_state"] as Dictionary)["equipped"] == {}, "format-22 migration initializes no fabricated equipment instances or slots")
 	_assert_true(SaveManager.request_save(SaveManager.loaded_player_snapshot(), migrated_v36_state, 52.0, false), "migrated V3.5 world commits save format 25")
 	SaveManager.flush_pending_save()
 	var v360_metadata := _read_json_for_test(root.path_join("world.json"))
@@ -2785,7 +2937,7 @@ func _test_save_system() -> void:
 		var placement := placement_value as Dictionary
 		migrated_automation_clean = migrated_automation_clean and BuildingCatalog.new().automation_kind(StringName(placement.get("piece_id", ""))).is_empty() \
 				and not placement.has("automation_enabled") and not placement.has("automation_last_seconds") and not placement.has("automation_cycles")
-	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 25 and migrated_automation_clean, "format-23 migration preserves prior buildings without fabricating automation machines or work state")
+	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 26 and migrated_automation_clean, "format-23 migration preserves prior buildings without fabricating automation machines or work state")
 	_assert_true(SaveManager.request_save(SaveManager.loaded_player_snapshot(), migrated_v37_state, 52.25, false), "migrated V3.6 world commits save format 25")
 	SaveManager.flush_pending_save()
 	var v370_metadata := _read_json_for_test(root.path_join("world.json"))
@@ -2807,7 +2959,7 @@ func _test_save_system() -> void:
 	SaveManager.clear_current_world()
 	_assert_true(SaveManager.load_world(world_id), "V3.7 save format 24 migrates to V4.0")
 	var migrated_v40_state := SaveManager.loaded_world_state_snapshot()
-	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 25 and (migrated_v40_state["homestead_state"] as Dictionary)["bases"] == [] and String((migrated_v40_state["homestead_state"] as Dictionary)["active_base_id"]).is_empty(), "format-24 migration initializes no fabricated base, beacon or active home")
+	_assert_true(int(SaveManager.loaded_player_snapshot()["save_version"]) == 26 and (migrated_v40_state["homestead_state"] as Dictionary)["bases"] == [] and String((migrated_v40_state["homestead_state"] as Dictionary)["active_base_id"]).is_empty(), "format-24 migration initializes no fabricated base, beacon or active home")
 	_assert_true(SaveManager.request_save(SaveManager.loaded_player_snapshot(), migrated_v40_state, 52.5, false), "migrated V3.7 world commits save format 25")
 	SaveManager.flush_pending_save()
 	var valid_layered_player := _read_json_for_test(root.path_join("player.json"))
@@ -3305,6 +3457,84 @@ func _test_homestead_runtime() -> void:
 	_assert_true(restored_buildings.restore_snapshot(persisted_world["building_state"] as Dictionary) and restored_home.restore_snapshot(persisted_world["homestead_state"] as Dictionary, restored_buildings), "runtime base and marker snapshots validate together without a second building owner")
 	var demolition := manager.demolish_building(marker_tile)
 	_assert_true(bool(demolition["ok"]) and int(manager.homestead_state_snapshot()["base_count"]) == 0, "demolishing the final beacon removes its base and active home immediately")
+	manager.queue_free()
+	player.queue_free()
+	await get_tree().process_frame
+
+
+func _test_ocean_runtime() -> void:
+	var seed := WorldSeed.from_text("V4.1-ocean-runtime")
+	var start_chunk := Vector2i(-1, -4)
+	var terrain := TerrainGenerator.new(seed)
+	var initial_chunk := terrain.generate_chunk(start_chunk)
+	var player := (load("res://scenes/player/player.tscn") as PackedScene).instantiate() as PlayerCharacter
+	var player_tile := terrain.find_land_near(initial_chunk)
+	player.position = WorldCoordinates.tile_to_world_pixel(player_tile, true)
+	player.combat_state().respawn_position = player.position
+	add_child(player)
+	var manager := ChunkStreamManager.new()
+	manager.configure(seed, player, initial_chunk, &"surface")
+	add_child(manager)
+	await get_tree().process_frame
+	var inventory := manager.harvest_state().inventory_model()
+	inventory.add_item(&"rowboat", 1)
+	var boat_slot := _find_item_slot(inventory, &"rowboat")
+	_assert_true(boat_slot >= 0 and manager.select_hotbar_slot(boat_slot), "runtime fixture equips the crafted rowboat")
+	var water_tile := Vector2i(2147483647, 2147483647)
+	var stand_tile := Vector2i(2147483647, 2147483647)
+	for offset_y in range(-6, 7):
+		for offset_x in range(-6, 7):
+			var candidate := player_tile + Vector2i(offset_x, offset_y)
+			var candidate_terrain := terrain.terrain_at(candidate)
+			if candidate_terrain != ChunkData.Terrain.SHALLOW_WATER and candidate_terrain != ChunkData.Terrain.DEEP_WATER:
+				continue
+			water_tile = candidate
+			break
+		if water_tile.x != 2147483647:
+			break
+	_assert_true(water_tile.x != 2147483647, "runtime ocean fixture finds a water tile near the shore")
+	if water_tile.x == 2147483647:
+		manager.queue_free()
+		player.queue_free()
+		await get_tree().process_frame
+		return
+	var delta := water_tile - player_tile
+	if absi(delta.x) >= absi(delta.y):
+		stand_tile = water_tile + Vector2i(1 if delta.x <= 0 else -1, 0)
+	else:
+		stand_tile = water_tile + Vector2i(0, 1 if delta.y <= 0 else -1)
+	player.global_position = WorldCoordinates.tile_to_world_pixel(stand_tile, true)
+	player.facing = Vector2(water_tile - stand_tile)
+	var deployed := manager.try_interact_boat()
+	_assert_true(deployed and not manager.boat_state().boat_at(water_tile).is_empty() and inventory.quantity(&"rowboat") == 0, "interacting with a rowboat deploys it onto the facing water tile and consumes the item")
+	var boarded := manager.try_interact_boat()
+	_assert_true(boarded and not manager.boarded_boat_id().is_empty(), "a second interaction boards the adjacent deployed boat")
+	var sail_tile := water_tile + (Vector2i(1, 0) if absi(delta.x) >= absi(delta.y) else Vector2i(0, 1))
+	var sail_water := terrain.terrain_at(sail_tile) == ChunkData.Terrain.SHALLOW_WATER or terrain.terrain_at(sail_tile) == ChunkData.Terrain.DEEP_WATER
+	if sail_water:
+		player.global_position = WorldCoordinates.tile_to_world_pixel(sail_tile, true)
+		manager._update_boat_follow()
+		_assert_true(not manager.boarded_boat_id().is_empty(), "sailing across water keeps the session boarding state")
+	var shore_tile := Vector2i(2147483647, 2147483647)
+	for offset_y in range(-4, 5):
+		for offset_x in range(-4, 5):
+			var candidate := (sail_tile if sail_water else water_tile) + Vector2i(offset_x, offset_y)
+			if terrain.terrain_at(candidate) == ChunkData.Terrain.LAND or terrain.terrain_at(candidate) == ChunkData.Terrain.BEACH:
+				shore_tile = candidate
+				break
+		if shore_tile.x != 2147483647:
+			break
+	_assert_true(shore_tile.x != 2147483647, "runtime ocean fixture finds a shore tile near the moored boat")
+	if shore_tile.x != 2147483647:
+		player.global_position = WorldCoordinates.tile_to_world_pixel(shore_tile, true)
+		manager._update_boat_follow()
+		var moor_tile := sail_tile if sail_water else water_tile
+		_assert_true(manager.boarded_boat_id().is_empty() and not manager.boat_state().boat_at(moor_tile).is_empty(), "reaching dry land moors the boat at its last water tile and disembarks automatically")
+	var persisted_world := manager.persistence_snapshot()
+	var restored_boats := BoatState.new()
+	_assert_true(restored_boats.restore_snapshot(persisted_world["boat_state"] as Dictionary) and restored_boats.boat_count() >= 1, "runtime boat state persists into the world snapshot")
+	player.set_ocean_state(0.55, true, 5.0)
+	_assert_true(is_equal_approx(player.terrain_speed_multiplier, 0.55) and player.in_terrain_water, "player ocean state composes swim speed and water flags")
 	manager.queue_free()
 	player.queue_free()
 	await get_tree().process_frame
@@ -4072,19 +4302,22 @@ func _test_survival_hud_layout() -> void:
 		"temperature_state": "寒冷",
 		"wetness": 82.0,
 		"wetness_maximum": 100.0,
+		"oxygen": 35.0,
+		"oxygen_maximum": 100.0,
 		"effects": [{"effect_id": "frostbite", "display_name": "冻伤", "remaining_seconds": 24.0, "color": "91cbea"}],
 	})
 	await get_tree().process_frame
 	var panel := hud.find_child("SurvivalPanel", true, false) as Control
 	var hunger_fill := hud.find_child("HungerFill", true, false) as ColorRect
 	var wetness_fill := hud.find_child("WetnessFill", true, false) as ColorRect
+	var oxygen_fill := hud.find_child("OxygenFill", true, false) as ColorRect
 	var temperature := hud.find_child("BodyTemperatureLabel", true, false) as Label
 	var effects := hud.find_child("StatusEffectsLabel", true, false) as Label
 	var mode := hud.find_child("SurvivalModeLabel", true, false) as Label
-	_assert_true(panel != null and hunger_fill != null and wetness_fill != null and temperature != null and effects != null and mode != null, "survival HUD exposes hunger, temperature, wetness, effects and mode nodes")
-	_assert_true(is_equal_approx(hunger_fill.scale.x, 0.48) and is_equal_approx(wetness_fill.scale.x, 0.82) and "寒冷" in temperature.text and "冻伤" in effects.text, "survival HUD reflects exact attributes and active effects")
+	_assert_true(panel != null and hunger_fill != null and wetness_fill != null and oxygen_fill != null and temperature != null and effects != null and mode != null, "survival HUD exposes hunger, temperature, wetness, oxygen, effects and mode nodes")
+	_assert_true(is_equal_approx(hunger_fill.scale.x, 0.48) and is_equal_approx(wetness_fill.scale.x, 0.82) and is_equal_approx(oxygen_fill.scale.x, 0.35) and "寒冷" in temperature.text and "冻伤" in effects.text, "survival HUD reflects exact attributes and active effects")
 	_assert_true(get_viewport().get_visible_rect().encloses(panel.get_global_rect()), "survival HUD remains inside the 1280×720 viewport")
-	EventBus.survival_state_changed.emit({"enabled": false, "hunger": 48.0, "hunger_maximum": 100.0, "body_temperature": 33.4, "temperature_state": "寒冷", "wetness": 82.0, "wetness_maximum": 100.0, "effects": []})
+	EventBus.survival_state_changed.emit({"enabled": false, "hunger": 48.0, "hunger_maximum": 100.0, "body_temperature": 33.4, "temperature_state": "寒冷", "wetness": 82.0, "wetness_maximum": 100.0, "oxygen": 100.0, "oxygen_maximum": 100.0, "effects": []})
 	await get_tree().process_frame
 	_assert_true("已关闭" in mode.text, "survival HUD makes the disabled rule state explicit")
 	hud.queue_free()

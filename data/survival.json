@@ -8,12 +8,15 @@
     "temperature_comfort_min": 35.5,
     "temperature_comfort_max": 38.5,
     "wetness_min": 0.0,
-    "wetness_max": 100.0
+    "wetness_max": 100.0,
+    "oxygen_min": 0.0,
+    "oxygen_max": 100.0
   },
   "defaults": {
     "hunger": 100.0,
     "body_temperature": 37.0,
-    "wetness": 0.0
+    "wetness": 0.0,
+    "oxygen": 100.0
   },
   "rates": {
     "hunger_idle_per_second": 0.024,
@@ -25,7 +28,9 @@
     "wetness_swamp_per_second": 0.18,
     "dry_base_per_second": 0.22,
     "dry_hot_bonus_per_second": 0.35,
-    "dry_heat_source_bonus_per_second": 0.75
+    "dry_heat_source_bonus_per_second": 0.75,
+    "oxygen_deep_water_drain_per_second": 5.0,
+    "oxygen_recovery_per_second": 25.0
   },
   "thresholds": {
     "low_hunger": 25.0,
@@ -49,7 +54,8 @@
       "mountain": 31.0,
       "taiga": 29.0,
       "savanna": 41.0,
-      "meadow": 37.0
+      "meadow": 37.0,
+      "island": 36.0
     },
     "layer_temperature": {
       "underground": 33.0,
@@ -125,6 +131,27 @@
       "health_restore": 0.0,
       "temperature_delta": -4.0,
       "clear_effects": ["burning"]
+    },
+    {
+      "item_id": "kelp",
+      "hunger_restore": 6.0,
+      "health_restore": 0.0,
+      "temperature_delta": 0.0,
+      "clear_effects": []
+    },
+    {
+      "item_id": "clam",
+      "hunger_restore": 10.0,
+      "health_restore": 2.0,
+      "temperature_delta": 0.0,
+      "clear_effects": []
+    },
+    {
+      "item_id": "cooked_fish",
+      "hunger_restore": 30.0,
+      "health_restore": 8.0,
+      "temperature_delta": 1.0,
+      "clear_effects": []
     }
   ],
   "effects": [
@@ -163,6 +190,15 @@
       "damage_per_tick": 3.0,
       "movement_multiplier": 0.80,
       "color": "d1a85f"
+    },
+    {
+      "id": "drowning",
+      "display_name": "溺水",
+      "duration_seconds": 4.0,
+      "tick_seconds": 1.2,
+      "damage_per_tick": 5.0,
+      "movement_multiplier": 0.55,
+      "color": "6fb6d8"
     }
   ]
 }

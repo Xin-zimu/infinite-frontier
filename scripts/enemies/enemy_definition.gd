@@ -22,6 +22,7 @@ extends Resource
 @export var attack_recovery := 0.2
 @export var knockback := 0.0
 @export var return_distance := 1.0
+@export var aquatic := false
 var drops: Array[Dictionary] = []
 
 
@@ -31,6 +32,7 @@ func configure(value: Dictionary) -> void:
 	profile = StringName(value.get("profile", ""))
 	role = StringName(value.get("role", "normal"))
 	color = Color(String(value.get("color", "ffffff")))
+	aquatic = bool(value.get("aquatic", false))
 	world_layers.clear()
 	for layer_value in value.get("world_layers", ["surface"]) as Array:
 		world_layers.append(StringName(layer_value))

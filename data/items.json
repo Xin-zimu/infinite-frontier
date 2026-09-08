@@ -33,6 +33,7 @@
     {"id": "grove_sigil", "display_name": "林冠印记", "category": "reward", "max_stack": 10, "color": "67b779"},
     {"id": "dune_sigil", "display_name": "沙海印记", "category": "reward", "max_stack": 10, "color": "d8a85a"},
     {"id": "frost_sigil", "display_name": "霜穹印记", "category": "reward", "max_stack": 10, "color": "9bc8e8"},
+    {"id": "tide_sigil", "display_name": "潮汐印记", "category": "reward", "max_stack": 10, "color": "4d7fae"},
     {"id": "berry", "display_name": "浆果", "category": "food", "max_stack": 20, "color": "c94f69"},
     {"id": "cooked_berries", "display_name": "熟浆果", "category": "food", "max_stack": 10, "color": "e0745f"},
     {"id": "wood_axe", "display_name": "木斧", "category": "tool", "max_stack": 1, "color": "c58a52", "tool_kind": "axe", "tool_power": 1, "durability": 30},
@@ -87,6 +88,14 @@
     {"id": "conveyor_belt", "display_name": "传送带", "category": "station", "max_stack": 20, "color": "5f8794"},
     {"id": "automatic_smelter", "display_name": "自动熔炉", "category": "station", "max_stack": 5, "color": "9b6251"},
     {"id": "storage_link", "display_name": "储物连接器", "category": "station", "max_stack": 20, "color": "6b9b7a"},
-    {"id": "item_sorter", "display_name": "物品分拣器", "category": "station", "max_stack": 10, "color": "9b78b2"}
+    {"id": "item_sorter", "display_name": "物品分拣器", "category": "station", "max_stack": 10, "color": "9b78b2"},
+    {"id": "kelp", "display_name": "海带", "category": "food", "max_stack": 20, "color": "3f7d4a"},
+    {"id": "clam", "display_name": "贝肉", "category": "food", "max_stack": 20, "color": "d9c3a0"},
+    {"id": "coral", "display_name": "珊瑚", "category": "material", "max_stack": 20, "color": "e88b6f"},
+    {"id": "driftwood", "display_name": "浮木", "category": "material", "max_stack": 20, "color": "9a7b52"},
+    {"id": "raw_fish", "display_name": "生鱼", "category": "material", "max_stack": 20, "color": "8fa8b8"},
+    {"id": "cooked_fish", "display_name": "烤鱼", "category": "food", "max_stack": 20, "color": "c9a06a"},
+    {"id": "pearl", "display_name": "珍珠", "category": "reward", "max_stack": 10, "color": "f2ecdc"},
+    {"id": "rowboat", "display_name": "小木船", "category": "utility", "max_stack": 5, "color": "a97c50"}
   ]
 }

@@ -182,6 +182,10 @@ REQUIRED_PATHS = (
     "scripts/homestead/homestead_state.gd",
     "scripts/ui/homestead_panel.gd",
     "data/homestead.json",
+    "scripts/ocean/ocean_catalog.gd",
+    "scripts/ocean/boat_state.gd",
+    "scripts/world/boat_layer.gd",
+    "data/ocean.json",
     "scripts/world/player_building_layer.gd",
     "scripts/world/farming_chunk_layer.gd",
     "scripts/world/animal_chunk_layer.gd",
@@ -212,14 +216,14 @@ def main() -> int:
             failures.append(f"autoload not registered: {autoload}")
 
     version_text = (ROOT / "scripts/core/game_version.gd").read_text(encoding="utf-8")
-    if 'const VERSION := "4.0.0"' not in version_text:
-        failures.append("game version is not 4.0.0")
+    if 'const VERSION := "4.1.0"' not in version_text:
+        failures.append("game version is not 4.1.0")
 
-    if "const SAVE_VERSION := 25" not in version_text:
-        failures.append("save version is not 25")
+    if "const SAVE_VERSION := 26" not in version_text:
+        failures.append("save version is not 26")
 
-    if "const GENERATION_VERSION := 5" not in version_text:
-        failures.append("generation version is not 5")
+    if "const GENERATION_VERSION := 6" not in version_text:
+        failures.append("generation version is not 6")
 
     if failures:
         print("Structural verification failed:")

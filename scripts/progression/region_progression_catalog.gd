@@ -11,7 +11,7 @@ const REQUIRED_SOURCE_IDS := [
 	&"dungeon_completed",
 	&"regional_boss_defeated",
 ]
-const REQUIRED_BOSS_IDS := [&"grove_titan", &"dune_behemoth", &"frost_wyrm"]
+const REQUIRED_BOSS_IDS := [&"grove_titan", &"dune_behemoth", &"frost_wyrm", &"tide_sovereign"]
 
 var _valid := false
 var _error_message := ""

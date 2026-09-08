@@ -13,6 +13,8 @@ var elevation_min := -INF
 var elevation_max := INF
 var erosion_min := -INF
 var erosion_max := INF
+var island_mask_min := -INF
+var island_mask_max := INF
 
 
 func configure(definition: Dictionary) -> void:
@@ -29,27 +31,33 @@ func configure(definition: Dictionary) -> void:
 	elevation_max = float(conditions.get("elevation_max", INF))
 	erosion_min = float(conditions.get("erosion_min", -INF))
 	erosion_max = float(conditions.get("erosion_max", INF))
+	island_mask_min = float(conditions.get("island_mask_min", -INF))
+	island_mask_max = float(conditions.get("island_mask_max", INF))
 
 
-func matches(temperature_value: Variant, moisture_value: Variant, elevation_value: Variant, erosion_value: Variant) -> bool:
+func matches(temperature_value: Variant, moisture_value: Variant, elevation_value: Variant, erosion_value: Variant, island_mask_value: Variant = 0.0) -> bool:
 	var temperature := float(temperature_value)
 	var moisture := float(moisture_value)
 	var elevation := float(elevation_value)
 	var erosion := float(erosion_value)
+	var island_mask := float(island_mask_value)
 	return temperature >= temperature_min and temperature <= temperature_max \
 		and moisture >= moisture_min and moisture <= moisture_max \
 		and elevation >= elevation_min and elevation <= elevation_max \
-		and erosion >= erosion_min and erosion <= erosion_max
+		and erosion >= erosion_min and erosion <= erosion_max \
+		and island_mask >= island_mask_min and island_mask <= island_mask_max
 
 
-func distance_to_edge(temperature_value: Variant, moisture_value: Variant, elevation_value: Variant, erosion_value: Variant) -> float:
+func distance_to_edge(temperature_value: Variant, moisture_value: Variant, elevation_value: Variant, erosion_value: Variant, island_mask_value: Variant = 0.0) -> float:
 	var temperature := float(temperature_value)
 	var moisture := float(moisture_value)
 	var elevation := float(elevation_value)
 	var erosion := float(erosion_value)
+	var island_mask := float(island_mask_value)
 	var distance := INF
 	distance = minf(distance, minf(temperature - temperature_min, temperature_max - temperature))
 	distance = minf(distance, minf(moisture - moisture_min, moisture_max - moisture))
 	distance = minf(distance, minf(elevation - elevation_min, elevation_max - elevation))
 	distance = minf(distance, minf(erosion - erosion_min, erosion_max - erosion))
+	distance = minf(distance, minf(island_mask - island_mask_min, island_mask_max - island_mask))
 	return distance

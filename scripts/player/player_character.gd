@@ -23,6 +23,9 @@ var attack_flash_remaining := 0.0
 var surface_feature := HydrologyGenerator.Feature.NONE
 var surface_speed_multiplier := 1.0
 var survival_speed_multiplier := 1.0
+var terrain_speed_multiplier := 1.0
+var in_terrain_water := false
+var terrain_swim_stamina_drain := 0.0
 
 var _roll_time_remaining := 0.0
 var _roll_cooldown_remaining := 0.0
@@ -142,6 +145,12 @@ func set_survival_speed_multiplier(value: float) -> void:
 	survival_speed_multiplier = clampf(value, 0.5, 1.0)
 
 
+func set_ocean_state(speed_multiplier: float, swimming: bool, swim_stamina_drain: float) -> void:
+	terrain_speed_multiplier = clampf(speed_multiplier, 0.3, 2.5)
+	in_terrain_water = swimming
+	terrain_swim_stamina_drain = maxf(swim_stamina_drain, 0.0)
+
+
 func persistence_snapshot() -> Dictionary:
 	return {
 		"position": [global_position.x, global_position.y],
@@ -172,14 +181,17 @@ func _process_standard_movement(delta: float) -> void:
 		_start_roll(input_vector)
 		return
 	var wants_to_run := Input.is_action_pressed("run") and stamina > 0.0 and not input_vector.is_zero_approx()
-	velocity = PlayerMotor.velocity_for(input_vector, wants_to_run) * surface_speed_multiplier * survival_speed_multiplier
-	var swimming := HydrologyGenerator.is_water(surface_feature) and not input_vector.is_zero_approx()
+	velocity = PlayerMotor.velocity_for(input_vector, wants_to_run) * surface_speed_multiplier * survival_speed_multiplier * terrain_speed_multiplier
+	var swimming := (HydrologyGenerator.is_water(surface_feature) or in_terrain_water) and not input_vector.is_zero_approx()
 	if wants_to_run:
 		_set_state(MovementState.RUN)
 		_set_stamina(stamina - (RUN_STAMINA_PER_SECOND + (8.0 if swimming else 0.0)) * delta)
 	elif not input_vector.is_zero_approx():
 		_set_state(MovementState.WALK)
-		_set_stamina(stamina - 8.0 * delta if swimming else stamina + STAMINA_RECOVERY_PER_SECOND * delta)
+		if swimming:
+			_set_stamina(stamina - (8.0 if HydrologyGenerator.is_water(surface_feature) else terrain_swim_stamina_drain) * delta)
+		else:
+			_set_stamina(stamina + STAMINA_RECOVERY_PER_SECOND * delta)
 	else:
 		_set_state(MovementState.IDLE)
 		_set_stamina(stamina + STAMINA_RECOVERY_PER_SECOND * delta)
@@ -196,13 +208,13 @@ func _start_roll(input_vector: Vector2) -> void:
 	_set_stamina(stamina - ROLL_STAMINA_COST)
 	_combat_state.grant_invulnerability(ROLL_DURATION)
 	_set_state(MovementState.ROLL)
-	velocity = _roll_direction * PlayerMotor.ROLL_SPEED * surface_speed_multiplier * survival_speed_multiplier
+	velocity = _roll_direction * PlayerMotor.ROLL_SPEED * surface_speed_multiplier * survival_speed_multiplier * terrain_speed_multiplier
 
 
 func _process_roll(delta: float) -> void:
 	_roll_time_remaining -= delta
 	var progress := clampf(_roll_time_remaining / ROLL_DURATION, 0.0, 1.0)
-	velocity = _roll_direction * PlayerMotor.ROLL_SPEED * surface_speed_multiplier * survival_speed_multiplier * (0.72 + 0.28 * progress)
+	velocity = _roll_direction * PlayerMotor.ROLL_SPEED * surface_speed_multiplier * survival_speed_multiplier * terrain_speed_multiplier * (0.72 + 0.28 * progress)
 	if _roll_time_remaining <= 0.0:
 		_roll_cooldown_remaining = ROLL_COOLDOWN
 		velocity = Vector2.ZERO

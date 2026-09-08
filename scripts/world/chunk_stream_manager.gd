@@ -84,6 +84,11 @@ var _homestead_catalog := HomesteadCatalog.new()
 var _homestead_state := HomesteadState.new(_homestead_catalog)
 var _equipment_catalog := EquipmentCatalog.new()
 var _equipment_state := EquipmentState.new(_equipment_catalog, _item_catalog)
+var _ocean_catalog := OceanCatalog.new()
+var _boat_state := BoatState.new(_ocean_catalog)
+var _boat_layer: BoatLayer
+var _boarded_boat_id := ""
+var _boat_last_water_tile := Vector2i.ZERO
 
 
 func configure(world_seed: int, player: PlayerCharacter, initial_chunk: ChunkData = null, world_layer: StringName = &"surface") -> void:
@@ -124,6 +129,10 @@ func _ready() -> void:
 	_drop_pool = WorldDropPool.new()
 	_drop_pool.configure(_resource_catalog.drop_pool_capacity(), _resource_catalog)
 	add_child(_drop_pool)
+	_boat_layer = BoatLayer.new()
+	_boat_layer.z_index = 3
+	add_child(_boat_layer)
+	_refresh_boat_layer()
 	_enemy_director = EnemyDirector.new()
 	_enemy_director.configure(_world_seed, _player, _drop_pool, _world_layer, _dungeon_context())
 	_enemy_director.update_regional_boss_state(_regional_boss_state.persistence_snapshot())
@@ -202,6 +211,7 @@ func _process(delta: float) -> void:
 		_update_building_context()
 		_update_resource_prompt()
 	_process_dungeon_trap()
+	_update_boat_follow()
 
 
 func _exit_tree() -> void:
@@ -579,6 +589,8 @@ func interact() -> void:
 		return
 	if try_open_nearest_cave_chest():
 		return
+	if _world_layer == &"surface" and try_interact_boat():
+		return
 	if try_interact_player_building():
 		return
 	if _npc_director != null and _npc_director.try_interact():
@@ -590,6 +602,172 @@ func interact() -> void:
 	if try_reclaim_nearest_grave():
 		return
 	interact_with_nearest_resource()
+
+
+func boarded_boat_id() -> String:
+	return _boarded_boat_id
+
+
+func boarded_boat_speed() -> float:
+	if _boarded_boat_id.is_empty():
+		return 1.0
+	for record in _boat_state.boats():
+		if String(record["boat_id"]) == _boarded_boat_id:
+			var definition := _ocean_catalog.boat_for_item(StringName(record["item_id"]))
+			if definition.is_empty():
+				return 1.0
+			return float(definition.get("speed_multiplier", 1.0))
+	return 1.0
+
+
+func boat_state() -> BoatState:
+	return _boat_state
+
+
+func ocean_catalog() -> OceanCatalog:
+	return _ocean_catalog
+
+
+func try_interact_boat() -> bool:
+	if _player == null:
+		return false
+	var player_tile := WorldCoordinates.world_pixel_to_tile(_player.global_position)
+	if not _boarded_boat_id.is_empty():
+		return _disembark_boat(player_tile)
+	var nearby := _nearest_boat_record(player_tile, 1)
+	if not nearby.is_empty():
+		return _board_boat(nearby)
+	var selected := selected_item_id()
+	var definition := _ocean_catalog.boat_for_item(selected)
+	if definition.is_empty():
+		return false
+	return _deploy_boat(player_tile, selected, definition)
+
+
+func _deploy_boat(player_tile: Vector2i, item_id: StringName, definition: Dictionary) -> bool:
+	var dir := _cardinal_facing()
+	var deploy_range := int(definition.get("deploy_range_tiles", 2))
+	for distance in range(1, deploy_range + 1):
+		var target := player_tile + dir * distance
+		var terrain := _surface_terrain_at(target)
+		if terrain != ChunkData.Terrain.SHALLOW_WATER and terrain != ChunkData.Terrain.DEEP_WATER:
+			continue
+		if not _boat_state.boat_at(target).is_empty():
+			continue
+		if _water_resource_occupied(target):
+			EventBus.interaction_feedback.emit("该水面有海洋资源，无法停船", false)
+			return true
+		if not _boat_state.can_deploy(item_id):
+			EventBus.interaction_feedback.emit(_boat_state.last_error, false)
+			return true
+		if not consume_selected_item(item_id, 1):
+			EventBus.interaction_feedback.emit("快捷栏中没有可部署的船只", false)
+			return true
+		var record := _boat_state.deploy(target, item_id)
+		if record.is_empty():
+			EventBus.interaction_feedback.emit(_boat_state.last_error, false)
+			return true
+		_refresh_boat_layer()
+		_emit_tool_and_inventory()
+		EventBus.interaction_feedback.emit("已部署%s，靠近后按 E 登船" % String(definition.get("display_name", "小木船")), true)
+		return true
+	EventBus.interaction_feedback.emit("附近没有可以停泊的水面", false)
+	return true
+
+
+func _board_boat(record: Dictionary) -> bool:
+	var boat_tile_value: Array = record["world_tile"]
+	var boat_tile := Vector2i(int(boat_tile_value[0]), int(boat_tile_value[1]))
+	_boarded_boat_id = String(record["boat_id"])
+	_boat_last_water_tile = boat_tile
+	_player.global_position = WorldCoordinates.tile_to_world_pixel(boat_tile, true)
+	_refresh_boat_layer()
+	EventBus.interaction_feedback.emit("已登船，按 E 下船，驶向岸边即可靠岸", true)
+	return true
+
+
+func _disembark_boat(player_tile: Vector2i) -> bool:
+	var terrain := _surface_terrain_at(player_tile)
+	if terrain == ChunkData.Terrain.SHALLOW_WATER or terrain == ChunkData.Terrain.DEEP_WATER:
+		var target := player_tile + _cardinal_facing()
+		var target_terrain := _surface_terrain_at(target)
+		if target_terrain == ChunkData.Terrain.LAND or target_terrain == ChunkData.Terrain.BEACH:
+			_finish_disembark()
+			return true
+		EventBus.interaction_feedback.emit("需要驶向岸边或面向陆地按 E 才能下船", false)
+		return true
+	_finish_disembark()
+	return true
+
+
+func _finish_disembark() -> void:
+	if not _boat_state.relocate(_boarded_boat_id, _boat_last_water_tile):
+		push_warning("Unable to relocate boat: %s" % _boat_state.last_error)
+	_boarded_boat_id = ""
+	_refresh_boat_layer()
+	EventBus.interaction_feedback.emit("已下船", true)
+
+
+func _update_boat_follow() -> void:
+	if _boarded_boat_id.is_empty() or _player == null or _world_layer != &"surface":
+		return
+	var player_tile := WorldCoordinates.world_pixel_to_tile(_player.global_position)
+	var terrain := _surface_terrain_at(player_tile)
+	if terrain == ChunkData.Terrain.SHALLOW_WATER or terrain == ChunkData.Terrain.DEEP_WATER:
+		_boat_last_water_tile = player_tile
+		_refresh_boat_layer()
+	else:
+		if not _boat_state.relocate(_boarded_boat_id, _boat_last_water_tile):
+			push_warning("Unable to moor boat: %s" % _boat_state.last_error)
+		_boarded_boat_id = ""
+		_refresh_boat_layer()
+		EventBus.interaction_feedback.emit("已靠岸下船", true)
+
+
+func _nearest_boat_record(player_tile: Vector2i, radius: int) -> Dictionary:
+	for offset_y in range(-radius, radius + 1):
+		for offset_x in range(-radius, radius + 1):
+			var record := _boat_state.boat_at(player_tile + Vector2i(offset_x, offset_y))
+			if not record.is_empty():
+				return record
+	return {}
+
+
+func _refresh_boat_layer() -> void:
+	if _boat_layer == null:
+		return
+	var records := _boat_state.boats()
+	if _world_layer != &"surface":
+		_boat_layer.set_boats([], "")
+		return
+	if not _boarded_boat_id.is_empty():
+		for record in records:
+			if String(record["boat_id"]) == _boarded_boat_id:
+				record["world_tile"] = [_boat_last_water_tile.x, _boat_last_water_tile.y]
+	_boat_layer.set_boats(records, _boarded_boat_id)
+
+
+func _cardinal_facing() -> Vector2i:
+	var facing := _player.facing if _player != null else Vector2.DOWN
+	if absf(facing.x) >= absf(facing.y):
+		return Vector2i(1, 0) if facing.x > 0.0 else Vector2i(-1, 0)
+	return Vector2i(0, 1) if facing.y > 0.0 else Vector2i(0, -1)
+
+
+func _surface_terrain_at(world_tile: Vector2i) -> int:
+	if _world_layer != &"surface":
+		return -1
+	var chunk := _cache.get(WorldCoordinates.tile_to_chunk(world_tile)) as ChunkData
+	if chunk == null:
+		return -1
+	return int(chunk.tile_at(WorldCoordinates.tile_to_local(world_tile)))
+
+
+func _water_resource_occupied(world_tile: Vector2i) -> bool:
+	var chunk := _cache.get(WorldCoordinates.tile_to_chunk(world_tile)) as ChunkData
+	if chunk == null:
+		return false
+	return chunk.has_resource_at(WorldCoordinates.tile_to_local(world_tile))
 
 
 func create_death_grave(world_position: Vector2) -> Dictionary:
@@ -791,6 +969,7 @@ func _switch_world_layer_internal(target_layer: StringName, target_position: Vec
 	_player.global_position = target_position
 	_player.velocity = Vector2.ZERO
 	_movement_direction = Vector2i.ZERO
+	_boarded_boat_id = ""
 	_current_chunk = WorldCoordinates.tile_to_chunk(WorldCoordinates.world_pixel_to_tile(target_position))
 	var initial_chunk := _generate_chunk(_current_chunk)
 	_cache[_current_chunk] = initial_chunk
@@ -1549,6 +1728,7 @@ func persistence_snapshot() -> Dictionary:
 	snapshot["husbandry_state"] = _husbandry_state.persistence_snapshot()
 	snapshot["homestead_state"] = _homestead_state.persistence_snapshot()
 	snapshot["equipment_state"] = _equipment_state.persistence_snapshot()
+	snapshot["boat_state"] = _boat_state.persistence_snapshot()
 	return snapshot
 
 
@@ -2402,6 +2582,12 @@ func _restore_pending_persistence() -> void:
 	) as Dictionary
 	if not _equipment_state.restore_snapshot(equipment_value):
 		push_error("Unable to restore equipment state: %s" % _equipment_state.last_error)
+	var boat_value := _pending_persistence.get(
+		"boat_state",
+		BoatState.new(_ocean_catalog).persistence_snapshot()
+	) as Dictionary
+	if not _boat_state.restore_snapshot(boat_value):
+		push_error("Unable to restore boat state: %s" % _boat_state.last_error)
 	_opened_cave_chests.clear()
 	for value in _pending_persistence.get("opened_cave_chests", []) as Array:
 		var chest_key := String(value)

@@ -161,6 +161,24 @@ func candidate_code_for_biome(biome_id: StringName, roll: float) -> int:
 	return -1
 
 
+func water_candidate_code(terrain: ChunkData.Terrain, roll: float, biome_id: StringName) -> int:
+	var terrain_name := "shallow_water" if terrain == ChunkData.Terrain.SHALLOW_WATER else "deep_water"
+	var cursor := 0.0
+	for definition in _resources:
+		if String(definition.get("surface", "land")) != "water":
+			continue
+		var allowed := definition.get("allowed_terrain", []) as Array
+		if not allowed.has(terrain_name):
+			continue
+		var weight := float((definition.get("biome_weights", {}) as Dictionary).get(String(biome_id), 0.0))
+		if weight <= 0.0:
+			continue
+		cursor += weight
+		if roll < cursor:
+			return int(definition["code"])
+	return -1
+
+
 func _load_config() -> void:
 	var file := FileAccess.open(_config_path, FileAccess.READ)
 	if file == null:
@@ -215,6 +233,18 @@ func _load_config() -> void:
 			if not ["DAWN", "DAY", "DUSK", "NIGHT"].has(String(phase_value)):
 				_fail("Resource '%s' has an invalid availability phase" % resource_id)
 				return
+		if String(definition.get("surface", "land")) == "water":
+			var allowed_terrain := definition.get("allowed_terrain", []) as Array
+			var terrain_valid := not allowed_terrain.is_empty()
+			for terrain_value in allowed_terrain:
+				if not ["shallow_water", "deep_water"].has(String(terrain_value)):
+					terrain_valid = false
+			if not terrain_valid or bool(definition.get("solid", false)):
+				_fail("Water resource '%s' must allow only water terrain and stay non-solid" % resource_id)
+				return
+		elif definition.has("allowed_terrain"):
+			_fail("Land resource '%s' must not declare allowed_terrain" % resource_id)
+			return
 		_resources.append(definition)
 		_resources_by_id[resource_id] = definition
 		_resources_by_code[code] = definition

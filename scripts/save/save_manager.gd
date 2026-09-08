@@ -2,8 +2,8 @@ extends Node
 
 const SAVE_ROOT := "user://saves"
 const DEFAULT_START_CHUNK := Vector2i(-1, -4)
-const SUPPORTED_SAVE_VERSIONS := [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
-const SUPPORTED_GENERATION_VERSIONS := [4, 5]
+const SUPPORTED_SAVE_VERSIONS := [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26]
+const SUPPORTED_GENERATION_VERSIONS := [4, 5, 6]
 
 var last_error := ""
 var last_save_duration_ms := 0.0
@@ -332,6 +332,13 @@ func load_world(world_id: String) -> bool:
 		return _fail("区域进度状态损坏：%s" % normalized_region_progression.last_error)
 	player["region_progression_state"] = normalized_region_progression.persistence_snapshot()
 	var normalized_survival := SurvivalState.new()
+	var survival_doc := player.get("survival_state", {}) as Dictionary
+	if not survival_doc.is_empty() and int(survival_doc.get("schema_version", 0)) < 2:
+		# 生存 schema 1 → 2：旧档氧气补满，不发明状态效果。
+		survival_doc = survival_doc.duplicate(true)
+		survival_doc["schema_version"] = 2
+		survival_doc["oxygen"] = 100.0
+		player["survival_state"] = survival_doc
 	if not normalized_survival.restore_snapshot(player.get("survival_state", {}) as Dictionary):
 		return _fail("生存状态损坏：%s" % normalized_survival.last_error)
 	player["survival_state"] = normalized_survival.persistence_snapshot()
@@ -375,6 +382,12 @@ func load_world(world_id: String) -> bool:
 	var normalized_husbandry := HusbandryState.new(int(metadata["seed"]))
 	if not normalized_husbandry.restore_snapshot({"schema_version": HusbandryState.SCHEMA_VERSION, "next_birth_id": 1, "animals": husbandry_animals}):
 		return _fail("养殖差异损坏：%s" % normalized_husbandry.last_error)
+	var deployed_boats := surface_result["deployed_boats"] as Array
+	if not (underground_result["deployed_boats"] as Array).is_empty():
+		return _fail("地下区块差异损坏：当前版本不允许地下船只")
+	var normalized_boats := BoatState.new()
+	if not normalized_boats.restore_snapshot({"schema_version": BoatState.SCHEMA_VERSION, "boats": deployed_boats}):
+		return _fail("船只差异损坏：%s" % normalized_boats.last_error)
 	for animal_value in normalized_husbandry.persistence_snapshot().get("animals", []) as Array:
 		var animal_record := animal_value as Dictionary
 		var animal_tile_value := animal_record["world_tile"] as Array
@@ -409,6 +422,7 @@ func load_world(world_id: String) -> bool:
 		"building_state": normalized_buildings.persistence_snapshot(),
 		"farming_state": normalized_farming.persistence_snapshot(),
 		"husbandry_state": normalized_husbandry.persistence_snapshot(),
+		"boat_state": normalized_boats.persistence_snapshot(),
 		"opened_cave_chests": opened_cave_chests,
 		"world_layer": String(metadata.get("player_layer", "surface")),
 		"active_tool": String(player.get("active_tool", "hands")),
@@ -535,13 +549,19 @@ func request_save(player: Dictionary, world_state: Dictionary, game_time_seconds
 				or not building_probe.placement_at(animal_tile, &"structure").is_empty() \
 				or not building_probe.placement_at(animal_tile, &"roof").is_empty():
 			return _fail("无法保存重叠的动物、建筑或耕地")
+	var boat_value: Variant = world_state.get("boat_state", {})
+	if not boat_value is Dictionary:
+		return _fail("无法保存无效船只状态")
+	var boat_probe := BoatState.new()
+	if not boat_probe.restore_snapshot(boat_value as Dictionary):
+		return _fail("无法保存船只状态：%s" % boat_probe.last_error)
 	# 探测校验过的文档会被下方的规范化快照整体替换，无需对它们做昂贵的深拷贝。
 	var probe_normalized_keys := [
 		"dungeon_state", "exploration_state", "regional_boss_state", "npc_state",
 		"relationship_state", "quest_state", "world_choice_state", "faction_state",
 		"world_event_state", "region_progression_state", "survival_state",
 		"equipment_state", "homestead_state", "building_state", "farming_state",
-		"husbandry_state",
+		"husbandry_state", "boat_state",
 	]
 	var normalized_world_state := {}
 	for state_key in world_state.keys():
@@ -568,6 +588,7 @@ func request_save(player: Dictionary, world_state: Dictionary, game_time_seconds
 	normalized_world_state["building_state"] = building_probe.persistence_snapshot()
 	normalized_world_state["farming_state"] = farming_probe.persistence_snapshot()
 	normalized_world_state["husbandry_state"] = husbandry_probe.persistence_snapshot()
+	normalized_world_state["boat_state"] = boat_probe.persistence_snapshot()
 	var request := {
 		"player": player.duplicate(true),
 		"world_state": normalized_world_state,
@@ -868,6 +889,17 @@ func _group_chunk_differences(world_state: Dictionary) -> Dictionary:
 		var chunk_key := "surface_%d_%d" % [chunk.x, chunk.y]
 		_ensure_difference_group(grouped, chunk_key, "surface", chunk)
 		(grouped[chunk_key]["husbandry_animals"] as Array).append(record.duplicate(true))
+	var boat_records := world_state.get("boat_state", {}) as Dictionary
+	for value in boat_records.get("boats", []) as Array:
+		var record := value as Dictionary
+		var tile_value := record.get("world_tile", []) as Array
+		if tile_value.size() != 2:
+			continue
+		var world_tile := Vector2i(int(tile_value[0]), int(tile_value[1]))
+		var chunk := WorldCoordinates.tile_to_chunk(world_tile)
+		var chunk_key := "surface_%d_%d" % [chunk.x, chunk.y]
+		_ensure_difference_group(grouped, chunk_key, "surface", chunk)
+		(grouped[chunk_key]["deployed_boats"] as Array).append(record.duplicate(true))
 	for chunk_key in grouped:
 		(grouped[chunk_key]["removed_resources"] as Array).sort()
 		(grouped[chunk_key]["opened_chests"] as Array).sort()
@@ -879,6 +911,9 @@ func _group_chunk_differences(world_state: Dictionary) -> Dictionary:
 		)
 		(grouped[chunk_key]["husbandry_animals"] as Array).sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
 			return String(a.get("animal_id", "")) < String(b.get("animal_id", ""))
+		)
+		(grouped[chunk_key]["deployed_boats"] as Array).sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+			return String(a.get("boat_id", "")) < String(b.get("boat_id", ""))
 		)
 	return grouped
 
@@ -896,6 +931,7 @@ func _ensure_difference_group(grouped: Dictionary, chunk_key: String, layer: Str
 		"placed_buildings": [],
 		"farming_plots": [],
 		"husbandry_animals": [],
+		"deployed_boats": [],
 	}
 
 
@@ -905,9 +941,10 @@ func _load_chunk_differences(chunks_path: String, expected_layer: StringName) ->
 	var placed_buildings: Array[Dictionary] = []
 	var farming_plots: Array[Dictionary] = []
 	var husbandry_animals: Array[Dictionary] = []
+	var deployed_boats: Array[Dictionary] = []
 	var directory := DirAccess.open(chunks_path)
 	if directory == null:
-		return {"ok": true, "error": "", "collected_resources": collected, "opened_cave_chests": opened_chests, "placed_buildings": placed_buildings, "farming_plots": farming_plots, "husbandry_animals": husbandry_animals}
+		return {"ok": true, "error": "", "collected_resources": collected, "opened_cave_chests": opened_chests, "placed_buildings": placed_buildings, "farming_plots": farming_plots, "husbandry_animals": husbandry_animals, "deployed_boats": deployed_boats}
 	for filename in directory.get_files():
 		if not filename.ends_with(".json"):
 			continue
@@ -1001,6 +1038,25 @@ func _load_chunk_differences(chunks_path: String, expected_layer: StringName) ->
 			if WorldCoordinates.tile_to_chunk(animal_tile) != expected_chunk:
 				return {"ok": false, "error": "%s 的动物不属于声明区块" % filename}
 			husbandry_animals.append(animal_record.duplicate(true))
+		var boats_value: Variant = difference.get("deployed_boats", []) if difference_save_version >= 26 else []
+		if not boats_value is Array:
+			return {"ok": false, "error": "%s 的船只差异不是数组" % filename}
+		if expected_layer != &"surface" and not (boats_value as Array).is_empty():
+			return {"ok": false, "error": "%s 在地下包含船只" % filename}
+		for boat_entry in boats_value as Array:
+			if not boat_entry is Dictionary:
+				return {"ok": false, "error": "%s 包含无效船只记录" % filename}
+			var boat_record := boat_entry as Dictionary
+			var boat_tile_value: Variant = boat_record.get("world_tile", [])
+			if not boat_tile_value is Array or (boat_tile_value as Array).size() != 2:
+				return {"ok": false, "error": "%s 包含无效船只坐标" % filename}
+			var boat_tile := Vector2i(int((boat_tile_value as Array)[0]), int((boat_tile_value as Array)[1]))
+			if WorldCoordinates.tile_to_chunk(boat_tile) != expected_chunk:
+				return {"ok": false, "error": "%s 的船只不属于声明区块" % filename}
+			var expected_boat_id := "surface:%d:%d" % [boat_tile.x, boat_tile.y]
+			if String(boat_record.get("boat_id", "")) != expected_boat_id:
+				return {"ok": false, "error": "%s 的船只编号与坐标不一致" % filename}
+			deployed_boats.append(boat_record.duplicate(true))
 	collected.sort()
 	opened_chests.sort()
 	placed_buildings.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
@@ -1012,7 +1068,10 @@ func _load_chunk_differences(chunks_path: String, expected_layer: StringName) ->
 	husbandry_animals.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
 		return String(a.get("animal_id", "")) < String(b.get("animal_id", ""))
 	)
-	return {"ok": true, "error": "", "collected_resources": collected, "opened_cave_chests": opened_chests, "placed_buildings": placed_buildings, "farming_plots": farming_plots, "husbandry_animals": husbandry_animals}
+	deployed_boats.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		return String(a.get("boat_id", "")) < String(b.get("boat_id", ""))
+	)
+	return {"ok": true, "error": "", "collected_resources": collected, "opened_cave_chests": opened_chests, "placed_buildings": placed_buildings, "farming_plots": farming_plots, "husbandry_animals": husbandry_animals, "deployed_boats": deployed_boats}
 
 
 func _validate_metadata(metadata: Dictionary) -> String:

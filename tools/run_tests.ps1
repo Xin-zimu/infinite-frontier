@@ -26,7 +26,16 @@ function Resolve-Executable {
 function Invoke-GodotCheck {
     param([string]$Name, [string[]]$Arguments)
     $logPath = Join-Path $LogRoot "$Name.log"
-    & $script:ResolvedGodot @Arguments 2>&1 | Tee-Object -FilePath $logPath
+    # Windows PowerShell 5.1 converts native stderr into a terminating
+    # NativeCommandError under 'Stop', killing the pipeline at the first
+    # parse error or failed assertion. Stream freely, then judge the log.
+    $previousPreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    try {
+        & $script:ResolvedGodot @Arguments 2>&1 | Tee-Object -FilePath $logPath
+    } finally {
+        $ErrorActionPreference = $previousPreference
+    }
     $exitCode = $LASTEXITCODE
     if ($exitCode -ne 0) {
         throw "Godot check '$Name' exited with code $exitCode. See $logPath"

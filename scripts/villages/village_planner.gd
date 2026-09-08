@@ -103,6 +103,7 @@ func _add_village_layout(village: Dictionary, terrain: TerrainGenerator, cells: 
 		"home_tile": center + Vector2i(1, 0),
 	})
 	var house_count := int(village["house_count"])
+	var house_entrances: Array[Vector2i] = []
 	for index in house_count:
 		var angle := TAU * float(index) / float(house_count) + float(posmod(seed, 31)) * 0.01
 		var radius_range := _catalog.house_radius_max() - _catalog.house_radius_min() + 1
@@ -130,6 +131,10 @@ func _add_village_layout(village: Dictionary, terrain: TerrainGenerator, cells: 
 			"home_tile": house_center,
 			"entrance_tile": entrance,
 		})
+		house_entrances.append(entrance)
+	# 两阶段布局：先写全部地板，再铺路。道路天然跳过既有地板，
+	# 因此后建房屋的地板不会再切断先建房屋的道路，村庄恒定连通。
+	for entrance in house_entrances:
 		_add_path(center, entrance, terrain, cells)
 
 
@@ -137,11 +142,71 @@ func _add_path(from: Vector2i, to: Vector2i, terrain: TerrainGenerator, cells: D
 	var horizontal_first := _orthogonal_path(from, to, true)
 	var vertical_first := _orthogonal_path(from, to, false)
 	var path := horizontal_first if _path_cost(horizontal_first, terrain) <= _path_cost(vertical_first, terrain) else vertical_first
+	# 密集村庄中其他房屋的地板可能截断正交路；此时围绕地板做确定性 BFS 绕行，
+	# 保证每条房屋道路都真正接入广场，村庄道路网恒定连通。
+	if _path_is_blocked(path, cells):
+		var detour := _detour_path(from, to, cells)
+		if not detour.is_empty():
+			path = detour
 	for tile in path:
 		if cells.has(tile) and int(cells[tile]) >= Feature.PLAZA:
 			continue
 		var water := terrain.water_feature_at(tile)
 		cells[tile] = Feature.BRIDGE if HydrologyGenerator.is_water(water) else Feature.ROAD
+
+
+func _path_is_blocked(path: Array[Vector2i], cells: Dictionary) -> bool:
+	for index in range(1, path.size() - 1):
+		var tile := path[index]
+		# 广场可自由穿过；只有房屋地板（含商店、水井、火堆）才算道路障碍。
+		if cells.has(tile) and int(cells[tile]) >= Feature.HOUSE:
+			return true
+	return false
+
+
+func _detour_path(from: Vector2i, to: Vector2i, cells: Dictionary) -> Array[Vector2i]:
+	var open: Array[Vector2i] = [from]
+	var came_from := {}
+	var seen := {from: true}
+	while not open.is_empty() and seen.size() < 4096:
+		var best_index := 0
+		var best := open[0]
+		var best_score := _manhattan(best, to)
+		for index in range(1, open.size()):
+			var candidate := open[index]
+			var score := _manhattan(candidate, to)
+			if score < best_score or (score == best_score and _precedes(candidate, best)):
+				best_index = index
+				best = candidate
+				best_score = score
+		open.remove_at(best_index)
+		if best == to:
+			var result: Array[Vector2i] = []
+			var cursor := to
+			while cursor != from:
+				result.append(cursor)
+				cursor = came_from[cursor]
+			result.append(from)
+			result.reverse()
+			return result
+		for direction in [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]:
+			var neighbor: Vector2i = best + direction
+			if seen.has(neighbor):
+				continue
+			if neighbor != to and cells.has(neighbor) and int(cells[neighbor]) >= Feature.HOUSE:
+				continue
+			seen[neighbor] = true
+			came_from[neighbor] = best
+			open.append(neighbor)
+	return []
+
+
+func _manhattan(a: Vector2i, b: Vector2i) -> int:
+	return absi(a.x - b.x) + absi(a.y - b.y)
+
+
+func _precedes(a: Vector2i, b: Vector2i) -> bool:
+	return a.y < b.y or (a.y == b.y and a.x < b.x)
 
 
 func _orthogonal_path(from: Vector2i, to: Vector2i, horizontal_first: bool) -> Array[Vector2i]:

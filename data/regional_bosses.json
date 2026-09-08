@@ -28,6 +28,16 @@
       "minimum_ring_chunks": 18,
       "maximum_ring_chunks": 24,
       "marker_color": "9bc8e8"
+    },
+    {
+      "id": "tide_sovereign",
+      "enemy_id": "tide_sovereign",
+      "display_name": "潮汐君主",
+      "preferred_biomes": ["ocean", "deep_ocean"],
+      "aquatic": true,
+      "minimum_ring_chunks": 25,
+      "maximum_ring_chunks": 31,
+      "marker_color": "4d7fae"
     }
   ]
 }

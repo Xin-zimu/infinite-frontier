@@ -730,3 +730,29 @@
 - Base names and active-home choice are player-owned metadata; the physical beacon, surrounding structures, farms and animals remain in their existing owning chunk differences.
 - Format-24 migration starts empty and then synchronizes only actual valid homestead beacons. A world without a marker gains no base, selection or travel time.
 - V4.0 completes the planned survival/building milestone and deliberately excludes V4.1 ocean and island expansion.
+
+# V4.1.0 - Ocean and islands
+
+- Added a validated ocean catalog for shallow/deep swimming multipliers, swim stamina drain and the rowboat's speed, 16-boat cap and two-tile deploy range.
+- Added full swimming on base-terrain water with data-driven movement multipliers plus a fourth survival attribute: oxygen drains in deep water, emptiness applies the data-driven drowning effect and surfacing recovers it deterministically.
+- Added the craftable rowboat with atomic deployment onto the facing water tile, session boarding, boat-speed sailing without oxygen drain, automatic mooring on dry land and deliberate facing-land disembark.
+- Persisted boats as tile-qualified `surface:<x>:<y>` records inside their owning surface chunk difference, advancing save format to 26 with a strict no-fabrication migration for formats 25 and earlier.
+- Added the palm island biome from a dedicated island-mask noise plus a genuine-islet rule, reclassifying existing land tiles only so terrain bytes and building legality stay intact while generation version advances to 6.
+- Added four ocean resources on a separate stable water hash channel, two aquatic enemies restricted to allowed water tiles and cell-by-cell water structures (shipwreck, sea ruin).
+- Added the fourth regional boss Tide Sovereign anchored only in open water with its 90-point world-progress gate and the tide sigil equipment-score slot.
+- Expanded the complete gate with ocean catalog, boat-state, oxygen, island-classification, water-resource, water-structure, aquatic-spawn and boat-persistence assertions plus runtime deploy/board/moor coverage.
+
+### Iteration findings
+
+- Windows PowerShell 5.1 turns native stderr into a terminating NativeCommandError under `$ErrorActionPreference='Stop'`; the test gate now streams Godot output with a relaxed preference and judges the log afterwards, so parse errors and failed assertions no longer truncate the suite silently.
+- Save-probe catalogs were reconstructed and revalidated on every autosave dispatch. Memoizing them in `SaveManager` and skipping deep copies of probe-normalized documents keeps dispatch under the 50 ms main-thread budget on slower machines.
+- Ocean resources must not perturb land generation. A separate `resource-water-cell` hash channel preserves every land candidate byte-for-byte within one generation version while water tiles gain their own stable resources.
+- Boats cannot reuse the building system: they are water-anchored, movable and ridable. Keeping `BoatState` as the sole record owner with the boarding flag as session state avoids a second writable authority while mooring stays referentially exact.
+- Island classification must not move coastlines. Deriving the biome from a mask noise plus an islet rule over existing land tiles keeps every building, road and structure anchor valid across the generation-version advance.
+
+### Decisions
+
+- Oxygen drains only in deep base-terrain water on the surface layer. Shallow water, lakes, rivers and boarding a boat keep breathing free, so ocean crossing still demands a boat or deliberate risk.
+- The boat identity is its water tile. Deployment, mooring and migration all derive the same `surface:<x>:<y>` ID, so a relocated boat remains one stable record and chunk persistence stays the only physical owner.
+- Aquatic enemies never spawn on land and land enemies never spawn in water; the planner enforces both directions so no enemy can strand on an island or swim inland far from its return radius.
+- V4.1 deliberately excludes V4.2 seasons, deeper world layers and every later roadmap system.

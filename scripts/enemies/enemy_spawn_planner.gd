@@ -41,33 +41,60 @@ func candidates_for_chunk(chunk_position: Vector2i, phase_id: StringName = &"", 
 		if occupied_tiles.has(world_tile):
 			continue
 		var biome_id: StringName
+		var enemy_roll := float((stable_hash >> 48) & 0xffff) / 65536.0
 		if world_layer == &"underground":
 			if cave_chunk == null or not cave_chunk.is_cave_floor(local) or cave_resources.has(world_tile) \
 					or cave_chunk.cave_feature_at(local) != CaveGenerator.Feature.NONE:
 				continue
 			biome_id = &"mountain"
+			var underground_enemy := _catalog.enemy_id_for_biome_phase_layer(biome_id, enemy_roll, phase_id, world_layer)
+			if underground_enemy.is_empty():
+				continue
+			occupied_tiles[world_tile] = true
+			result.append({
+				"spawn_id": "%s:%d:%d:%s" % [world_layer, world_tile.x, world_tile.y, underground_enemy],
+				"enemy_id": underground_enemy,
+				"world_layer": world_layer,
+				"biome_id": biome_id,
+				"chunk_position": chunk_position,
+				"world_tile": world_tile,
+				"world_position": WorldCoordinates.tile_to_world_pixel(world_tile, true),
+			})
+			if result.size() >= _catalog.maximum_per_chunk():
+				break
 		else:
-			if _terrain_generator.terrain_at(world_tile) != ChunkData.Terrain.LAND:
-				continue
-			if not _resource_generator.candidate_at_world_tile(world_tile, _terrain_generator).is_empty():
-				continue
+			var terrain := _terrain_generator.terrain_at(world_tile)
 			biome_id = _biome_catalog.id_for_code(_terrain_generator.biome_at(world_tile))
-		var enemy_roll := float((stable_hash >> 48) & 0xffff) / 65536.0
-		var enemy_id := _catalog.enemy_id_for_biome_phase_layer(biome_id, enemy_roll, phase_id, world_layer)
-		if enemy_id.is_empty():
-			continue
-		occupied_tiles[world_tile] = true
-		result.append({
-			"spawn_id": "%s:%d:%d:%s" % [world_layer, world_tile.x, world_tile.y, enemy_id],
-			"enemy_id": enemy_id,
-			"world_layer": world_layer,
-			"biome_id": biome_id,
-			"chunk_position": chunk_position,
-			"world_tile": world_tile,
-			"world_position": WorldCoordinates.tile_to_world_pixel(world_tile, true),
-		})
-		if result.size() >= _catalog.maximum_per_chunk():
-			break
+			var enemy_id := _catalog.enemy_id_for_biome_phase_layer(biome_id, enemy_roll, phase_id, world_layer)
+			if enemy_id.is_empty():
+				continue
+			var definition := _catalog.enemy(enemy_id)
+			if terrain == ChunkData.Terrain.LAND:
+				# 陆地候选拒绝水生敌人，避免它们搁浅在岛上。
+				if definition != null and definition.aquatic:
+					continue
+				if not _resource_generator.candidate_at_world_tile(world_tile, _terrain_generator).is_empty():
+					continue
+			elif terrain == ChunkData.Terrain.SHALLOW_WATER or terrain == ChunkData.Terrain.DEEP_WATER:
+				# 水生敌人只落在允许的水域，且不与海洋资源重叠。
+				if definition == null or not definition.aquatic:
+					continue
+				if not _resource_generator.candidate_at_world_tile(world_tile, _terrain_generator).is_empty():
+					continue
+			else:
+				continue
+			occupied_tiles[world_tile] = true
+			result.append({
+				"spawn_id": "%s:%d:%d:%s" % [world_layer, world_tile.x, world_tile.y, enemy_id],
+				"enemy_id": enemy_id,
+				"world_layer": world_layer,
+				"biome_id": biome_id,
+				"chunk_position": chunk_position,
+				"world_tile": world_tile,
+				"world_position": WorldCoordinates.tile_to_world_pixel(world_tile, true),
+			})
+			if result.size() >= _catalog.maximum_per_chunk():
+				break
 	_cache[cache_key] = result.duplicate(true)
 	return result
 

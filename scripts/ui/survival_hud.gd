@@ -4,6 +4,7 @@ extends Control
 var _panel: PanelContainer
 var _hunger_fill: ColorRect
 var _wetness_fill: ColorRect
+var _oxygen_fill: ColorRect
 var _temperature_label: Label
 var _effects_label: Label
 var _mode_label: Label
@@ -23,8 +24,10 @@ func update_survival(snapshot: Dictionary) -> void:
 	var enabled := bool(snapshot.get("enabled", true))
 	var hunger_maximum := maxf(1.0, float(snapshot.get("hunger_maximum", 100.0)))
 	var wetness_maximum := maxf(1.0, float(snapshot.get("wetness_maximum", 100.0)))
+	var oxygen_maximum := maxf(1.0, float(snapshot.get("oxygen_maximum", 100.0)))
 	_hunger_fill.scale.x = clampf(float(snapshot.get("hunger", hunger_maximum)) / hunger_maximum, 0.0, 1.0)
 	_wetness_fill.scale.x = clampf(float(snapshot.get("wetness", 0.0)) / wetness_maximum, 0.0, 1.0)
+	_oxygen_fill.scale.x = clampf(float(snapshot.get("oxygen", oxygen_maximum)) / oxygen_maximum, 0.0, 1.0)
 	_temperature_label.text = "体温  %.1f°C · %s" % [
 		float(snapshot.get("body_temperature", 37.0)),
 		String(snapshot.get("temperature_state", "舒适")),
@@ -42,7 +45,7 @@ func update_survival(snapshot: Dictionary) -> void:
 func _build_hud() -> void:
 	_panel = PanelContainer.new()
 	_panel.name = "SurvivalPanel"
-	UiLayout.top_left(_panel, Vector2(310, 158), Vector2(UiLayout.EDGE_MARGIN, 150))
+	UiLayout.top_left(_panel, Vector2(310, 179), Vector2(UiLayout.EDGE_MARGIN, 150))
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color("08171ee8")
 	style.border_color = Color("547f72")
@@ -64,6 +67,7 @@ func _build_hud() -> void:
 	column.add_child(title)
 	column.add_child(_make_bar_row("饥饿", Color("d2a75d"), &"hunger"))
 	column.add_child(_make_bar_row("湿润", Color("6ca8d6"), &"wetness"))
+	column.add_child(_make_bar_row("氧气", Color("7fd6c2"), &"oxygen"))
 	_temperature_label = Label.new()
 	_temperature_label.name = "BodyTemperatureLabel"
 	_temperature_label.text = "体温  37.0°C · 舒适"
@@ -99,13 +103,15 @@ func _make_bar_row(label_text: String, color: Color, kind: StringName) -> Contro
 	track.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(track)
 	var fill := ColorRect.new()
-	fill.name = "HungerFill" if kind == &"hunger" else "WetnessFill"
+	fill.name = "HungerFill" if kind == &"hunger" else ("WetnessFill" if kind == &"wetness" else "OxygenFill")
 	fill.color = color
 	fill.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	track.add_child(fill)
 	fill.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	if kind == &"hunger":
 		_hunger_fill = fill
-	else:
+	elif kind == &"wetness":
 		_wetness_fill = fill
+	else:
+		_oxygen_fill = fill
 	return row

@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "swimming": {
+    "shallow_water_multiplier": 0.72,
+    "deep_water_multiplier": 0.55,
+    "stamina_drain_per_second": 5.0
+  },
+  "boats": [
+    {
+      "id": "rowboat",
+      "item_id": "rowboat",
+      "display_name": "小木船",
+      "speed_multiplier": 1.65,
+      "maximum_count": 16,
+      "deploy_range_tiles": 2
+    }
+  ]
+}

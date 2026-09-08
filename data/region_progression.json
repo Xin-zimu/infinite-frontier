@@ -77,7 +77,8 @@
     {"item_id": "stone_pickaxe", "slot": "pickaxe", "score": 8},
     {"item_id": "grove_sigil", "slot": "sigil_grove", "score": 4},
     {"item_id": "dune_sigil", "slot": "sigil_dune", "score": 4},
-    {"item_id": "frost_sigil", "slot": "sigil_frost", "score": 4}
+    {"item_id": "frost_sigil", "slot": "sigil_frost", "score": 4},
+    {"item_id": "tide_sigil", "slot": "sigil_tide", "score": 4}
   ],
   "progress_sources": [
     {"id": "region_discovered", "display_name": "发现区域", "points": 2},
@@ -98,6 +99,7 @@
   "boss_unlocks": [
     {"boss_id": "grove_titan", "display_name": "林冠巨像", "required_points": 0},
     {"boss_id": "dune_behemoth", "display_name": "沙海巨兽", "required_points": 24},
-    {"boss_id": "frost_wyrm", "display_name": "霜穹翼龙", "required_points": 60}
+    {"boss_id": "frost_wyrm", "display_name": "霜穹翼龙", "required_points": 60},
+    {"boss_id": "tide_sovereign", "display_name": "潮汐君主", "required_points": 90}
   ]
 }

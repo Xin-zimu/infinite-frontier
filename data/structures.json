@@ -2,6 +2,7 @@
   "schema_version": 1,
   "region_size_tiles": 192,
   "spawn_chance": 0.46,
+  "water_spawn_chance": 0.30,
   "templates": [
     {
       "id": "cabin", "code": 0, "display_name": "林间小屋", "weight": 28,
@@ -66,6 +67,33 @@
         "WFFEFFW",
         ".WFDFF.",
         "..WWW.."
+      ]
+    },
+    {
+      "id": "shipwreck", "code": 5, "display_name": "沉船", "weight": 22,
+      "base_color": "6e5138",
+      "surface": "water",
+      "rows": [
+        "..FWWWF...",
+        ".WFFFFFW..",
+        "WWFFCFFFW.",
+        ".WFFEFFFW.",
+        ".WWFFFWWW.",
+        "..WWFWW..."
+      ]
+    },
+    {
+      "id": "sea_ruin", "code": 6, "display_name": "海上遗迹", "weight": 18,
+      "base_color": "5f7d86",
+      "surface": "water",
+      "rows": [
+        ".W.F.W.",
+        "W..A..W",
+        "..FFF..",
+        "WFFCFFW",
+        "..FFF..",
+        "W..E..W",
+        ".W.F.W."
       ]
     }
   ]

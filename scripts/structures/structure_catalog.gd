@@ -11,6 +11,7 @@ var _valid := false
 var _error_message := ""
 var _region_size_tiles := 192
 var _spawn_chance := 0.0
+var _water_spawn_chance := 0.0
 var _templates: Array[Dictionary] = []
 var _ids_by_code: Array[StringName] = []
 
@@ -33,6 +34,10 @@ func region_size_tiles() -> int:
 
 func spawn_chance() -> float:
 	return _spawn_chance
+
+
+func water_spawn_chance() -> float:
+	return _water_spawn_chance
 
 
 func template_count() -> int:
@@ -65,15 +70,37 @@ func color_for_code(code: int) -> Color:
 func choose(weight_roll: int) -> Dictionary:
 	var total := 0
 	for definition in _templates:
+		if String(definition.get("surface", "land")) != "land":
+			continue
 		total += int(definition["weight"])
 	if total <= 0:
 		return {}
 	var resolved := posmod(weight_roll, total)
 	for definition in _templates:
+		if String(definition.get("surface", "land")) != "land":
+			continue
 		resolved -= int(definition["weight"])
 		if resolved < 0:
 			return definition.duplicate(true)
 	return _templates.back().duplicate(true)
+
+
+func choose_water(weight_roll: int) -> Dictionary:
+	var total := 0
+	for definition in _templates:
+		if String(definition.get("surface", "land")) != "water":
+			continue
+		total += int(definition["weight"])
+	if total <= 0:
+		return {}
+	var resolved := posmod(weight_roll, total)
+	for definition in _templates:
+		if String(definition.get("surface", "land")) != "water":
+			continue
+		resolved -= int(definition["weight"])
+		if resolved < 0:
+			return definition.duplicate(true)
+	return {}
 
 
 static func tile_kind_for_glyph(glyph: String) -> int:
@@ -111,7 +138,9 @@ func _load(path: String) -> void:
 		return
 	_region_size_tiles = int(root.get("region_size_tiles", 0))
 	_spawn_chance = float(root.get("spawn_chance", -1.0))
-	if _region_size_tiles < 64 or _spawn_chance < 0.0 or _spawn_chance > 1.0:
+	_water_spawn_chance = float(root.get("water_spawn_chance", -1.0))
+	if _region_size_tiles < 64 or _spawn_chance < 0.0 or _spawn_chance > 1.0 \
+			or _water_spawn_chance < 0.0 or _water_spawn_chance > 1.0:
 		_fail("Invalid structure region size or spawn chance")
 		return
 	var values: Variant = root.get("templates", [])

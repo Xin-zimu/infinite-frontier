@@ -110,6 +110,62 @@
       "solid": false,
       "biome_weights": {},
       "drops": [{"item_id": "iron_ore", "minimum": 1, "maximum": 3}]
+    },
+    {
+      "id": "kelp",
+      "code": 8,
+      "display_name": "海带",
+      "color": "3f7d4a",
+      "durability": 2,
+      "required_tool": "hands",
+      "minimum_distance_tiles": 3,
+      "solid": false,
+      "surface": "water",
+      "allowed_terrain": ["shallow_water"],
+      "biome_weights": {"ocean": 0.30},
+      "drops": [{"item_id": "kelp", "minimum": 1, "maximum": 3}]
+    },
+    {
+      "id": "clam_cluster",
+      "code": 9,
+      "display_name": "贝簇",
+      "color": "d9c3a0",
+      "durability": 2,
+      "required_tool": "hands",
+      "minimum_distance_tiles": 4,
+      "solid": false,
+      "surface": "water",
+      "allowed_terrain": ["shallow_water"],
+      "biome_weights": {"ocean": 0.14},
+      "drops": [{"item_id": "clam", "minimum": 1, "maximum": 2}]
+    },
+    {
+      "id": "coral",
+      "code": 10,
+      "display_name": "珊瑚",
+      "color": "e88b6f",
+      "durability": 3,
+      "required_tool": "hands",
+      "minimum_distance_tiles": 4,
+      "solid": false,
+      "surface": "water",
+      "allowed_terrain": ["deep_water"],
+      "biome_weights": {"deep_ocean": 0.20},
+      "drops": [{"item_id": "coral", "minimum": 1, "maximum": 2}, {"item_id": "pearl", "minimum": 1, "maximum": 1, "chance": 0.12}]
+    },
+    {
+      "id": "driftwood_log",
+      "code": 11,
+      "display_name": "浮木",
+      "color": "9a7b52",
+      "durability": 1,
+      "required_tool": "hands",
+      "minimum_distance_tiles": 5,
+      "solid": false,
+      "surface": "water",
+      "allowed_terrain": ["shallow_water", "deep_water"],
+      "biome_weights": {"ocean": 0.10, "deep_ocean": 0.08},
+      "drops": [{"item_id": "driftwood", "minimum": 1, "maximum": 2}]
     }
   ]
 }

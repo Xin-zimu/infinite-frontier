@@ -2,10 +2,10 @@ class_name SurvivalCatalog
 extends RefCounted
 
 const DEFAULT_CONFIG_PATH := "res://data/survival.json"
-const REQUIRED_EFFECT_IDS := [&"poison", &"burning", &"frostbite", &"starvation"]
+const REQUIRED_EFFECT_IDS := [&"poison", &"burning", &"frostbite", &"starvation", &"drowning"]
 const REQUIRED_BIOME_IDS := [
 	&"deep_ocean", &"ocean", &"coast", &"plains", &"forest", &"desert",
-	&"snowfield", &"swamp", &"mountain", &"taiga", &"savanna", &"meadow",
+	&"snowfield", &"swamp", &"mountain", &"taiga", &"savanna", &"meadow", &"island",
 ]
 const REQUIRED_WEATHER_IDS := [&"CLEAR", &"RAIN", &"SNOW", &"SANDSTORM"]
 const REQUIRED_PHASE_IDS := [&"DAWN", &"DAY", &"DUSK", &"NIGHT"]
@@ -192,17 +192,22 @@ func _validate_scalars() -> bool:
 	var comfort_max := range_value(&"temperature_comfort_max")
 	var wetness_min := range_value(&"wetness_min")
 	var wetness_max := range_value(&"wetness_max")
+	var oxygen_min := range_value(&"oxygen_min")
+	var oxygen_max := range_value(&"oxygen_max")
 	if hunger_min != 0.0 or hunger_max <= hunger_min or temperature_max <= temperature_min \
 			or comfort_min <= temperature_min or comfort_max <= comfort_min or comfort_max >= temperature_max \
-			or wetness_min != 0.0 or wetness_max <= wetness_min:
+			or wetness_min != 0.0 or wetness_max <= wetness_min \
+			or oxygen_min != 0.0 or oxygen_max <= oxygen_min:
 		_fail("Survival ranges are invalid")
 		return false
 	if default_value(&"hunger") < hunger_min or default_value(&"hunger") > hunger_max \
 			or default_value(&"body_temperature") < comfort_min or default_value(&"body_temperature") > comfort_max \
-			or default_value(&"wetness") < wetness_min or default_value(&"wetness") > wetness_max:
+			or default_value(&"wetness") < wetness_min or default_value(&"wetness") > wetness_max \
+			or default_value(&"oxygen") < oxygen_min or default_value(&"oxygen") > oxygen_max:
 		_fail("Survival defaults are outside configured ranges")
 		return false
-	for key in ["hunger_idle_per_second", "temperature_response_per_second", "dry_base_per_second"]:
+	for key in ["hunger_idle_per_second", "temperature_response_per_second", "dry_base_per_second", \
+			"oxygen_deep_water_drain_per_second", "oxygen_recovery_per_second"]:
 		if rate(StringName(key), -1.0) <= 0.0:
 			_fail("Survival rate must be positive: %s" % key)
 			return false

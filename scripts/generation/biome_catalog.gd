@@ -105,11 +105,11 @@ func code_for_surface(surface: StringName) -> int:
 		_: return 0
 
 
-func classify_land(temperature: float, moisture: float, elevation: float, erosion: float) -> int:
+func classify_land(temperature: float, moisture: float, elevation: float, erosion: float, island_mask := 0.0) -> int:
 	for rule in _land_rules:
-		if not rule.matches(temperature, moisture, elevation, erosion):
+		if not rule.matches(temperature, moisture, elevation, erosion, island_mask):
 			continue
-		if rule.transition_band > 0.0 and not rule.transition_id.is_empty() and rule.distance_to_edge(temperature, moisture, elevation, erosion) < rule.transition_band:
+		if rule.transition_band > 0.0 and not rule.transition_id.is_empty() and rule.distance_to_edge(temperature, moisture, elevation, erosion, island_mask) < rule.transition_band:
 			return code_for_id(rule.transition_id)
 		return rule.code
 	return code_for_id(&"plains")
