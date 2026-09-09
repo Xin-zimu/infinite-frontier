@@ -19,7 +19,7 @@ func _init(world_seed: int) -> void:
 	_configure(_detail_noise, &"water_detail", 0.021, 2)
 
 
-func feature_at(world_tile: Vector2i, terrain: ChunkData.Terrain, biome_id: StringName, temperature: float, elevation: float) -> Feature:
+func feature_at(world_tile: Vector2i, terrain: ChunkData.Terrain, biome_id: StringName, temperature: float, elevation: float, river_freezes: bool = false) -> Feature:
 	if terrain != ChunkData.Terrain.LAND:
 		return Feature.NONE
 	var basin := _normalized(_basin_noise, world_tile)
@@ -32,7 +32,7 @@ func feature_at(world_tile: Vector2i, terrain: ChunkData.Terrain, biome_id: Stri
 	if channel_distance <= RIVER_HALF_WIDTH and elevation > 0.42 and elevation < 0.82:
 		if _is_bridge(world_tile):
 			return Feature.BRIDGE
-		return Feature.RIVER
+		return Feature.ICE_LAKE if river_freezes else Feature.RIVER
 	if channel_distance <= BANK_HALF_WIDTH and elevation > 0.40 and elevation < 0.84:
 		return Feature.BANK
 	return Feature.NONE

@@ -18,10 +18,10 @@ func _init(world_seed: int, catalog := EnemyCatalog.new()) -> void:
 	_cave_generator = CaveGenerator.new(world_seed)
 
 
-func candidates_for_chunk(chunk_position: Vector2i, phase_id: StringName = &"", world_layer: StringName = &"surface") -> Array[Dictionary]:
+func candidates_for_chunk(chunk_position: Vector2i, phase_id: StringName = &"", world_layer: StringName = &"surface", population_multiplier: float = 1.0) -> Array[Dictionary]:
 	if world_layer == &"dungeon":
 		return []
-	var cache_key := "%s:%d:%d:%s" % [world_layer, chunk_position.x, chunk_position.y, phase_id]
+	var cache_key := "%s:%d:%d:%s:%d" % [world_layer, chunk_position.x, chunk_position.y, phase_id, roundi(population_multiplier * 100)]
 	if _cache.has(cache_key):
 		return (_cache[cache_key] as Array).duplicate(true)
 	var result: Array[Dictionary] = []
@@ -31,10 +31,11 @@ func candidates_for_chunk(chunk_position: Vector2i, phase_id: StringName = &"", 
 	if cave_chunk != null:
 		for resource_index in cave_chunk.resource_count():
 			cave_resources[cave_chunk.resource_world_tile_at(resource_index)] = true
+	var effective_chance := clampf(_catalog.spawn_chance() * population_multiplier, 0.0, 1.0)
 	for slot in _catalog.candidate_slots_per_chunk():
 		var stable_hash := WorldSeed.from_text("%d|enemy-spawn|%s|%d|%d|%d" % [_world_seed, world_layer, chunk_position.x, chunk_position.y, slot])
 		var spawn_roll := float(stable_hash & 0xffff) / 65536.0
-		if spawn_roll >= _catalog.spawn_chance():
+		if spawn_roll >= effective_chance:
 			continue
 		var local := Vector2i(2 + posmod(int(stable_hash >> 16), WorldCoordinates.CHUNK_SIZE - 4), 2 + posmod(int(stable_hash >> 32), WorldCoordinates.CHUNK_SIZE - 4))
 		var world_tile := WorldCoordinates.chunk_local_to_tile(chunk_position, local)

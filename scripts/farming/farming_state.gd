@@ -167,10 +167,11 @@ func fertilize(world_tile: Vector2i, fertilizer_id: StringName, inventory: Inven
 	return {"ok": true, "message": "已使用%s" % definition["display_name"], "plot": record.duplicate(true)}
 
 
-func advance_to_day(day: int, weather_id: StringName) -> Dictionary:
+func advance_to_day(day: int, weather_id: StringName, season_growth_multiplier: float = 1.0) -> Dictionary:
 	var target_day := maxi(1, day)
 	var changed_chunks := {}
 	var matured := 0
+	var season_multiplier := maxf(0.0, season_growth_multiplier)
 	for key_value in _plots.keys():
 		var key := String(key_value)
 		var record := (_plots[key] as Dictionary).duplicate(true)
@@ -187,6 +188,7 @@ func advance_to_day(day: int, weather_id: StringName) -> Dictionary:
 			var weather_multiplier := _catalog.weather_growth_multiplier(weather_id)
 			var growth_delta := (float(wet_days) + float(dry_days) * _catalog.dry_growth_multiplier()) * weather_multiplier
 			growth_delta += float(elapsed_days) * fertilizer_growth
+			growth_delta *= season_multiplier
 			record["growth_points"] = float(record.get("growth_points", 0.0)) + growth_delta
 			record["care_days"] = int(record.get("care_days", 0)) + wet_days
 			var crop := _catalog.crop(crop_id)

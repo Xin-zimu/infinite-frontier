@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "season_duration_days": 8,
+  "transition_days": 1,
+  "seasons": [
+    {
+      "id": "spring",
+      "display_name": "春",
+      "temperature_offset": -1.5,
+      "plant_tint": "a8d87820",
+      "river_freezes": false,
+      "crop_growth_multiplier": 1.0,
+      "resource_yield_multiplier": 1.0,
+      "enemy_population_multiplier": 1.0,
+      "weather_weights": {"CLEAR": 0.50, "RAIN": 0.40, "SNOW": 0.05, "SANDSTORM": 0.05}
+    },
+    {
+      "id": "summer",
+      "display_name": "夏",
+      "temperature_offset": 3.0,
+      "plant_tint": "6fbf3f20",
+      "river_freezes": false,
+      "crop_growth_multiplier": 1.3,
+      "resource_yield_multiplier": 1.15,
+      "enemy_population_multiplier": 1.1,
+      "weather_weights": {"CLEAR": 0.55, "RAIN": 0.25, "SNOW": 0.0, "SANDSTORM": 0.20}
+    },
+    {
+      "id": "autumn",
+      "display_name": "秋",
+      "temperature_offset": 0.0,
+      "plant_tint": "d8a84820",
+      "river_freezes": false,
+      "crop_growth_multiplier": 0.85,
+      "resource_yield_multiplier": 1.1,
+      "enemy_population_multiplier": 1.05,
+      "weather_weights": {"CLEAR": 0.45, "RAIN": 0.40, "SNOW": 0.10, "SANDSTORM": 0.05}
+    },
+    {
+      "id": "winter",
+      "display_name": "冬",
+      "temperature_offset": -6.0,
+      "plant_tint": "e8e8f020",
+      "river_freezes": true,
+      "crop_growth_multiplier": 0.3,
+      "resource_yield_multiplier": 0.7,
+      "enemy_population_multiplier": 0.85,
+      "weather_weights": {"CLEAR": 0.35, "RAIN": 0.10, "SNOW": 0.50, "SANDSTORM": 0.05}
+    }
+  ]
+}

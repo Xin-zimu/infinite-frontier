@@ -12,6 +12,7 @@ var _segment := 0
 var _weather_elapsed := 0.0
 var _weather_duration := 120.0
 var _transition_elapsed := 0.0
+var _season_weights: Dictionary = {}
 
 
 func _init(world_seed: int, restored := {}, catalog := WeatherCatalog.new()) -> void:
@@ -21,7 +22,8 @@ func _init(world_seed: int, restored := {}, catalog := WeatherCatalog.new()) -> 
 		restore_snapshot(restored as Dictionary)
 
 
-func update(delta: float, world_tile: Vector2i, biome_id: StringName) -> Dictionary:
+func update(delta: float, world_tile: Vector2i, biome_id: StringName, season_weights: Dictionary = {}) -> Dictionary:
+	_season_weights = season_weights
 	var chunk := WorldCoordinates.tile_to_chunk(world_tile)
 	var next_region := Vector2i(
 		floori(float(chunk.x) / float(_catalog.region_size_chunks())),
@@ -139,7 +141,7 @@ func _set_target(weather_id: StringName) -> void:
 
 func _select_weather(biome_id: StringName) -> StringName:
 	var stable := WorldSeed.from_text("%d|weather|%d|%d|%d|%s" % [_world_seed, _region.x, _region.y, _segment, biome_id])
-	return _catalog.choose_for_biome(biome_id, float(stable & 0xffff) / 65536.0)
+	return _catalog.choose_for_biome_weighted(biome_id, float(stable & 0xffff) / 65536.0, _season_weights)
 
 
 func _select_duration() -> float:

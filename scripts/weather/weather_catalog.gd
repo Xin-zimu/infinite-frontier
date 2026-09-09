@@ -48,6 +48,25 @@ func choose_for_biome(biome_id: StringName, roll: float) -> StringName:
 	return &"CLEAR"
 
 
+func choose_for_biome_weighted(biome_id: StringName, roll: float, season_weights: Dictionary) -> StringName:
+	var total := 0.0
+	var combined: Array[float] = []
+	combined.resize(_definitions.size())
+	for i in _definitions.size():
+		var candidate := _definitions[i]
+		var weight := candidate.weight_for_biome(biome_id) * float(season_weights.get(String(candidate.weather_id), 1.0))
+		combined[i] = weight
+		total += weight
+	if total <= 0.0:
+		return &"CLEAR"
+	var cursor := clampf(roll, 0.0, 0.999999) * total
+	for i in _definitions.size():
+		cursor -= combined[i]
+		if cursor < 0.0:
+			return _definitions[i].weather_id
+	return &"CLEAR"
+
+
 func _load(path: String) -> void:
 	var file := FileAccess.open(path, FileAccess.READ)
 	if file == null:

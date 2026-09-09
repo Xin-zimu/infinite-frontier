@@ -86,6 +86,7 @@ func target_temperature(environment: Dictionary) -> float:
 		base = float((_environment.get("layer_temperature", {}) as Dictionary).get(layer, 33.0))
 	if bool(environment.get("near_heat", false)):
 		base += float(_environment.get("near_heat_temperature_bonus", 0.0))
+	base += float(environment.get("season_temperature_offset", 0.0))
 	return clampf(base, range_value(&"temperature_min"), range_value(&"temperature_max"))
 
 
