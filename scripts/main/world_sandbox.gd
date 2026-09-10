@@ -44,6 +44,8 @@ var _terrain_generator: TerrainGenerator
 var _ocean_catalog := OceanCatalog.new()
 var _player_in_deep_water := false
 var _player_in_terrain_water := false
+var _season_state := SeasonState.new()
+var _previous_season_id: StringName = &"spring"
 
 
 func _ready() -> void:
@@ -80,6 +82,20 @@ func _process(delta: float) -> void:
 						or _stream_manager.is_near_player_heat_source()
 			)
 		EventBus.time_state_changed.emit(time_state)
+		var season_day := maxi(1, int(time_state.get("day", 1)))
+		if season_day != _season_state.day():
+			_season_state.advance_to_day(season_day)
+			if _terrain_generator != null:
+				_terrain_generator.set_river_freezes(_season_state.river_freezes())
+			if _stream_manager != null:
+				_stream_manager.set_season_resource_multiplier(_season_state.resource_yield_multiplier())
+				_stream_manager.set_season_population_multiplier(_season_state.enemy_population_multiplier())
+				_stream_manager.set_season_crop_growth_multiplier(_season_state.crop_growth_multiplier())
+			ChunkRenderer.set_season_plant_tint(_season_state.plant_tint())
+			var new_season_id := _season_state.season_id()
+			if new_season_id != _previous_season_id:
+				_previous_season_id = new_season_id
+				EventBus.season_state_changed.emit(_season_state.snapshot())
 	if _weather_system != null and _weather_overlay != null and _player != null and _stream_manager != null:
 		var event_weather := _stream_manager.world_event_weather_override()
 		if not event_weather.is_empty():
@@ -87,7 +103,8 @@ func _process(delta: float) -> void:
 		var weather_state := _weather_system.update(
 			delta,
 			WorldCoordinates.world_pixel_to_tile(_player.global_position),
-			_stream_manager.current_biome_id()
+			_stream_manager.current_biome_id(),
+			_season_weather_weights()
 		)
 		_latest_weather_state = weather_state
 		_weather_overlay.apply_weather(weather_state)
@@ -453,6 +470,16 @@ func _build_world() -> void:
 		SaveManager.loaded_world_state_snapshot().get("survival_state", {}) as Dictionary
 	):
 		push_error("Unable to restore survival state: %s" % _survival_state.last_error)
+	if SaveManager.has_current_world():
+		var season_snapshot := SaveManager.loaded_world_state_snapshot().get("season_state", {}) as Dictionary
+		if not season_snapshot.is_empty():
+			_season_state.restore_snapshot(season_snapshot)
+	else:
+		_season_state.advance_to_day(1)
+	_previous_season_id = _season_state.season_id()
+	if _terrain_generator != null:
+		_terrain_generator.set_river_freezes(_season_state.river_freezes())
+	ChunkRenderer.set_season_plant_tint(_season_state.plant_tint())
 	if player_snapshot.is_empty():
 		var spawn_tile := _terrain_generator.find_land_near(initial_chunk)
 		_player.position = WorldCoordinates.tile_to_world_pixel(spawn_tile, true)
@@ -501,6 +528,9 @@ func _build_world() -> void:
 	_weather_system = WeatherSystem.new(_world_seed, SaveManager.current_weather_state() if SaveManager.has_current_world() else {})
 	if SaveManager.has_current_world():
 		_stream_manager.restore_persistence(SaveManager.loaded_world_state_snapshot())
+	_stream_manager.set_season_resource_multiplier(_season_state.resource_yield_multiplier())
+	_stream_manager.set_season_population_multiplier(_season_state.enemy_population_multiplier())
+	_stream_manager.set_season_crop_growth_multiplier(_season_state.crop_growth_multiplier())
 	_stream_manager.metrics_changed.connect(_generation_hud.update_streaming)
 	EventBus.world_layer_changed.connect(_on_world_layer_changed)
 	add_child(_stream_manager)
@@ -569,6 +599,7 @@ func _request_save(create_backup: bool) -> void:
 		return
 	var world_state := _stream_manager.persistence_snapshot()
 	world_state["survival_state"] = _survival_state.persistence_snapshot() if _survival_state != null else SurvivalState.new().persistence_snapshot()
+	world_state["season_state"] = _season_state.persistence_snapshot()
 	SaveManager.request_save(
 		_player.persistence_snapshot(),
 		world_state,
@@ -711,6 +742,13 @@ func _apply_ocean_state(player_tile: Vector2i) -> void:
 		_player.set_ocean_state(1.0, false, 0.0)
 
 
+func _season_weather_weights() -> Dictionary:
+	var weights := {}
+	for wid in [&"CLEAR", &"RAIN", &"SNOW", &"SANDSTORM"]:
+		weights[String(wid)] = _season_state.weather_weight(wid)
+	return weights
+
+
 func _update_survival(delta: float) -> void:
 	if _survival_state == null or _player == null or _stream_manager == null:
 		return
@@ -726,6 +764,7 @@ func _update_survival(delta: float) -> void:
 				or _stream_manager.is_near_cave_torch() \
 				or _stream_manager.is_near_player_heat_source(),
 		"activity": _player.state_name(),
+		"season_temperature_offset": _season_state.temperature_offset(),
 	}
 	var result := _survival_state.update(delta, environment, enabled)
 	_player.set_survival_speed_multiplier(_survival_state.movement_multiplier(enabled))

@@ -2,6 +2,25 @@
 
 All notable changes are recorded here. Version numbers follow the staged project plan.
 
+## [4.2.0] - 2026-09-10
+
+### Added
+
+- A validated season catalog with four seasons (spring, summer, autumn, winter), each eight days long with a one-day transition, data-driven temperature offsets, plant tints, river-freeze flags, crop growth multipliers, resource yield multipliers, enemy population multipliers and weather weights.
+- SeasonState driven by the day-night cycle: advancing the game day updates the season, emits `EventBus.season_state_changed` on season change and persists as save schema 1 (day only).
+- Nine season integration points: survival temperature offset, weather weight blending, winter river freezing (hydrology returns ICE_LAKE), crop growth multiplier, enemy population multiplier, resource yield multiplier, plant tint color blending on biome tiles, season event signal and save migration.
+- Season-state schema 1 in world.json; older format-26 documents migrate with day 1 (spring).
+
+### Changed
+
+- Game version 4.2.0, save version 27, generation version 7 (winter river freezing changes generated hydrology bytes).
+- WeatherSystem.update accepts an optional season_weights dictionary that biases biome weather selection.
+- HydrologyGenerator.feature_at accepts an optional river_freezes flag.
+- EnemySpawnPlanner.candidates_for_chunk accepts an optional population_multiplier.
+- FarmingState.advance_to_day accepts an optional season_growth_multiplier.
+- TerrainGenerator exposes set_river_freezes to propagate winter freezing into chunk generation.
+- ChunkRenderer applies a static season plant tint (35% lerp) to biome tile colors at atlas bake time.
+
 ## [4.1.0] - 2026-09-06
 
 ### Added

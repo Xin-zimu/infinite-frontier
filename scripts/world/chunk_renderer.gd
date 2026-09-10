@@ -19,6 +19,7 @@ static var _elevation_offset := 0
 static var _climate_offset := 0
 static var _water_feature_offset := 0
 static var _cave_floor_offset := 0
+static var _season_plant_tint := Color.WHITE
 
 var _chunk: ChunkData
 var _view_mode := ViewMode.TERRAIN
@@ -223,6 +224,10 @@ func _atlas_index_for(local: Vector2i) -> int:
 			return _chunk.biome_at(local)
 
 
+static func set_season_plant_tint(color: Color) -> void:
+	_season_plant_tint = color
+
+
 static func _ensure_shared_tile_set() -> void:
 	if _shared_tile_set != null:
 		return
@@ -242,6 +247,12 @@ static func _ensure_shared_tile_set() -> void:
 		var patterned := false
 		if tile_index < _biome_count:
 			base_color = catalog.color_for_code(tile_index)
+			base_color = Color(
+				base_color.r * (1.0 - 0.35) + _season_plant_tint.r * 0.35,
+				base_color.g * (1.0 - 0.35) + _season_plant_tint.g * 0.35,
+				base_color.b * (1.0 - 0.35) + _season_plant_tint.b * 0.35,
+				base_color.a
+			)
 			patterned = true
 		elif tile_index < _elevation_offset:
 			base_color = catalog.color_for_code(tile_index - _biome_debug_offset, true)

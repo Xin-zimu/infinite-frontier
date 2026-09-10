@@ -2,7 +2,7 @@ extends Node
 
 const SAVE_ROOT := "user://saves"
 const DEFAULT_START_CHUNK := Vector2i(-1, -4)
-const SUPPORTED_SAVE_VERSIONS := [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26]
+const SUPPORTED_SAVE_VERSIONS := [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
 const SUPPORTED_GENERATION_VERSIONS := [4, 5, 6]
 
 var last_error := ""
@@ -262,10 +262,16 @@ func load_world(world_id: String) -> bool:
 		player["equipment_state"] = EquipmentState.new().persistence_snapshot()
 	if loaded_save_version < 25:
 		player["homestead_state"] = HomesteadState.new().persistence_snapshot()
+	if loaded_save_version < 27:
+		metadata["season_state"] = {"schema_version": 1, "day": 1}
 	var normalized_weather := WeatherSystem.new(int(metadata.get("seed", 0)))
 	if not normalized_weather.restore_snapshot(metadata.get("weather_state", {}) as Dictionary):
 		return _fail("天气存档状态无效")
 	metadata["weather_state"] = normalized_weather.persistence_snapshot()
+	var normalized_season := SeasonState.new()
+	if not normalized_season.restore_snapshot(metadata.get("season_state", {}) as Dictionary):
+		return _fail("季节存档状态无效")
+	metadata["season_state"] = normalized_season.persistence_snapshot()
 	if loaded_save_version < GameVersion.SAVE_VERSION:
 		player["save_version"] = GameVersion.SAVE_VERSION
 		metadata["save_version"] = GameVersion.SAVE_VERSION

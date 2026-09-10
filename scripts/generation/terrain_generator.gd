@@ -12,6 +12,7 @@ var _moisture_noise := FastNoiseLite.new()
 var _detail_noise := FastNoiseLite.new()
 var _island_noise := FastNoiseLite.new()
 var _hydrology: HydrologyGenerator
+var _river_freezes := false
 
 
 func _init(world_seed: int, biome_config_path := BiomeCatalog.DEFAULT_CONFIG_PATH, resource_config_path := ResourceCatalog.DEFAULT_CONFIG_PATH) -> void:
@@ -63,7 +64,7 @@ func generate_chunk(chunk_position: Vector2i, world_layer: StringName = &"surfac
 			result.temperature_map[index] = _quantize(temperature)
 			result.moisture_map[index] = _quantize(moisture)
 			result.biome_map[index] = biome
-			result.water_feature_map[index] = _hydrology.feature_at(world_tile, terrain, _catalog.id_for_code(biome), temperature, elevation)
+			result.water_feature_map[index] = _hydrology.feature_at(world_tile, terrain, _catalog.id_for_code(biome), temperature, elevation, _river_freezes)
 	var resource_generator := ResourceGenerator.new(_world_seed, _resource_catalog, _catalog)
 	for resource in resource_generator.generate_for_chunk(chunk_position, self):
 		result.add_resource(resource["local"] as Vector2i, int(resource["code"]), int(resource["variant"]))
@@ -145,7 +146,11 @@ func water_feature_at(world_tile: Vector2i) -> HydrologyGenerator.Feature:
 	var terrain := _terrain_with_cleanup(world_tile, elevation)
 	var temperature := temperature_at(world_tile, elevation)
 	var biome_code := _biome_with_cleanup(world_tile, terrain, temperature, moisture_at(world_tile, continental_at(world_tile)), elevation, erosion_at(world_tile))
-	return _hydrology.feature_at(world_tile, terrain, _catalog.id_for_code(biome_code), temperature, elevation)
+	return _hydrology.feature_at(world_tile, terrain, _catalog.id_for_code(biome_code), temperature, elevation, _river_freezes)
+
+
+func set_river_freezes(value: bool) -> void:
+	_river_freezes = value
 
 
 func find_land_near(chunk: ChunkData, preferred_local := Vector2i(16, 16)) -> Vector2i:

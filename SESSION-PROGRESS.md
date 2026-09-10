@@ -79,3 +79,34 @@ if hunger <= _catalog.range_value(&"hunger_min") + 0.001 and not _effects.has("s
 ## 下一步
 
 V4.1.0 测试门已全绿，提交后进入 **V4.2.0（季节系统）**。
+
+## V4.2.0 季节系统（2026-09-10 完成）
+
+### 实现内容
+
+- 四季系统（spring/summer/autumn/winter），每季 8 天 + 1 天过渡，数据驱动 `data/season.json`
+- SeasonState 由昼夜循环驱动：推进游戏天数更新季节，季节切换时发射 `EventBus.season_state_changed`
+- 九个集成点：
+  1. 生存温度偏移（`season_temperature_offset`）
+  2. 天气权重混合（`choose_for_biome_weighted`）
+  3. 冬季河流冻结（`HydrologyGenerator.feature_at` 返回 `ICE_LAKE`）
+  4. 作物生长倍率（`crop_growth_multiplier`）
+  5. 敌人数量倍率（`enemy_population_multiplier`）
+  6. 资源产出倍率（`resource_yield_multiplier`）
+  7. 植物颜色 tint 混合（`ChunkRenderer` 烘焙时 35% lerp）
+  8. 季节事件信号（`EventBus.season_state_changed`）
+  9. 存档迁移 26→27（`season_state` schema 1，day=1 初始化）
+
+### 版本号
+
+- Game version 4.2.0 / Save version 27 / Generation version 7
+- 生成版本升至 7：冬季河流冻结改变生成水文字节
+
+### 测试
+
+- 新增 `_test_season_models`：季节配置加载、四季 ID、天数→季节映射、温度偏移、河流冻结、作物/资源/敌人倍率、天气权重、存档 round trip
+- `_test_event_bus_contract` 新增 `season_state_changed` 信号断言
+
+## 下一步
+
+V4.2.0 测试门通过后提交，进入 **V4.3.0（更多世界层）**。

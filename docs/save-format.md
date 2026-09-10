@@ -2,15 +2,16 @@
 
 ## Version
 
-- Game version: `4.1.0`
-- Save version: `26`
-- Generation version: `6`
+- Game version: `4.2.0`
+- Save version: `27`
+- Generation version: `7`
 - Inventory schema: `2`
 - Crafting-state schema: `1`
 - Combat-state schema: `1`
 - Grave-state schema: `1`
 - Milestone-state schema: `1`
 - Weather-state schema: `1`
+- Season-state schema: `1`
 - Dungeon-state schema: `1`
 - Exploration-state schema: `1`
 - Regional-Boss-state schema: `1`
@@ -28,6 +29,7 @@
 - Farming-state schema: `1` (reconstructed from surface chunk differences)
 - Husbandry-state schema: `1` (reconstructed from surface chunk differences)
 - Boat-state schema: `1` (reconstructed from surface chunk differences)
+- Season-state schema: `1`
 - Storage root: `user://saves`
 
 Save and generation formats are independent. Save version 26 adds chunk-owned deployed-boat differences and survival-state schema 2 (oxygen) on top of format-25 homesteads. Normal enemy/NPC motion remains session state; survival/progression/equipment/home-selection records are player-owned, while placed structures, automation machines, homestead beacons, farm plots, interacted animals and deployed boats are world differences grouped by owning surface chunk. Versions 2 through 25 are accepted only by documented migration paths; any other save version or an unsupported generation version is rejected with a file-specific error.
@@ -63,9 +65,9 @@ The directory ID is local and collision-resistant; the player-facing name remain
 
 ```json
 {
-  "save_version": 26,
-  "generation_version": 6,
-  "game_version": "4.1.0",
+  "save_version": 27,
+  "generation_version": 7,
+  "game_version": "4.2.0",
   "world_id": "world_123456789",
   "world_name": "无尽边境",
   "seed_text": "无尽边境",
@@ -82,6 +84,10 @@ The directory ID is local and collision-resistant; the player-facing name remain
     "weather_elapsed": 42.5,
     "weather_duration": 126.0,
     "transition_elapsed": 3.0
+  },
+  "season_state": {
+    "schema_version": 1,
+    "day": 5
   },
   "player_layer": "dungeon"
 }
@@ -504,7 +510,7 @@ Manual saves copy the existing metadata, player document and difference files in
 
 ## Corruption behavior
 
-Loading validates readable JSON objects, current save version 26 or migratable versions 2–25, supported generation version, required metadata, matching layers, weather, player attributes, inventory, crafting, combat, graves, milestones, dungeon/exploration/regional-Boss/NPC/relationship/quest/faction/world-event/region-progression/world-choice/survival/equipment/homestead/boat invariants and all layer-difference arrays. Current-format worlds must use generation 6. Resource/chest keys plus building, farming, animal and boat coordinates require signed integers; every placement, plot, interacted animal and deployed boat must belong to the file's declared surface chunk, satisfy its complete schema and not overlap another mutable overlay. Processor-only fields additionally require a processor definition and bounded fuel; machine-only fields require a canonical automation definition, bounded time/cycles/fuel and valid recipe/filter IDs. Homestead metadata must match every physical beacon ID and tile exactly. Deployed boats require the exact tile-derived `surface:<x>:<y>` identity, a canonical boat item and the configured global cap. Dungeon keys require a valid entrance-derived scope. Parse failures include filename, parser line and message. Continue remains on the menu and displays `SaveManager.last_error`; it never silently starts a new world over damaged data.
+Loading validates readable JSON objects, current save version 27 or migratable versions 2–26, supported generation version, required metadata, matching layers, weather, season, player attributes, inventory, crafting, combat, graves, milestones, dungeon/exploration/regional-Boss/NPC/relationship/quest/faction/world-event/region-progression/world-choice/survival/equipment/homestead/boat invariants and all layer-difference arrays. Current-format worlds must use generation 7. Resource/chest keys plus building, farming, animal and boat coordinates require signed integers; every placement, plot, interacted animal and deployed boat must belong to the file's declared surface chunk, satisfy its complete schema and not overlap another mutable overlay. Processor-only fields additionally require a processor definition and bounded fuel; machine-only fields require a canonical automation definition, bounded time/cycles/fuel and valid recipe/filter IDs. Homestead metadata must match every physical beacon ID and tile exactly. Deployed boats require the exact tile-derived `surface:<x>:<y>` identity, a canonical boat item and the configured global cap. Dungeon keys require a valid entrance-derived scope. Parse failures include filename, parser line and message. Continue remains on the menu and displays `SaveManager.last_error`; it never silently starts a new world over damaged data.
 
 ## Format-2 through format-25 migration
 
@@ -556,4 +562,6 @@ V3.7 format-24 documents already contain complete automation state but no logica
 
 V4.0 format-25 documents already contain complete homestead state but no oxygen field and no boat records. V4.1 lifts every survival-state document to schema 2 with neutral full oxygen, initializes an empty boat state and accepts generation formats 4, 5 and 6; the next transactional save rewrites metadata under format 26 and generation 6. Migration fabricates no boat, no drowning state and no island-specific content, and every permanent difference keeps its coordinate-keyed identity across the generation advance.
 
-All paths update metadata and player state in memory to save format 26 and transactionally commit format 26 on the next save. Migration never serializes generated terrain or recreates unmodified chunk files.
+V4.1 format-26 documents already contain complete survival, boat and ocean state but no season-state field. V4.2 preserves every prior field and initializes season-state schema 1 with day 1 (spring); generation advances to 7 because winter river freezing changes generated hydrology bytes. The next transactional save rewrites metadata under format 27 and generation 7.
+
+All paths update metadata and player state in memory to save format 27 and transactionally commit format 27 on the next save. Migration never serializes generated terrain or recreates unmodified chunk files.

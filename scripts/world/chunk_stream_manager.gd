@@ -41,6 +41,8 @@ var _prompt_elapsed := 0.0
 var _time_phase: StringName = &"DAWN"
 var _weather_resource_multiplier := 1.0
 var _world_event_resource_multiplier := 1.0
+var _season_resource_multiplier := 1.0
+var _season_crop_growth_multiplier := 1.0
 var _world_event_time_seconds := 0.0
 var _world_event_display_second := -1
 var _world_layer: StringName = &"surface"
@@ -1254,7 +1256,7 @@ func _on_time_state_changed(snapshot: Dictionary) -> void:
 	var previous_quest_day := _quest_day
 	_quest_day = maxi(1, int(snapshot.get("day", _quest_day)))
 	if _quest_day != previous_quest_day:
-		var farming_result := _farming_state.advance_to_day(_quest_day, _current_weather_id)
+		var farming_result := _farming_state.advance_to_day(_quest_day, _current_weather_id, _season_crop_growth_multiplier)
 		for coordinate_value in farming_result.get("changed_chunks", []) as Array:
 			var farming_coordinate: Vector2i = coordinate_value
 			_refresh_farming_plots(farming_coordinate)
@@ -1319,7 +1321,20 @@ func _on_weather_state_changed(snapshot: Dictionary) -> void:
 
 
 func adjusted_resource_quantity(base_quantity: int) -> int:
-	return maxi(1, roundi(float(base_quantity) * _weather_resource_multiplier * _world_event_resource_multiplier))
+	return maxi(1, roundi(float(base_quantity) * _weather_resource_multiplier * _world_event_resource_multiplier * _season_resource_multiplier))
+
+
+func set_season_resource_multiplier(multiplier: float) -> void:
+	_season_resource_multiplier = clampf(multiplier, 0.25, 3.0)
+
+
+func set_season_population_multiplier(multiplier: float) -> void:
+	if _enemy_director != null:
+		_enemy_director.set_season_population_multiplier(multiplier)
+
+
+func set_season_crop_growth_multiplier(multiplier: float) -> void:
+	_season_crop_growth_multiplier = clampf(multiplier, 0.0, 3.0)
 
 
 func current_biome_id() -> StringName:

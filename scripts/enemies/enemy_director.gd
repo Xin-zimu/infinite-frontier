@@ -20,6 +20,7 @@ var _spawn_cursor := 0
 var _time_phase: StringName = &"DAWN"
 var _weather_population_multiplier := 1.0
 var _world_event_population_multiplier := 1.0
+var _season_population_multiplier := 1.0
 var _world_layer: StringName = &"surface"
 var _dungeon_id := ""
 var _dungeon_anchor_chunk := Vector2i.ZERO
@@ -38,6 +39,7 @@ func configure(world_seed: int, player: PlayerCharacter, drop_pool: WorldDropPoo
 	_world_layer = world_layer
 	_weather_population_multiplier = 1.0
 	_world_event_population_multiplier = 1.0
+	_season_population_multiplier = 1.0
 	_apply_dungeon_context(dungeon_context as Dictionary)
 	_planner = EnemySpawnPlanner.new(world_seed, _catalog)
 	_regional_boss_planner = RegionalBossPlanner.new(world_seed)
@@ -138,6 +140,14 @@ func set_world_event_population_multiplier(value: float) -> void:
 	population_step()
 
 
+func set_season_population_multiplier(value: float) -> void:
+	var normalized := clampf(value, 0.25, 4.0) if _world_layer == &"surface" else 1.0
+	if is_equal_approx(normalized, _season_population_multiplier):
+		return
+	_season_population_multiplier = normalized
+	population_step()
+
+
 func ensure_world_event_enemy(instance_id: String, spawn_id: String, enemy_id: StringName, world_position: Vector2) -> bool:
 	if _world_layer != &"surface" or instance_id.is_empty() or not spawn_id.begins_with("event-enemy:") \
 			or _catalog.enemy(enemy_id) == null:
@@ -231,7 +241,7 @@ func _spawn_from_nearby_chunks() -> void:
 	_planner.retain_chunks(chunk_coordinates, _world_layer)
 	var candidates: Array[Dictionary] = []
 	for coordinate in chunk_coordinates:
-		candidates.append_array(_planner.candidates_for_chunk(coordinate, _time_phase, _world_layer))
+		candidates.append_array(_planner.candidates_for_chunk(coordinate, _time_phase, _world_layer, _season_population_multiplier))
 	if candidates.is_empty():
 		return
 	candidates.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
